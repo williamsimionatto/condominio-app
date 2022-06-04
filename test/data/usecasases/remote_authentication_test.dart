@@ -3,27 +3,8 @@ import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
 import 'package:condominioapp/domain/usecases/authentication.dart';
-
-class RemoteAuthentication {
-  final HttpClient httpClient;
-  final String url;
-
-  RemoteAuthentication({required this.httpClient, required this.url});
-
-  Future<void>? auth(AuthenticationParams params) async {
-    final body = {
-      'email': params.email,
-      'password': params.secret,
-    };
-
-    await httpClient.request(url: url, method: 'post', body: body);
-  }
-}
-
-abstract class HttpClient {
-  Future<void>? request(
-      {required String url, required String method, Map? body}) async {}
-}
+import 'package:condominioapp/data/http/http.dart';
+import 'package:condominioapp/data/usecases/usecases.dart';
 
 class HttpClientSpy extends Mock implements HttpClient {}
 
