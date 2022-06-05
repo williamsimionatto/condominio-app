@@ -1,5 +1,5 @@
 {
-    "configurations": [        
+    "configurations": [
         {
             "name": "Flutter: Run all Tests",
             "type": "dart",
