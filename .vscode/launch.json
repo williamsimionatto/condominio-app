@@ -1,0 +1,13 @@
+{
+    "configurations": [        
+        {
+            "name": "Flutter: Run all Tests",
+            "type": "dart",
+            "request": "launch",
+            "program": "./test/",
+            "args": [
+                "--no-sound-null-safety"
+            ]
+        }
+    ]
+}
