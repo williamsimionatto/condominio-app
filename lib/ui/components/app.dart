@@ -14,10 +14,10 @@ class App extends StatelessWidget {
     var primaryColorLight = const Color(0xFFFF7582);
 
     final inputDecorationTheme = InputDecorationTheme(
-      enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: primaryColorLight)),
+      enabledBorder:
+          OutlineInputBorder(borderSide: BorderSide(color: primaryColorLight)),
       focusedBorder:
-          UnderlineInputBorder(borderSide: BorderSide(color: primaryColor)),
+          OutlineInputBorder(borderSide: BorderSide(color: primaryColor)),
       alignLabelWithHint: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
     );
