@@ -20,12 +20,18 @@ class HttpAdapter {
 class ClientSpy extends Mock implements Client {}
 
 void main() {
+  late HttpAdapter sut;
+  late ClientSpy client;
+  late String url;
+
+  setUp(() {
+    client = ClientSpy();
+    sut = HttpAdapter(client);
+    url = faker.internet.httpUrl();
+  });
+
   group('POST', () {
     test('Should call post with correct values', () async {
-      final client = ClientSpy();
-      final sut = HttpAdapter(client);
-      final url = faker.internet.httpUrl();
-
       await sut.request(url: url, method: 'post');
       verify(client.post(Uri.parse(url), headers: {
         'content-type': 'application/json',
