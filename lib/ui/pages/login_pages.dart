@@ -42,12 +42,14 @@ class LoginPage extends StatelessWidget {
                   obscureText: true,
                 ),
               ),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  primary: Theme.of(context).primaryColor,
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    primary: Theme.of(context).primaryColor,
+                  ),
+                  child: const Text('Entrar'),
                 ),
-                child: const Text('Entrar'),
               )
             ]),
           ),
