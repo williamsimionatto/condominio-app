@@ -50,26 +50,14 @@ class _LoginPageState extends State<LoginPage> {
                   create: (_) => widget.presenter,
                   child: Form(
                     child: Column(
-                      children: <Widget>[
-                        const EmailInput(),
-                        const Padding(
+                      children: const <Widget>[
+                        EmailInput(),
+                        Padding(
                           padding: EdgeInsets.only(top: 24, bottom: 32),
                           child: PasswordInput(),
                         ),
                         Center(
-                          child: StreamBuilder<bool>(
-                              stream: widget.presenter.isFormValidStream,
-                              builder: (context, snapshot) {
-                                return ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Theme.of(context).primaryColor,
-                                  ),
-                                  onPressed: snapshot.data == true
-                                      ? widget.presenter.auth
-                                      : null,
-                                  child: const Text('Entrar'),
-                                );
-                              }),
+                          child: LoginButton(),
                         )
                       ],
                     ),
