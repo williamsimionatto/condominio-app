@@ -46,13 +46,16 @@ class LoginPage extends StatelessWidget {
                     builder: (context, snapshot) {
                       return TextFormField(
                         decoration: InputDecoration(
-                            labelText: 'Senha',
-                            labelStyle: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                                fontWeight: FontWeight.bold),
-                            icon: Icon(Icons.lock,
-                                color: Theme.of(context).primaryColor),
-                            errorText: snapshot.data),
+                          labelText: 'Senha',
+                          labelStyle: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.bold),
+                          icon: Icon(Icons.lock,
+                              color: Theme.of(context).primaryColor),
+                          errorText: snapshot.data?.isEmpty == true
+                              ? null
+                              : snapshot.data,
+                        ),
                         obscureText: true,
                         onChanged: presenter.validatePassword,
                         style: const TextStyle(color: Colors.white),
