@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../components/components.dart';
 import 'login_presenter.dart';
+import 'components/components.dart';
 
 class LoginPage extends StatefulWidget {
   final LoginPresenter presenter;
@@ -44,70 +46,54 @@ class _LoginPageState extends State<LoginPage> {
               const LoginHeader(),
               Padding(
                 padding: const EdgeInsets.all(38),
-                child: Form(
-                  child: Column(
-                    children: <Widget>[
-                      StreamBuilder<String>(
-                          stream: widget.presenter.emailErrorStream,
-                          builder: (context, snapshot) {
-                            return TextFormField(
-                              decoration: InputDecoration(
-                                labelText: 'E-mail',
-                                labelStyle: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                    fontWeight: FontWeight.bold),
-                                icon: Icon(Icons.email,
-                                    color: Theme.of(context).primaryColor),
-                                errorText: snapshot.data?.isEmpty == true
-                                    ? null
-                                    : snapshot.data,
-                              ),
-                              style: const TextStyle(color: Colors.white),
-                              keyboardType: TextInputType.emailAddress,
-                              onChanged: widget.presenter.validateEmail,
-                            );
-                          }),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 24, bottom: 32),
-                        child: StreamBuilder<String>(
-                            stream: widget.presenter.passwordErrorStream,
-                            builder: (context, snapshot) {
-                              return TextFormField(
-                                decoration: InputDecoration(
-                                  labelText: 'Senha',
-                                  labelStyle: TextStyle(
+                child: Provider(
+                  create: (_) => widget.presenter,
+                  child: Form(
+                    child: Column(
+                      children: <Widget>[
+                        const EmailInput(),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 24, bottom: 32),
+                          child: StreamBuilder<String>(
+                              stream: widget.presenter.passwordErrorStream,
+                              builder: (context, snapshot) {
+                                return TextFormField(
+                                  decoration: InputDecoration(
+                                    labelText: 'Senha',
+                                    labelStyle: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontWeight: FontWeight.bold),
+                                    icon: Icon(
+                                      Icons.lock,
                                       color: Theme.of(context).primaryColor,
-                                      fontWeight: FontWeight.bold),
-                                  icon: Icon(
-                                    Icons.lock,
-                                    color: Theme.of(context).primaryColor,
+                                    ),
+                                    errorText: snapshot.data?.isEmpty == true
+                                        ? null
+                                        : snapshot.data,
                                   ),
-                                  errorText: snapshot.data?.isEmpty == true
-                                      ? null
-                                      : snapshot.data,
-                                ),
-                                obscureText: true,
-                                onChanged: widget.presenter.validatePassword,
-                                style: const TextStyle(color: Colors.white),
-                              );
-                            }),
-                      ),
-                      Center(
-                        child: StreamBuilder<bool>(
-                            stream: widget.presenter.isFormValidStream,
-                            builder: (context, snapshot) {
-                              return ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  primary: Theme.of(context).primaryColor,
-                                ),
-                                onPressed: snapshot.data == true
-                                    ? widget.presenter.auth
-                                    : null,
-                                child: const Text('Entrar'),
-                              );
-                            }),
-                      )
-                    ],
+                                  obscureText: true,
+                                  onChanged: widget.presenter.validatePassword,
+                                  style: const TextStyle(color: Colors.white),
+                                );
+                              }),
+                        ),
+                        Center(
+                          child: StreamBuilder<bool>(
+                              stream: widget.presenter.isFormValidStream,
+                              builder: (context, snapshot) {
+                                return ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Theme.of(context).primaryColor,
+                                  ),
+                                  onPressed: snapshot.data == true
+                                      ? widget.presenter.auth
+                                      : null,
+                                  child: const Text('Entrar'),
+                                );
+                              }),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               )

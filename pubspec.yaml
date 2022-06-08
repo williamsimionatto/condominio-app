@@ -17,6 +17,7 @@ dependencies:
   mockito: ^5.2.0
   faker: ^2.0.0
   http: ^0.13.4
+  provider: ^6.0.3
 
 dev_dependencies:
   flutter_test:
