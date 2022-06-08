@@ -16,10 +16,24 @@ class LoginPage extends StatelessWidget {
         presenter.isLoadingStream.listen((isLoading) {
           if (isLoading) {
             showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (context) => const LoginDialog(),
-            );
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return SimpleDialog(
+                    children: <Widget>[
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const <Widget>[
+                          CircularProgressIndicator(),
+                          SizedBox(height: 10),
+                          Text('Aguarde ... ', textAlign: TextAlign.center)
+                        ],
+                      )
+                    ],
+                  );
+                });
+          } else {
+            if (Navigator.canPop(context)) Navigator.pop(context);
           }
         });
 
@@ -63,8 +77,10 @@ class LoginPage extends StatelessWidget {
                                   labelStyle: TextStyle(
                                       color: Theme.of(context).primaryColor,
                                       fontWeight: FontWeight.bold),
-                                  icon: Icon(Icons.lock,
-                                      color: Theme.of(context).primaryColor),
+                                  icon: Icon(
+                                    Icons.lock,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
                                   errorText: snapshot.data?.isEmpty == true
                                       ? null
                                       : snapshot.data,
@@ -98,30 +114,6 @@ class LoginPage extends StatelessWidget {
           ),
         );
       }),
-    );
-  }
-}
-
-class LoginDialog extends StatelessWidget {
-  const LoginDialog({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SimpleDialog(
-      children: <Widget>[
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
-            CircularProgressIndicator(),
-            SizedBox(
-              height: 10,
-            ),
-            Text('Aguarde ... ', textAlign: TextAlign.center)
-          ],
-        )
-      ],
     );
   }
 }
