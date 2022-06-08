@@ -30,7 +30,9 @@ class LoginPage extends StatelessWidget {
                             fontWeight: FontWeight.bold),
                         icon: Icon(Icons.email,
                             color: Theme.of(context).primaryColor),
-                        errorText: snapshot.data,
+                        errorText: snapshot.data?.isEmpty == true
+                            ? null
+                            : snapshot.data,
                       ),
                       style: const TextStyle(color: Colors.white),
                       keyboardType: TextInputType.emailAddress,

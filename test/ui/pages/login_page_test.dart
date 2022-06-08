@@ -75,4 +75,30 @@ void main() {
 
     expect(find.text('any error'), findsOneWidget);
   });
+
+  testWidgets('Should present no error if email is valid',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    emailErrorController.add(null as String);
+    await tester.pump();
+
+    expect(
+        find.descendant(
+            of: find.bySemanticsLabel('E-mail'), matching: find.byType(Text)),
+        findsOneWidget);
+  });
+
+  testWidgets('Should present no error if email is valid',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    emailErrorController.add('');
+    await tester.pump();
+
+    expect(
+        find.descendant(
+            of: find.bySemanticsLabel('E-mail'), matching: find.byType(Text)),
+        findsOneWidget);
+  });
 }
