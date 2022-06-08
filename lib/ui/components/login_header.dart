@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import './components.dart';
-
 class LoginHeader extends StatelessWidget {
   const LoginHeader({
     Key? key,
@@ -9,13 +7,11 @@ class LoginHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: const [
-        SizedBox(height: 200),
-        Headline1(
-          text: 'Login',
-        ),
-      ],
-    );
+    return Container(
+        height: 240,
+        margin: const EdgeInsets.only(bottom: 24, top: 32),
+        decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(80))),
+        child: const Image(image: AssetImage('lib/ui/assets/logo.png')));
   }
 }
