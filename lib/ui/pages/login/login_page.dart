@@ -52,30 +52,9 @@ class _LoginPageState extends State<LoginPage> {
                     child: Column(
                       children: <Widget>[
                         const EmailInput(),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 24, bottom: 32),
-                          child: StreamBuilder<String>(
-                              stream: widget.presenter.passwordErrorStream,
-                              builder: (context, snapshot) {
-                                return TextFormField(
-                                  decoration: InputDecoration(
-                                    labelText: 'Senha',
-                                    labelStyle: TextStyle(
-                                        color: Theme.of(context).primaryColor,
-                                        fontWeight: FontWeight.bold),
-                                    icon: Icon(
-                                      Icons.lock,
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                    errorText: snapshot.data?.isEmpty == true
-                                        ? null
-                                        : snapshot.data,
-                                  ),
-                                  obscureText: true,
-                                  onChanged: widget.presenter.validatePassword,
-                                  style: const TextStyle(color: Colors.white),
-                                );
-                              }),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 24, bottom: 32),
+                          child: PasswordInput(),
                         ),
                         Center(
                           child: StreamBuilder<bool>(
