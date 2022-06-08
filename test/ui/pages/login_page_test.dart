@@ -79,97 +79,115 @@ void main() {
     verify(presenter.validatePassword(password));
   });
 
-  testWidgets('Should present error if email is invalid',
-      (WidgetTester tester) async {
-    await loadPage(tester);
+  group('E-mail', () {
+    testWidgets('Should present error if email is invalid',
+        (WidgetTester tester) async {
+      await loadPage(tester);
 
-    emailErrorController.add('any error');
-    await tester.pump();
+      emailErrorController.add('any error');
+      await tester.pump();
 
-    expect(find.text('any error'), findsOneWidget);
+      expect(find.text('any error'), findsOneWidget);
+    });
+
+    testWidgets('Should present no error if email is valid',
+        (WidgetTester tester) async {
+      await loadPage(tester);
+
+      emailErrorController.add(null as String);
+      await tester.pump();
+
+      expect(
+          find.descendant(
+              of: find.bySemanticsLabel('E-mail'), matching: find.byType(Text)),
+          findsOneWidget);
+    });
+
+    testWidgets('Should present no error if email is valid',
+        (WidgetTester tester) async {
+      await loadPage(tester);
+
+      emailErrorController.add('');
+      await tester.pump();
+
+      expect(
+          find.descendant(
+              of: find.bySemanticsLabel('E-mail'), matching: find.byType(Text)),
+          findsOneWidget);
+    });
   });
 
-  testWidgets('Should present no error if email is valid',
-      (WidgetTester tester) async {
-    await loadPage(tester);
+  group('Password', () {
+    testWidgets('Should present error if password is invalid',
+        (WidgetTester tester) async {
+      await loadPage(tester);
 
-    emailErrorController.add(null as String);
-    await tester.pump();
+      passwordErrorController.add('any error');
+      await tester.pump();
 
-    expect(
-        find.descendant(
-            of: find.bySemanticsLabel('E-mail'), matching: find.byType(Text)),
-        findsOneWidget);
+      expect(find.text('any error'), findsOneWidget);
+    });
+
+    testWidgets('Should present no error if password is valid',
+        (WidgetTester tester) async {
+      await loadPage(tester);
+
+      passwordErrorController.add(null as String);
+      await tester.pump();
+
+      expect(
+          find.descendant(
+              of: find.bySemanticsLabel('Senha'), matching: find.byType(Text)),
+          findsOneWidget);
+    });
+
+    testWidgets('Should present no error if password is valid',
+        (WidgetTester tester) async {
+      await loadPage(tester);
+
+      passwordErrorController.add('');
+      await tester.pump();
+
+      expect(
+          find.descendant(
+              of: find.bySemanticsLabel('Senha'), matching: find.byType(Text)),
+          findsOneWidget);
+    });
   });
 
-  testWidgets('Should present no error if email is valid',
-      (WidgetTester tester) async {
-    await loadPage(tester);
+  group('Button', () {
+    testWidgets('Should enable button if form is valid',
+        (WidgetTester tester) async {
+      await loadPage(tester);
 
-    emailErrorController.add('');
-    await tester.pump();
+      isFormValidController.add(true);
+      await tester.pump();
 
-    expect(
-        find.descendant(
-            of: find.bySemanticsLabel('E-mail'), matching: find.byType(Text)),
-        findsOneWidget);
+      final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
+      expect(button.onPressed, isNotNull);
+    });
+
+    testWidgets('Should disabled button if form is invalid',
+        (WidgetTester tester) async {
+      await loadPage(tester);
+
+      isFormValidController.add(false);
+      await tester.pump();
+
+      final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
+      expect(button.onPressed, null);
+    });
   });
 
-  testWidgets('Should present error if password is invalid',
-      (WidgetTester tester) async {
-    await loadPage(tester);
-
-    passwordErrorController.add('any error');
-    await tester.pump();
-
-    expect(find.text('any error'), findsOneWidget);
-  });
-
-  testWidgets('Should present no error if password is valid',
-      (WidgetTester tester) async {
-    await loadPage(tester);
-
-    passwordErrorController.add(null as String);
-    await tester.pump();
-
-    expect(
-        find.descendant(
-            of: find.bySemanticsLabel('Senha'), matching: find.byType(Text)),
-        findsOneWidget);
-  });
-
-  testWidgets('Should present no error if password is valid',
-      (WidgetTester tester) async {
-    await loadPage(tester);
-
-    passwordErrorController.add('');
-    await tester.pump();
-
-    expect(
-        find.descendant(
-            of: find.bySemanticsLabel('Senha'), matching: find.byType(Text)),
-        findsOneWidget);
-  });
-
-  testWidgets('Should enable button if form is valid',
+  testWidgets('Should call authentication on form submit',
       (WidgetTester tester) async {
     await loadPage(tester);
 
     isFormValidController.add(true);
     await tester.pump();
-
-    final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
-    expect(button.onPressed, isNotNull);
-  });
-
-  testWidgets('Should disabled button if form is invalid',
-      (WidgetTester tester) async {
-    await loadPage(tester);
-
-    isFormValidController.add(false);
+    await tester.tap(find.byType(ElevatedButton));
     await tester.pump();
 
-    final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
-    expect(button.onPressed, null);
+    verify(presenter.auth()).called(1);
   });
 }
