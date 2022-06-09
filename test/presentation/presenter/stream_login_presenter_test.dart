@@ -82,4 +82,18 @@ void main() {
     sut.validationPassword(password);
     sut.validationPassword(password);
   });
+
+  test('Should emit error if any field is invalid', () async* {
+    mockValidaton(field: 'each', value: 'error');
+
+    sut.emailErrorStream
+        .listen(expectAsync1((error) => expect(error, 'error')));
+    sut.passwordErrorStream
+        .listen(expectAsync1((error) => expect(error, null)));
+    sut.isFormValidStream
+        .listen(expectAsync1((isValid) => expect(isValid, false)));
+
+    sut.validationEmail(email);
+    sut.validationPassword(password);
+  });
 }
