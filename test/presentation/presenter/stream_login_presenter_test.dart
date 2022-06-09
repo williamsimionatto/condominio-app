@@ -36,10 +36,18 @@ void main() {
   late ValidationSpy validation;
   late String email;
 
+  PostExpectation mockValidationCall(String field) =>
+      when(validation.validate(field: field, value: 'value'));
+
+  void mockValidaton({String? field, String? value}) {
+    mockValidationCall(field ?? 'field').thenReturn(value);
+  }
+
   setUp(() {
     validation = ValidationSpy();
     sut = StreamLoginPresenter(validation: validation);
     email = faker.internet.email();
+    mockValidaton();
   });
 
   test('Shoul call Validation with correct email', () {
@@ -48,8 +56,8 @@ void main() {
     verify(validation.validate(field: 'email', value: email)).called(1);
   });
 
-  test('Should emit email error if validation fails', () {
-    when(validation.validate(field: 'email', value: email)).thenReturn('error');
+  test('Should emit email error if validation fails', () async* {
+    mockValidaton(value: 'error');
 
     expectLater(sut.emailErrorStream, emits('error'));
 
