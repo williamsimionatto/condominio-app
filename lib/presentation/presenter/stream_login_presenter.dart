@@ -7,6 +7,7 @@ import '../protocols/protocols.dart';
 class LoginState {
   String? email;
   String? password;
+  bool? isLoading = false;
 
   String? emailError;
   String? passwordError;
@@ -32,6 +33,9 @@ class StreamLoginPresenter {
   Stream<bool> get isFormValidStream =>
       _controller.stream.map((state) => state.isFormValid).distinct();
 
+  Stream<bool?> get isLoadingStream =>
+      _controller.stream.map((state) => state.isLoading).distinct();
+
   StreamLoginPresenter(
       {required this.validation, required this.authentication});
 
@@ -51,7 +55,12 @@ class StreamLoginPresenter {
   }
 
   Future<void> auth() async {
+    _state.isLoading = true;
+    _update();
     await authentication.auth(
         AuthenticationParams(email: _state.email!, secret: _state.password!));
+
+    _state.isLoading = false;
+    _update();
   }
 }
