@@ -3,6 +3,7 @@ import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
 import 'package:condominioapp/domain/entities/entities.dart';
+import 'package:condominioapp/domain/helpers/helpers.dart';
 import 'package:condominioapp/domain/usecases/usecases.dart';
 
 import 'package:condominioapp/presentation/presenter/presenter.dart';
@@ -32,6 +33,10 @@ void main() {
   void mockAuthetication() {
     mockAuthenticationCall()
         .thenAnswer((_) async => AccountEntity(token: faker.guid.guid()));
+  }
+
+  void mockAutheticationError(DomainError error) {
+    mockAuthenticationCall().thenThrow(error);
   }
 
   setUp(() {
@@ -142,6 +147,19 @@ void main() {
     sut.validationPassword(password);
 
     expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
+
+    await sut.auth();
+  });
+
+  test('Should emit correct events on InvalidCredentialsError', () async {
+    mockAutheticationError(DomainError.invalidCredentials);
+
+    sut.validationEmail(email);
+    sut.validationPassword(password);
+
+    expectLater(sut.isLoadingStream, emits(false));
+    sut.mainErrorStream
+        .listen(expectAsync1((error) => expect(error, 'Credencias Inválidas')));
 
     await sut.auth();
   });
