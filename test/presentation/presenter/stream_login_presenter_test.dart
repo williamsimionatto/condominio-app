@@ -79,7 +79,7 @@ void main() {
     sut.isFormValidStream
         .listen(expectAsync1((isValid) => expect(isValid, false)));
 
-    sut.validationEmail(email);
-    sut.validationEmail(email);
+    sut.validationPassword(password);
+    sut.validationPassword(password);
   });
 }
