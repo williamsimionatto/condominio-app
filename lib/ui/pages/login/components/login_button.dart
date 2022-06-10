@@ -15,8 +15,18 @@ class LoginButton extends StatelessWidget {
         stream: presenter.isFormValidStream,
         builder: (context, snapshot) {
           return ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Theme.of(context).primaryColor,
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.pressed)) {
+                    return Theme.of(context).primaryColor;
+                  } else if (states.contains(MaterialState.disabled)) {
+                    return Theme.of(context).primaryColorLight;
+                  } else {
+                    return Theme.of(context).primaryColor;
+                  }
+                },
+              ),
             ),
             onPressed: snapshot.data == true ? presenter.auth : null,
             child: const Text('Entrar'),
