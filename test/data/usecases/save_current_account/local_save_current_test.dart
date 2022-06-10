@@ -29,12 +29,20 @@ abstract class SaveSecureCacheStorage {
 class SaveCacheStorageSpy extends Mock implements SaveSecureCacheStorage {}
 
 void main() {
-  test('Should call SaveSecureCacheStorage with correct values', () async {
-    final saveSecureCacheStorage = SaveCacheStorageSpy();
-    final sut =
-        LocalSaveCurrentAccount(saveSecureCacheStorage: saveSecureCacheStorage);
-    final account = AccountEntity(token: faker.guid.guid());
+  late SaveCacheStorageSpy saveSecureCacheStorage;
+  late AccountEntity account;
+  late LocalSaveCurrentAccount sut;
 
+
+
+  setUp(() {
+    saveSecureCacheStorage = SaveCacheStorageSpy();
+    sut =
+        LocalSaveCurrentAccount(saveSecureCacheStorage: saveSecureCacheStorage);
+    account = AccountEntity(token: faker.guid.guid());
+  });
+
+  test('Should call SaveSecureCacheStorage with correct values', () async {
     await sut.save(account);
     verify(
         saveSecureCacheStorage.saveSecure(key: 'token', value: account.token));
@@ -42,11 +50,6 @@ void main() {
 
   test('Should throw UnexpectedError if SaveSecureCacheStorage throws',
       () async {
-    final saveSecureCacheStorage = SaveCacheStorageSpy();
-    final sut =
-        LocalSaveCurrentAccount(saveSecureCacheStorage: saveSecureCacheStorage);
-    final account = AccountEntity(token: faker.guid.guid());
-
     when(saveSecureCacheStorage.saveSecure(key: 'token', value: account.token))
         .thenThrow(Exception());
 
