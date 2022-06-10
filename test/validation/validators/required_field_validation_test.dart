@@ -10,7 +10,7 @@ void main() {
   });
 
   test('Should return null if value is not empty', () {
-    expect(sut.validate('any_value'), null);
+    expect(sut.validate('any_value'), '');
   });
 
   test('Should return error if value is empty', () {

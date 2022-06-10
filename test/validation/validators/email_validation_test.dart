@@ -8,15 +8,15 @@ void main() {
   });
 
   test('Should return null if email is empty', () {
-    expect(sut.validate(''), null);
+    expect(sut.validate(''), '');
   });
 
   test('Should return null if email is null', () {
-    expect(sut.validate(null as String), null);
+    expect(sut.validate(null as String), '');
   });
 
   test('Should return null if email is valid', () {
-    expect(sut.validate('william.simionatto@mail.com'), null);
+    expect(sut.validate('william.simionatto@mail.com'), '');
   });
 
   test('Should return error if email is invalid', () {

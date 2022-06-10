@@ -26,17 +26,17 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: Builder(builder: (context) {
-        widget.presenter.isLoadingStream.listen((isLoading) {
-          if (isLoading) {
+        widget.presenter.isLoadingStream?.listen((isLoading) {
+          if (isLoading == true) {
             showLoading(context);
           } else {
             hideLoading(context);
           }
         });
 
-        widget.presenter.mainErrorStream.listen((error) {
-          if (error.isNotEmpty) {
-            showErrorMessage(context, error);
+        widget.presenter.mainErrorStream?.listen((error) {
+          if (error?.isNotEmpty == true) {
+            showErrorMessage(context, error as String);
           }
         });
 

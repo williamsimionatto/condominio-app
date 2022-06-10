@@ -11,7 +11,7 @@ class LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final presenter = Provider.of<LoginPresenter>(context);
-    return StreamBuilder<bool>(
+    return StreamBuilder<bool?>(
         stream: presenter.isFormValidStream,
         builder: (context, snapshot) {
           return ElevatedButton(
