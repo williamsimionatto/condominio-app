@@ -4,27 +4,9 @@ import 'package:test/test.dart';
 
 import 'package:condominioapp/domain/entities/entities.dart';
 import 'package:condominioapp/domain/helpers/helpers.dart';
-import 'package:condominioapp/domain/usecases/usecases.dart';
 
-class LocalSaveCurrentAccount implements SaveCurrentAccount {
-  final SaveSecureCacheStorage saveSecureCacheStorage;
-
-  LocalSaveCurrentAccount({required this.saveSecureCacheStorage});
-
-  @override
-  Future<void> save(AccountEntity account) async {
-    try {
-      await saveSecureCacheStorage.saveSecure(
-          key: 'token', value: account.token);
-    } catch (error) {
-      throw DomainError.unexpected;
-    }
-  }
-}
-
-abstract class SaveSecureCacheStorage {
-  Future<void> saveSecure({required String key, required String value});
-}
+import 'package:condominioapp/data/usecases/usecases.dart';
+import 'package:condominioapp/data/cache/cache.dart';
 
 class SaveCacheStorageSpy extends Mock implements SaveSecureCacheStorage {}
 
