@@ -1,0 +1,37 @@
+import 'package:flutter/material.dart';
+
+ThemeData makeAppTheme() {
+  var backgroundColor = const Color(0xFF0E1D33);
+  var primaryColor = const Color(0xFFEE4865);
+  var primaryColorLight = const Color(0xFFFF7582);
+
+  final inputDecorationTheme = InputDecorationTheme(
+    enabledBorder:
+        OutlineInputBorder(borderSide: BorderSide(color: primaryColorLight)),
+    focusedBorder:
+        OutlineInputBorder(borderSide: BorderSide(color: primaryColor)),
+    alignLabelWithHint: true,
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+  );
+
+  return ThemeData(
+    primaryColor: primaryColor,
+    backgroundColor: backgroundColor,
+    primaryColorLight: primaryColorLight,
+    textTheme: TextTheme(
+      headline1: TextStyle(
+          fontSize: 30, fontWeight: FontWeight.bold, color: primaryColor),
+    ),
+    inputDecorationTheme: inputDecorationTheme,
+    buttonTheme: ButtonThemeData(
+      colorScheme: ColorScheme.light(primary: primaryColor),
+      buttonColor: primaryColor,
+      splashColor: primaryColorLight,
+      textTheme: ButtonTextTheme.primary,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(9),
+      ),
+    ),
+  );
+}
