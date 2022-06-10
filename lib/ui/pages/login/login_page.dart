@@ -15,6 +15,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  void _hideKeyboard() {
+    final currenctFocus = FocusScope.of(context);
+    if (!currenctFocus.hasPrimaryFocus) {
+      currenctFocus.unfocus();
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -40,31 +47,34 @@ class _LoginPageState extends State<LoginPage> {
           }
         });
 
-        return SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              const LoginHeader(),
-              Padding(
-                padding: const EdgeInsets.all(38),
-                child: Provider(
-                  create: (_) => widget.presenter,
-                  child: Form(
-                    child: Column(
-                      children: const <Widget>[
-                        EmailInput(),
-                        Padding(
-                          padding: EdgeInsets.only(top: 24, bottom: 32),
-                          child: PasswordInput(),
-                        ),
-                        Center(
-                          child: LoginButton(),
-                        )
-                      ],
+        return GestureDetector(
+          onTap: _hideKeyboard,
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                const LoginHeader(),
+                Padding(
+                  padding: const EdgeInsets.all(38),
+                  child: Provider(
+                    create: (_) => widget.presenter,
+                    child: Form(
+                      child: Column(
+                        children: const <Widget>[
+                          EmailInput(),
+                          Padding(
+                            padding: EdgeInsets.only(top: 24, bottom: 32),
+                            child: PasswordInput(),
+                          ),
+                          Center(
+                            child: LoginButton(),
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         );
       }),
