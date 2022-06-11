@@ -15,7 +15,7 @@ class StreamSplashPresenter implements SplashPresenter {
 
   final StreamController<SplashState>? _controller =
       StreamController<SplashState>.broadcast();
-  // final _state = SplashState();
+  final _state = SplashState();
 
   @override
   Stream<String?>? get navigateToStream =>
@@ -28,7 +28,10 @@ class StreamSplashPresenter implements SplashPresenter {
   @override
   Future<void> checkAccount() async {
     await loadCurrentAccount.load();
+    _state.navigateTo = '/home';
   }
+
+  void _update() => _controller?.add(_state);
 }
 
 class LoadCurrentAccountSpy extends Mock implements LoadCurrentAccount {}
@@ -46,5 +49,11 @@ void main() {
     await sut.checkAccount();
 
     verify(loadCurrentAccount.load()).called(1);
+  });
+
+  test('Should go to home page on success', () async* {
+    sut.navigateToStream?.listen((page) => expect(page, '/home'));
+
+    await sut.checkAccount();
   });
 }
