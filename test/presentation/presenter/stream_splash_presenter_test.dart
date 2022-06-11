@@ -1,46 +1,11 @@
-import 'dart:async';
-
 import 'package:faker/faker.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
-import 'package:condominioapp/domain/entities/account_entity.dart';
+import 'package:condominioapp/domain/entities/entities.dart';
 import 'package:condominioapp/domain/usecases/usecases.dart';
-import 'package:condominioapp/ui/pages/pages.dart';
 
-class SplashState {
-  String? navigateTo;
-}
-
-class StreamSplashPresenter implements SplashPresenter {
-  final LoadCurrentAccount loadCurrentAccount;
-
-  StreamController<SplashState>? _controller =
-      StreamController<SplashState>.broadcast();
-  final _state = SplashState();
-
-  @override
-  Stream<String?>? get navigateToStream =>
-      _controller?.stream.map((state) => state.navigateTo).distinct();
-
-  StreamSplashPresenter({
-    required this.loadCurrentAccount,
-  });
-
-  @override
-  Future<void> checkAccount() async {
-    try {
-      final account = await loadCurrentAccount.load();
-      _state.navigateTo = account != null ? '/login' : '/home';
-      _update();
-    } catch (error) {
-      _state.navigateTo = '/login';
-      _update();
-    }
-  }
-
-  void _update() => _controller?.add(_state);
-}
+import 'package:condominioapp/presentation/presenter/presenter.dart';
 
 class LoadCurrentAccountSpy extends Mock implements LoadCurrentAccount {}
 
