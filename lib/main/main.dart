@@ -21,10 +21,16 @@ class App extends StatelessWidget {
       title: 'Madre Paulina',
       debugShowCheckedModeBanner: false,
       theme: makeAppTheme(),
-      initialRoute: '/login',
+      initialRoute: '/',
       getPages: [
-        GetPage(name: '/login', page: makeLoginPage),
-        GetPage(name: '/home', page: () => const Scaffold(body: Text('Home')))
+        GetPage(name: '/', page: makeSplashPage, transition: Transition.fade),
+        GetPage(
+            name: '/login', page: makeLoginPage, transition: Transition.fadeIn),
+        GetPage(
+          name: '/home',
+          page: () => const Scaffold(body: Text('Home')),
+          transition: Transition.fadeIn,
+        )
       ],
     );
   }
