@@ -25,7 +25,10 @@ class App extends StatelessWidget {
       getPages: [
         GetPage(name: '/', page: makeSplashPage, transition: Transition.fade),
         GetPage(
-            name: '/login', page: makeLoginPage, transition: Transition.fadeIn),
+          name: '/login',
+          page: makeLoginPage,
+          transition: Transition.fadeIn,
+        ),
         GetPage(
           name: '/home',
           page: () => const Scaffold(body: Text('Home')),

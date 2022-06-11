@@ -12,8 +12,11 @@ class SplashPage extends StatelessWidget {
     presenter.checkAccount();
 
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         title: const Text('Condomínio Madre Paulina'),
+        backgroundColor: Theme.of(context).primaryColor,
+        titleTextStyle: Theme.of(context).textTheme.headline2,
       ),
       body: Builder(builder: (context) {
         presenter.navigateToStream?.listen((page) {
@@ -22,8 +25,10 @@ class SplashPage extends StatelessWidget {
           }
         });
 
-        return const Center(
-          child: CircularProgressIndicator(),
+        return Center(
+          child: CircularProgressIndicator(
+            color: Theme.of(context).primaryColor,
+          ),
         );
       }),
     );
