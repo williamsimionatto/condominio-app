@@ -44,7 +44,7 @@ void main() {
     expect(account, AccountEntity(token: token));
   });
 
-  test('Should return an AccountEntity', () async {
+  test('Should return an UnexpectError', () async {
     mockFetchSecureCacheStorageError(token);
     final future = sut.load();
 
