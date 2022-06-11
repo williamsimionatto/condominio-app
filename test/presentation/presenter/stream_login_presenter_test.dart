@@ -23,6 +23,7 @@ void main() {
   late String email;
   late String password;
   late String token;
+
   PostExpectation mockValidationCall(String field) =>
       when(validation.validate(field: field, value: 'value'));
 
@@ -40,6 +41,13 @@ void main() {
 
   void mockAutheticationError(DomainError error) {
     mockAuthenticationCall().thenThrow(error);
+  }
+
+  PostExpectation mockSaveCurrentAccountCall() =>
+      when(saveCurrentAccount.save(any as AccountEntity));
+
+  void mockSaveCurrentAccountError() {
+    mockSaveCurrentAccountCall().thenThrow(DomainError.unexpected);
   }
 
   setUp(() {
@@ -160,6 +168,19 @@ void main() {
     verify(saveCurrentAccount.save(AccountEntity(token: token))).called(1);
   });
 
+  test('Should emit UnexpectedError if SaveCurrentAccount fails', () async* {
+    mockSaveCurrentAccountError();
+
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+
+    expectLater(sut.isLoadingStream, emits(false));
+    sut.mainErrorStream?.listen(expectAsync1((error) =>
+        expect(error, 'Algo errado aconteceu. Tente novamente em breve.')));
+
+    await sut.auth();
+  });
+
   test('Should emit correct events on Authentication success', () async {
     sut.validateEmail(email);
     sut.validatePassword(password);
@@ -195,7 +216,7 @@ void main() {
     await sut.auth();
   });
 
-  test('Shoudl not emit after dispose', () {
+  test('should not emit after dispose', () {
     expectLater(sut.emailErrorStream, neverEmits(null));
 
     sut.dispose();
