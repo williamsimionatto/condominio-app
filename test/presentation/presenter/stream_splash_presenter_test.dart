@@ -29,10 +29,14 @@ class StreamSplashPresenter implements SplashPresenter {
 
   @override
   Future<void> checkAccount() async {
-    final account = await loadCurrentAccount.load();
-    _state.navigateTo = account != null ? '/login' : '/home';
-
-    _update();
+    try {
+      final account = await loadCurrentAccount.load();
+      _state.navigateTo = account != null ? '/login' : '/home';
+      _update();
+    } catch (error) {
+      _state.navigateTo = '/login';
+      _update();
+    }
   }
 
   void _update() => _controller?.add(_state);
@@ -44,8 +48,15 @@ void main() {
   late StreamSplashPresenter sut;
   late LoadCurrentAccount loadCurrentAccount;
 
+  PostExpectation mockLoadCurrentAccountCall() =>
+      when(loadCurrentAccount.load());
+
   void mockLoadCurrentAccount({required AccountEntity account}) {
-    when(loadCurrentAccount.load()).thenAnswer((_) async => account);
+    mockLoadCurrentAccountCall().thenAnswer((_) async => account);
+  }
+
+  void mockLoadCurrentAccountError() {
+    mockLoadCurrentAccountCall().thenThrow(Exception());
   }
 
   setUp(() {
@@ -68,6 +79,13 @@ void main() {
 
   test('Should go to login page on null result', () async* {
     mockLoadCurrentAccount(account: null as AccountEntity);
+    sut.navigateToStream?.listen((page) => expect(page, '/login'));
+
+    await sut.checkAccount();
+  });
+
+  test('Should go to login page on error', () async* {
+    mockLoadCurrentAccountError();
     sut.navigateToStream?.listen((page) => expect(page, '/login'));
 
     await sut.checkAccount();
