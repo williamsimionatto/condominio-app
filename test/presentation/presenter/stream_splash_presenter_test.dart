@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:faker/faker.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
+import 'package:condominioapp/domain/entities/account_entity.dart';
 import 'package:condominioapp/domain/usecases/usecases.dart';
 import 'package:condominioapp/ui/pages/pages.dart';
 
@@ -13,7 +15,7 @@ class SplashState {
 class StreamSplashPresenter implements SplashPresenter {
   final LoadCurrentAccount loadCurrentAccount;
 
-  final StreamController<SplashState>? _controller =
+  StreamController<SplashState>? _controller =
       StreamController<SplashState>.broadcast();
   final _state = SplashState();
 
@@ -27,8 +29,10 @@ class StreamSplashPresenter implements SplashPresenter {
 
   @override
   Future<void> checkAccount() async {
-    await loadCurrentAccount.load();
-    _state.navigateTo = '/home';
+    final account = await loadCurrentAccount.load();
+    _state.navigateTo = account != null ? '/login' : '/home';
+
+    _update();
   }
 
   void _update() => _controller?.add(_state);
@@ -40,9 +44,14 @@ void main() {
   late StreamSplashPresenter sut;
   late LoadCurrentAccount loadCurrentAccount;
 
+  void mockLoadCurrentAccount({required AccountEntity account}) {
+    when(loadCurrentAccount.load()).thenAnswer((_) async => account);
+  }
+
   setUp(() {
     loadCurrentAccount = LoadCurrentAccountSpy();
     sut = StreamSplashPresenter(loadCurrentAccount: loadCurrentAccount);
+    mockLoadCurrentAccount(account: AccountEntity(token: faker.guid.guid()));
   });
 
   test('Should call LoadCurrentAccount', () async {
@@ -53,6 +62,13 @@ void main() {
 
   test('Should go to home page on success', () async* {
     sut.navigateToStream?.listen((page) => expect(page, '/home'));
+
+    await sut.checkAccount();
+  });
+
+  test('Should go to login page on null result', () async* {
+    mockLoadCurrentAccount(account: null as AccountEntity);
+    sut.navigateToStream?.listen((page) => expect(page, '/login'));
 
     await sut.checkAccount();
   });
