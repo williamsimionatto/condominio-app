@@ -14,6 +14,7 @@ class LoginState {
   String? emailError;
   String? passwordError;
   String? mainError;
+  String? navigateTo;
 
   bool get isFormValid =>
       emailError == '' &&
@@ -25,6 +26,7 @@ class LoginState {
 class StreamLoginPresenter implements LoginPresenter {
   final Validation validation;
   final Authentication authentication;
+  final SaveCurrentAccount saveCurrentAccount;
 
   StreamController<LoginState>? _controller =
       StreamController<LoginState>.broadcast();
@@ -33,21 +35,32 @@ class StreamLoginPresenter implements LoginPresenter {
   @override
   Stream<String?>? get emailErrorStream =>
       _controller?.stream.map((state) => state.emailError).distinct();
+
   @override
   Stream<String?>? get passwordErrorStream =>
       _controller?.stream.map((state) => state.passwordError).distinct();
+
   @override
   Stream<String?>? get mainErrorStream =>
       _controller?.stream.map((state) => state.mainError).distinct();
+
+  @override
+  Stream<String?>? get navigateToStream =>
+      _controller?.stream.map((state) => state.navigateTo).distinct();
+
   @override
   Stream<bool?>? get isFormValidStream =>
       _controller?.stream.map((state) => state.isFormValid).distinct();
+
   @override
   Stream<bool?>? get isLoadingStream =>
       _controller?.stream.map((state) => state.isLoading).distinct();
 
-  StreamLoginPresenter(
-      {required this.validation, required this.authentication});
+  StreamLoginPresenter({
+    required this.validation,
+    required this.authentication,
+    required this.saveCurrentAccount,
+  });
 
   void _update() => _controller?.add(_state);
 
@@ -68,18 +81,20 @@ class StreamLoginPresenter implements LoginPresenter {
 
   @override
   Future<void> auth() async {
-    _state.isLoading = true;
-    _update();
-
     try {
-      await authentication.auth(
+      _state.isLoading = true;
+      _update();
+      final account = await authentication.auth(
           AuthenticationParams(email: _state.email!, secret: _state.password!));
+      await saveCurrentAccount.save(account!);
+
+      _state.navigateTo = '/home';
+      _update();
     } on DomainError catch (error) {
       _state.mainError = error.description;
+      _state.isLoading = false;
+      _update();
     }
-
-    _state.isLoading = false;
-    _update();
   }
 
   @override
