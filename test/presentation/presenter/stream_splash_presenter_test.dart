@@ -34,9 +34,15 @@ class StreamSplashPresenter implements SplashPresenter {
 class LoadCurrentAccountSpy extends Mock implements LoadCurrentAccount {}
 
 void main() {
+  late StreamSplashPresenter sut;
+  late LoadCurrentAccount loadCurrentAccount;
+
+  setUp(() {
+    loadCurrentAccount = LoadCurrentAccountSpy();
+    sut = StreamSplashPresenter(loadCurrentAccount: loadCurrentAccount);
+  });
+
   test('Should call LoadCurrentAccount', () async {
-    final loadCurrentAccount = LoadCurrentAccountSpy();
-    final sut = StreamSplashPresenter(loadCurrentAccount: loadCurrentAccount);
     await sut.checkAccount();
 
     verify(loadCurrentAccount.load()).called(1);
