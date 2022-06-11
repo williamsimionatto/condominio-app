@@ -2,41 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
 import 'package:mockito/mockito.dart';
 
-class SplashPage extends StatelessWidget {
-  final SplashPresenter presenter;
-
-  const SplashPage({required this.presenter, Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    presenter.loadCurrentAccount();
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Condomínio Madre Paulina'),
-      ),
-      body: Builder(builder: (context) {
-        presenter.navigateToStream?.listen((page) {
-          if (page?.isNotEmpty == true) {
-            Get.offAllNamed(page as String);
-          }
-        });
-
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      }),
-    );
-  }
-}
-
-abstract class SplashPresenter {
-  Stream<String?>? get navigateToStream;
-  Future<void> loadCurrentAccount();
-}
+import 'package:condominioapp/ui/pages/splash/splash.dart';
 
 class SplashPresenterSpy extends Mock implements SplashPresenter {}
 
