@@ -222,4 +222,13 @@ void main() {
     sut.dispose();
     sut.validateEmail(email);
   });
+
+  test('Should change page on success', () async* {
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+
+    sut.navigateToStream?.listen(expectAsync1((page) => expect(page, '/home')));
+
+    await sut.auth();
+  });
 }
