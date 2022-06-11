@@ -3,6 +3,7 @@ import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
 import 'package:condominioapp/domain/entities/entities.dart';
+import 'package:condominioapp/domain/helpers/domain_error.dart';
 import 'package:condominioapp/domain/usecases/usecases.dart';
 
 class LocalLoadCurrentAccount implements LoadCurrentAccount {
@@ -12,8 +13,12 @@ class LocalLoadCurrentAccount implements LoadCurrentAccount {
 
   @override
   Future<AccountEntity> load() async {
-    final token = await fetchSecureCacheStorage.fetchSecure('token');
-    return AccountEntity(token: token);
+    try {
+      final token = await fetchSecureCacheStorage.fetchSecure('token');
+      return AccountEntity(token: token);
+    } catch (error) {
+      throw DomainError.unexpected;
+    }
   }
 }
 
@@ -28,9 +33,15 @@ void main() {
   late FetchSecureCacheStorage fetchSecureCacheStorage;
   late String token;
 
+  PostExpectation mockFetchSecureCacheStorageCall() =>
+      when(fetchSecureCacheStorage.fetchSecure('token'));
+
   void mockFetchSecureCacheStorage(String token) {
-    when(fetchSecureCacheStorage.fetchSecure('token'))
-        .thenAnswer((_) async => token);
+    mockFetchSecureCacheStorageCall().thenAnswer((_) async => token);
+  }
+
+  void mockFetchSecureCacheStorageError(String token) {
+    mockFetchSecureCacheStorageCall().thenThrow(Exception());
   }
 
   setUp(() {
@@ -50,5 +61,12 @@ void main() {
     final account = await sut.load();
 
     expect(account, AccountEntity(token: token));
+  });
+
+  test('Should return an AccountEntity', () async {
+    mockFetchSecureCacheStorageError(token);
+    final future = sut.load();
+
+    expect(future, throwsA(DomainError.unexpected));
   });
 }
