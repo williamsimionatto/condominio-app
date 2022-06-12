@@ -9,9 +9,12 @@ import 'package:condominioapp/presentation/presenter/presenter.dart';
 
 class LoadCurrentAccountSpy extends Mock implements LoadCurrentAccount {}
 
+class JWTValidatorSpy extends Mock implements JWTValidator {}
+
 void main() {
   late StreamSplashPresenter sut;
   late LoadCurrentAccount loadCurrentAccount;
+  late JWTValidator jwtValidator;
 
   PostExpectation mockLoadCurrentAccountCall() =>
       when(loadCurrentAccount.load());
@@ -26,7 +29,11 @@ void main() {
 
   setUp(() {
     loadCurrentAccount = LoadCurrentAccountSpy();
-    sut = StreamSplashPresenter(loadCurrentAccount: loadCurrentAccount);
+    jwtValidator = JWTValidatorSpy();
+    sut = StreamSplashPresenter(
+      loadCurrentAccount: loadCurrentAccount,
+      jwtValidator: jwtValidator,
+    );
     mockLoadCurrentAccount(account: AccountEntity(token: faker.guid.guid()));
   });
 

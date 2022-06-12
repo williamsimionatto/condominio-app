@@ -1,5 +1,3 @@
-import 'package:condominioapp/domain/usecases/usecases.dart';
-
 import '../../../../presentation/presenter/presenter.dart';
 import '../../../../ui/pages/pages.dart';
 
