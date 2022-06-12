@@ -6,10 +6,12 @@ class SignUpState {
   String? email;
   String? name;
   String? password;
+  String? passwordConfirmation;
 
   String? emailError;
   String? nameError;
   String? passwordError;
+  String? passwordConfirmationError;
   bool get isFormValid => false;
 }
 
@@ -28,6 +30,10 @@ class StreamSignUpPresenter {
 
   Stream<String?>? get passwordErrorStream =>
       _controller?.stream.map((state) => state.passwordError).distinct();
+
+  Stream<String?>? get passwordConfirmationErrorStream => _controller?.stream
+      .map((state) => state.passwordConfirmationError)
+      .distinct();
 
   Stream<bool?>? get isFormValidStream =>
       _controller?.stream.map((state) => state.isFormValid).distinct();
@@ -52,6 +58,14 @@ class StreamSignUpPresenter {
     _state.passwordError = validation.validate(
       field: 'password',
       value: password,
+    );
+    _update();
+  }
+
+  void validatePasswordConfirmation(String passwordConfirmation) {
+    _state.passwordConfirmationError = validation.validate(
+      field: 'passwordConfirmation',
+      value: passwordConfirmation,
     );
     _update();
   }
