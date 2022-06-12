@@ -11,6 +11,8 @@ void main() {
   late StreamSignUpPresenter sut;
   late ValidationSpy validation;
   late String email;
+  late String name;
+
   PostExpectation mockValidationCall(String field) =>
       when(validation.validate(field: field, value: 'value'));
 
@@ -23,6 +25,7 @@ void main() {
     sut = StreamSignUpPresenter(validation: validation);
 
     email = faker.internet.email();
+    name = faker.person.name();
 
     mockValidaton();
   });
@@ -54,6 +57,47 @@ void main() {
 
       sut.validateEmail(email);
       sut.validateEmail(email);
+    });
+  });
+
+  group('Name', () {
+    test('Shoul call Validation with correct name', () {
+      sut.validateName(name);
+
+      verify(validation.validate(field: 'name', value: name)).called(1);
+    });
+
+    test('Should emit invalidFieldError if name is invalid', () async* {
+      mockValidaton(value: 'error');
+
+      sut.nameErrorStream
+          ?.listen(expectAsync1((error) => expect(error, 'Campo inválido')));
+      sut.isFormValidStream
+          ?.listen(expectAsync1((isValid) => expect(isValid, false)));
+
+      sut.validateName(name);
+      sut.validateName(name);
+    });
+
+    test('Should emit requiredFieldError if name is empty', () async* {
+      mockValidaton(value: 'error');
+
+      sut.nameErrorStream
+          ?.listen(expectAsync1((error) => expect(error, 'Campo obrigatório')));
+      sut.isFormValidStream
+          ?.listen(expectAsync1((isValid) => expect(isValid, false)));
+
+      sut.validateName(name);
+      sut.validateName(name);
+    });
+
+    test('Should emit null if name validation succeeds', () {
+      sut.nameErrorStream?.listen(expectAsync1((error) => expect(error, null)));
+      sut.isFormValidStream
+          ?.listen(expectAsync1((isValid) => expect(isValid, false)));
+
+      sut.validateName(name);
+      sut.validateName(name);
     });
   });
 }
