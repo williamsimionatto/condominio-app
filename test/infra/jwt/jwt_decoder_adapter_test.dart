@@ -1,17 +1,9 @@
-import 'package:condominioapp/domain/helpers/helpers.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 
-class JwtDecoderAdapter {
-  bool hasExpired(String token) {
-    try {
-      return JwtDecoder.isExpired(token);
-    } catch (e) {
-      throw DomainError.unexpected;
-    }
-  }
-}
+import 'package:condominioapp/domain/helpers/helpers.dart';
+
+import 'package:condominioapp/infra/jwt/jwt.dart';
 
 void main() {
   late JwtDecoderAdapter sut;
