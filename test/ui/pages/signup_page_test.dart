@@ -17,6 +17,7 @@ void main() {
   late StreamController<String> emailErrorController;
   late StreamController<String> passwordErrorController;
   late StreamController<String> passwordConfirmationErrorController;
+  late StreamController<String> navigateToController;
   late StreamController<String> mainErrorController;
   late StreamController<bool> isFormValidController;
   late StreamController<bool> isLoadingController;
@@ -26,6 +27,7 @@ void main() {
     emailErrorController = StreamController<String>();
     passwordErrorController = StreamController<String>();
     passwordConfirmationErrorController = StreamController<String>();
+    navigateToController = StreamController<String>();
     mainErrorController = StreamController<String>();
     isFormValidController = StreamController<bool>();
     isLoadingController = StreamController<bool>();
@@ -46,6 +48,8 @@ void main() {
         .thenAnswer((_) => isLoadingController.stream);
     when(presenter.mainErrorStream)
         .thenAnswer((_) => mainErrorController.stream);
+    when(presenter.navigateToStream)
+        .thenAnswer((_) => navigateToController.stream);
   }
 
   void closeStreams() {
@@ -56,6 +60,7 @@ void main() {
     isFormValidController.close();
     isLoadingController.close();
     mainErrorController.close();
+    navigateToController.close();
   }
 
   Future<void> loadPage(WidgetTester tester) async {
@@ -67,6 +72,10 @@ void main() {
       initialRoute: '/users/add',
       getPages: [
         GetPage(name: '/users/add', page: () => SignUpPage(presenter)),
+        GetPage(
+          name: '/any_route',
+          page: () => const Scaffold(body: Text('fake page')),
+        ),
       ],
     );
     await tester.pumpWidget(signUpPage);
@@ -299,5 +308,25 @@ void main() {
     addTearDown(() {
       verify(presenter.dispose()).called(1);
     });
+  });
+
+  testWidgets('Should change page', (WidgetTester tester) async {
+    await loadPage(tester);
+    navigateToController.add('/any_route');
+    await tester.pumpAndSettle();
+    expect(Get.currentRoute, '/any_route');
+    expect(find.text('fake page'), findsOneWidget);
+  });
+
+  testWidgets('Should not change page', (WidgetTester tester) async {
+    await loadPage(tester);
+
+    navigateToController.add('');
+    await tester.pump();
+    expect(Get.currentRoute, '/users/add');
+
+    navigateToController.add(null as String);
+    await tester.pump();
+    expect(Get.currentRoute, '/users/add');
   });
 }
