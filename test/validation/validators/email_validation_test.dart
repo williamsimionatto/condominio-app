@@ -4,7 +4,7 @@ import 'package:condominioapp/validation/validators/validators.dart';
 void main() {
   late EmailValidation sut;
   setUp(() {
-    sut = EmailValidation('any_field');
+    sut = const EmailValidation('any_field');
   });
 
   test('Should return null if email is empty', () {
