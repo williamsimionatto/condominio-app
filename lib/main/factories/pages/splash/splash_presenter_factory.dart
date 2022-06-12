@@ -5,5 +5,7 @@ import '../../factories.dart';
 
 SplashPresenter makeSplashPresenter() {
   return StreamSplashPresenter(
-      loadCurrentAccount: makeLocalLoadCurrentAccount());
+    loadCurrentAccount: makeLocalLoadCurrentAccount(),
+    jwtValidator: makeJWTValidator(),
+  );
 }

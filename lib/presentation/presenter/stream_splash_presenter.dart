@@ -9,6 +9,7 @@ class SplashState {
 
 class StreamSplashPresenter implements SplashPresenter {
   final LoadCurrentAccount loadCurrentAccount;
+  final JWTValidator jwtValidator;
 
   StreamController<SplashState>? _controller =
       StreamController<SplashState>.broadcast();
@@ -20,6 +21,7 @@ class StreamSplashPresenter implements SplashPresenter {
 
   StreamSplashPresenter({
     required this.loadCurrentAccount,
+    required this.jwtValidator,
   });
 
   @override
@@ -27,7 +29,14 @@ class StreamSplashPresenter implements SplashPresenter {
     await Future.delayed(Duration(seconds: durationInSeconds));
     try {
       final account = await loadCurrentAccount.load();
-      _state.navigateTo = account.token.isEmpty == true ? '/login' : '/home';
+      if (account.token.isEmpty == true) {
+        _state.navigateTo = '/home';
+      } else if (jwtValidator.hasExpired(account.token)) {
+        _state.navigateTo = '/login';
+      } else {
+        _state.navigateTo = '/home';
+      }
+
       _update();
     } catch (error) {
       _state.navigateTo = '/login';
