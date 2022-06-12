@@ -218,4 +218,11 @@ void main() {
     sut.validatePasswordConfirmation(passwordConfirmation);
     await Future.delayed(Duration.zero);
   });
+
+  test('should not emit after dispose', () {
+    expectLater(sut.emailErrorStream, neverEmits(null));
+
+    sut.dispose();
+    sut.validateEmail(email);
+  });
 }

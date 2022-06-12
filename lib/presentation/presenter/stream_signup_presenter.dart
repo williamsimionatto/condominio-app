@@ -81,4 +81,9 @@ class StreamSignUpPresenter {
     );
     _update();
   }
+
+  void dispose() {
+    _controller?.close();
+    _controller = null;
+  }
 }
