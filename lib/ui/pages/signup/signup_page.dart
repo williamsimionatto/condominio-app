@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'components/components.dart';
 
+import 'package:condominioapp/ui/components/components.dart';
 import 'package:condominioapp/ui/pages/pages.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -31,6 +32,14 @@ class _SignUpState extends State<SignUpPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: Builder(builder: (context) {
+        widget.presenter.isLoadingStream?.listen((isLoading) {
+          if (isLoading == true) {
+            showLoading(context);
+          } else {
+            hideLoading(context);
+          }
+        });
+
         return GestureDetector(
           onTap: _hideKeyboard,
           child: SingleChildScrollView(
