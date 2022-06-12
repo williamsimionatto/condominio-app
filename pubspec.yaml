@@ -19,6 +19,7 @@ dependencies:
   equatable: ^2.0.3
   get: ^4.6.5
   flutter_secure_storage: ^5.0.2
+  jwt_decoder: ^2.0.1
 
 dev_dependencies:
   flutter_test:
