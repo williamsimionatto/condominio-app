@@ -18,9 +18,11 @@ class EmailInput extends StatelessWidget {
           decoration: InputDecoration(
             labelText: 'E-mail',
             labelStyle: TextStyle(
-                color: Theme.of(context).primaryColor,
-                fontWeight: FontWeight.bold),
+              color: Theme.of(context).primaryColor,
+              fontWeight: FontWeight.bold,
+            ),
             icon: Icon(Icons.email, color: Theme.of(context).primaryColor),
+            errorText: snapshot.data?.isEmpty == true ? null : snapshot.data,
           ),
           style: const TextStyle(color: Colors.white),
           keyboardType: TextInputType.emailAddress,
