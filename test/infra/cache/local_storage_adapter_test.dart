@@ -20,20 +20,57 @@ void main() {
     value = faker.guid.guid();
   });
 
-  void mockSaveSecureError() {
-    when(secureStorage.write(key: key, value: value)).thenThrow(Exception());
-  }
+  group('saveSecure', () {
+    void mockSaveSecureError() {
+      when(secureStorage.write(key: key, value: value)).thenThrow(Exception());
+    }
 
-  test('Should call save secure with correct values', () async {
-    await sut.saveSecure(key: key, value: value);
+    test('Should call save secure with correct values', () async {
+      await sut.saveSecure(key: key, value: value);
 
-    verify(secureStorage.write(key: key, value: value));
+      verify(secureStorage.write(key: key, value: value));
+    });
+
+    test('Should throw if save secure throws', () {
+      mockSaveSecureError();
+      final future = sut.saveSecure(key: key, value: value);
+
+      expect(future, throwsA(const TypeMatcher<Exception>()));
+    });
   });
 
-  test('Should throw if save secure throws', () {
-    mockSaveSecureError();
-    final future = sut.saveSecure(key: key, value: value);
+  group('fetchSecure', () {
+    PostExpectation mockFetchSecureCall() => when(secureStorage.read(key: key));
 
-    expect(future, throwsA(const TypeMatcher<Exception>()));
+    void mockFetchSecure() {
+      mockFetchSecureCall().thenAnswer((_) async => value);
+    }
+
+    void mockFetchSecureError() {
+      mockFetchSecureCall().thenThrow(Exception());
+    }
+
+    setUp(() {
+      mockFetchSecure();
+    });
+
+    test('Should call fetch secure with correct value', () async {
+      await sut.fetchSecure(key);
+
+      verify(secureStorage.read(key: key));
+    });
+
+    test('Should return correct value on sucess', () async {
+      final fetchedValue = await sut.fetchSecure(key);
+
+      expect(fetchedValue, value);
+    });
+
+    test('Should throw if fetch secure throws', () async {
+      mockFetchSecureError();
+      final future = sut.fetchSecure(key);
+
+      expect(future, throwsA(const TypeMatcher<Exception>()));
+    });
   });
 }

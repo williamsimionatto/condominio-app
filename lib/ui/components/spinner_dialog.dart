@@ -9,10 +9,15 @@ void showLoading(BuildContext context) {
         children: <Widget>[
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const <Widget>[
-              CircularProgressIndicator(),
-              SizedBox(height: 10),
-              Text('Aguarde ... ', textAlign: TextAlign.center)
+            children: <Widget>[
+              CircularProgressIndicator(
+                color: Theme.of(context).primaryColor,
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Aguarde ... ',
+                textAlign: TextAlign.center,
+              )
             ],
           )
         ],
