@@ -16,8 +16,15 @@ void main() {
   late HttpClientSpy httpClient;
   late AddAccountParams params;
 
+  Map mockValidData() =>
+      {'access_token': faker.guid.guid(), 'name': faker.person.name()};
+
   PostExpectation mockRequest() => when(
       httpClient.request(url: url, method: 'post', body: anyNamed("body")));
+
+  void mockHttpData(Map data) {
+    mockRequest().thenAnswer((_) async => data);
+  }
 
   void mockHttpError(HttpError error) {
     mockRequest().thenThrow(error);
@@ -34,6 +41,7 @@ void main() {
       password: password,
       passwordConfirmation: password,
     );
+    mockHttpData(mockValidData());
   });
 
   test('Should call HttpClient with correct values', () async {
@@ -72,5 +80,13 @@ void main() {
     mockHttpError(HttpError.forbidden);
     final future = sut.add(params);
     expect(future, throwsA(DomainError.emailInUse));
+  });
+
+  test('Should return an Account if HttpClient returns 200', () async {
+    final validData = mockValidData();
+    mockHttpData(validData);
+
+    final account = await sut.add(params);
+    expect(account.token, validData['access_token']);
   });
 }
