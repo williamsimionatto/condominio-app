@@ -41,11 +41,23 @@ void main() {
       verify(validation.validate(field: 'email', value: email)).called(1);
     });
 
-    test('Should emit email error if validation fails', () async* {
+    test('Should emit invalidFieldError if email is invalid', () async* {
       mockValidaton(value: 'error');
 
       sut.emailErrorStream
-          ?.listen(expectAsync1((error) => expect(error, 'error')));
+          ?.listen(expectAsync1((error) => expect(error, 'Campo inválido')));
+      sut.isFormValidStream
+          ?.listen(expectAsync1((isValid) => expect(isValid, false)));
+
+      sut.validateEmail(email);
+      sut.validateEmail(email);
+    });
+
+    test('Should emit requiredFieldError if email is empty', () async* {
+      mockValidaton(value: 'error');
+
+      sut.emailErrorStream
+          ?.listen(expectAsync1((error) => expect(error, 'Campo obrigatório')));
       sut.isFormValidStream
           ?.listen(expectAsync1((isValid) => expect(isValid, false)));
 
@@ -54,8 +66,7 @@ void main() {
     });
 
     test('Should emit null if email validation succeeds', () {
-      sut.emailErrorStream
-          ?.listen(expectAsync1((error) => expect(error, null)));
+      sut.emailErrorStream?.listen(expectAsync1((error) => expect(error, null)));
       sut.isFormValidStream
           ?.listen(expectAsync1((isValid) => expect(isValid, false)));
 
@@ -151,10 +162,14 @@ void main() {
     test('Shoul call Validation with correct password confirmation', () {
       sut.validatePasswordConfirmation(passwordConfirmation);
 
-      verify(validation.validate(field: 'passwordConfirmation', value: passwordConfirmation)).called(1);
+      verify(validation.validate(
+              field: 'passwordConfirmation', value: passwordConfirmation))
+          .called(1);
     });
 
-    test('Should emit invalidFieldError if passwordConfirmation confirmation is invalid', () async* {
+    test(
+        'Should emit invalidFieldError if passwordConfirmation confirmation is invalid',
+        () async* {
       mockValidaton(value: 'error');
 
       sut.passwordConfirmationErrorStream
@@ -166,7 +181,8 @@ void main() {
       sut.validatePasswordConfirmation(passwordConfirmation);
     });
 
-    test('Should emit requiredFieldError if passwordConfirmation is empty', () async* {
+    test('Should emit requiredFieldError if passwordConfirmation is empty',
+        () async* {
       mockValidaton(value: 'error');
 
       sut.passwordConfirmationErrorStream
