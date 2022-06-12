@@ -5,6 +5,7 @@ abstract class SignUpPresenter {
   Stream<String?>? get passwordConfirmationErrorStream;
   Stream<bool?>? get isFormValidStream;
   Stream<bool?>? get isLoadingStream;
+  Stream<String?>? get mainErrorStream;
 
   void validateName(String name);
   void validateEmail(String email);

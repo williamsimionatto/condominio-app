@@ -17,6 +17,7 @@ void main() {
   late StreamController<String> emailErrorController;
   late StreamController<String> passwordErrorController;
   late StreamController<String> passwordConfirmationErrorController;
+  late StreamController<String> mainErrorController;
   late StreamController<bool> isFormValidController;
   late StreamController<bool> isLoadingController;
 
@@ -25,6 +26,7 @@ void main() {
     emailErrorController = StreamController<String>();
     passwordErrorController = StreamController<String>();
     passwordConfirmationErrorController = StreamController<String>();
+    mainErrorController = StreamController<String>();
     isFormValidController = StreamController<bool>();
     isLoadingController = StreamController<bool>();
   }
@@ -40,9 +42,10 @@ void main() {
         .thenAnswer((_) => passwordConfirmationErrorController.stream);
     when(presenter.isFormValidStream)
         .thenAnswer((_) => isFormValidController.stream);
-
     when(presenter.isLoadingStream)
         .thenAnswer((_) => isLoadingController.stream);
+    when(presenter.mainErrorStream)
+        .thenAnswer((_) => mainErrorController.stream);
   }
 
   void closeStreams() {
@@ -52,6 +55,7 @@ void main() {
     passwordConfirmationErrorController.close();
     isFormValidController.close();
     isLoadingController.close();
+    mainErrorController.close();
   }
 
   Future<void> loadPage(WidgetTester tester) async {
@@ -265,5 +269,28 @@ void main() {
     isLoadingController.add(false);
     await tester.pump();
     expect(find.byType(CircularProgressIndicator), findsNothing);
+  });
+
+  testWidgets('Should present error message if add fails',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    mainErrorController.add('O e-mail já está sendo usado');
+    await tester.pump();
+
+    expect(find.text('O e-mail já está sendo usado'), findsOneWidget);
+  });
+
+  testWidgets('Should present error message if add throws',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    mainErrorController.add('Algo errado acounteu. Tentenovamente mais tarde');
+    await tester.pump();
+
+    expect(
+      find.text('Algo errado acounteu. Tentenovamente mais tarde'),
+      findsOneWidget,
+    );
   });
 }

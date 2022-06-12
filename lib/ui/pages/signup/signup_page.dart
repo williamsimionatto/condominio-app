@@ -40,6 +40,12 @@ class _SignUpState extends State<SignUpPage> {
           }
         });
 
+        widget.presenter.mainErrorStream?.listen((error) {
+          if (error?.isNotEmpty == true) {
+            showErrorMessage(context, error as String);
+          }
+        });
+
         return GestureDetector(
           onTap: _hideKeyboard,
           child: SingleChildScrollView(
