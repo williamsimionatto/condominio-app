@@ -12,7 +12,15 @@ class SignUpState {
   String? nameError;
   String? passwordError;
   String? passwordConfirmationError;
-  bool get isFormValid => false;
+  bool get isFormValid =>
+      nameError == '' &&
+      emailError == '' &&
+      passwordError == '' &&
+      passwordConfirmationError == '' &&
+      name != null &&
+      email != null &&
+      password != null &&
+      passwordConfirmation != null;
 }
 
 class StreamSignUpPresenter {
@@ -45,16 +53,19 @@ class StreamSignUpPresenter {
   void _update() => _controller?.add(_state);
 
   void validateEmail(String email) {
+    _state.email = email;
     _state.emailError = validation.validate(field: 'email', value: email);
     _update();
   }
 
   void validateName(String name) {
+    _state.name = name;
     _state.nameError = validation.validate(field: 'name', value: name);
     _update();
   }
 
   void validatePassword(String password) {
+    _state.password = password;
     _state.passwordError = validation.validate(
       field: 'password',
       value: password,
@@ -63,6 +74,7 @@ class StreamSignUpPresenter {
   }
 
   void validatePasswordConfirmation(String passwordConfirmation) {
+    _state.passwordConfirmation = passwordConfirmation;
     _state.passwordConfirmationError = validation.validate(
       field: 'passwordConfirmation',
       value: passwordConfirmation,

@@ -66,7 +66,8 @@ void main() {
     });
 
     test('Should emit null if email validation succeeds', () {
-      sut.emailErrorStream?.listen(expectAsync1((error) => expect(error, null)));
+      sut.emailErrorStream
+          ?.listen(expectAsync1((error) => expect(error, null)));
       sut.isFormValidStream
           ?.listen(expectAsync1((isValid) => expect(isValid, false)));
 
@@ -203,5 +204,18 @@ void main() {
       sut.validatePasswordConfirmation(passwordConfirmation);
       sut.validatePasswordConfirmation(passwordConfirmation);
     });
+  });
+
+  test('Should enable form button if all fields are valid', () async* {
+    expect(sut.isFormValidStream, emitsInOrder([false, true]));
+
+    sut.validateName(name);
+    await Future.delayed(Duration.zero);
+    sut.validateEmail(email);
+    await Future.delayed(Duration.zero);
+    sut.validatePassword(password);
+    await Future.delayed(Duration.zero);
+    sut.validatePasswordConfirmation(passwordConfirmation);
+    await Future.delayed(Duration.zero);
   });
 }
