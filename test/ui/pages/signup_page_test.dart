@@ -141,4 +141,24 @@ void main() {
       findsOneWidget,
     );
   });
+
+  testWidgets('Should presenter name error', (WidgetTester tester) async {
+    await loadPage(tester);
+
+    nameErrorController.add('Campo inválido');
+    await tester.pump();
+    expect(find.text('Campo inválido'), findsOneWidget);
+
+    nameErrorController.add('Campo obrigatório');
+    await tester.pump();
+    expect(find.text('Campo obrigatório'), findsOneWidget);
+
+    nameErrorController.add(null as String);
+    await tester.pump();
+    expect(
+      find.descendant(
+          of: find.bySemanticsLabel('Nome'), matching: find.byType(Text)),
+      findsOneWidget,
+    );
+  });
 }
