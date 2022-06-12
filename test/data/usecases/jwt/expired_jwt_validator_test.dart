@@ -28,6 +28,10 @@ void main() {
     mockValidationCall(token).thenReturn(true);
   }
 
+  void mockInvalidToken(String token) {
+    mockValidationCall(token).thenReturn(false);
+  }
+
   setUp(() {
     jwtClient = JWTClientSpy();
     sut = ExpiredJWTValidator(jwtClient: jwtClient);
@@ -43,5 +47,11 @@ void main() {
   test('Should return true when not expired token is passed', () {
     final result = sut.hasExpired(token);
     expect(result, true);
+  });
+
+  test('Should return false when expired token is passed', () {
+    mockInvalidToken(token);
+    final result = sut.hasExpired(token);
+    expect(result, false);
   });
 }
