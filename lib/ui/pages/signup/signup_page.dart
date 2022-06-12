@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'components/components.dart';
 
+import 'package:condominioapp/ui/pages/pages.dart';
+
 class SignUpPage extends StatefulWidget {
-  const SignUpPage({Key? key}) : super(key: key);
+  final SignUpPresenter presenter;
+
+  const SignUpPage(this.presenter, {Key? key}) : super(key: key);
 
   @override
   State<SignUpPage> createState() => _SignUpState();
@@ -33,23 +38,26 @@ class _SignUpState extends State<SignUpPage> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(38),
-                  child: Form(
-                    child: Column(
-                      children: const <Widget>[
-                        NameInput(),
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          child: EmailInput(),
-                        ),
-                        PasswordInput(),
-                        Padding(
-                          padding: EdgeInsets.only(top: 24, bottom: 32),
-                          child: PasswordConfirmationInput(),
-                        ),
-                        Center(
-                          child: SignUpButton(),
-                        )
-                      ],
+                  child: Provider(
+                    create: (_) => widget.presenter,
+                    child: Form(
+                      child: Column(
+                        children: const <Widget>[
+                          NameInput(),
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8),
+                            child: EmailInput(),
+                          ),
+                          PasswordInput(),
+                          Padding(
+                            padding: EdgeInsets.only(top: 24, bottom: 32),
+                            child: PasswordConfirmationInput(),
+                          ),
+                          Center(
+                            child: SignUpButton(),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 )
