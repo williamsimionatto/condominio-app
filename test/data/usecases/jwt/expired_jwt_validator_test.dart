@@ -3,16 +3,7 @@ import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
 import 'package:condominioapp/data/jwt/jwt.dart';
-
-class ExpiredJWTValidator {
-  final JWTClient jwtClient;
-
-  ExpiredJWTValidator({required this.jwtClient});
-
-  bool hasExpired(String token) {
-    return jwtClient.hasExpired(token);
-  }
-}
+import 'package:condominioapp/data/usecases/usecases.dart';
 
 class JWTClientSpy extends Mock implements JWTClient {}
 
@@ -24,19 +15,15 @@ void main() {
   PostExpectation mockValidationCall(String token) =>
       when(sut.hasExpired(token));
 
-  void mockValidToken(String token) {
-    mockValidationCall(token).thenReturn(true);
-  }
-
-  void mockInvalidToken(String token) {
-    mockValidationCall(token).thenReturn(false);
+  void mockTokenValidation(bool hasExpired) {
+    mockValidationCall(token).thenReturn(!hasExpired);
   }
 
   setUp(() {
     jwtClient = JWTClientSpy();
     sut = ExpiredJWTValidator(jwtClient: jwtClient);
     token = faker.guid.guid();
-    mockValidToken(token);
+    mockTokenValidation(false);
   });
 
   test('Should call JWTClient whit correct value', () {
@@ -50,7 +37,7 @@ void main() {
   });
 
   test('Should return false when expired token is passed', () {
-    mockInvalidToken(token);
+    mockTokenValidation(true);
     final result = sut.hasExpired(token);
     expect(result, false);
   });
