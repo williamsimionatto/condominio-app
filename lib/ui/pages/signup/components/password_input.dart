@@ -22,6 +22,7 @@ class PasswordInput extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
             icon: Icon(Icons.lock, color: Theme.of(context).primaryColor),
+            errorText: snapshot.data?.isEmpty == true ? null : snapshot.data,
           ),
           style: const TextStyle(color: Colors.white),
           keyboardType: TextInputType.name,
