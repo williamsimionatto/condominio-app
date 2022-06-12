@@ -1,9 +1,10 @@
-import 'package:condominioapp/domain/usecases/usecases.dart';
 import 'package:faker/faker.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
-import 'package:condominioapp/domain/usecases/authentication.dart';
+import 'package:condominioapp/domain/helpers/helpers.dart';
+import 'package:condominioapp/domain/usecases/usecases.dart';
+
 import 'package:condominioapp/data/http/http.dart';
 import 'package:condominioapp/data/usecases/usecases.dart';
 
@@ -14,6 +15,13 @@ void main() {
   late String url;
   late HttpClientSpy httpClient;
   late AddAccountParams params;
+
+  PostExpectation mockRequest() => when(
+      httpClient.request(url: url, method: 'post', body: anyNamed("body")));
+
+  void mockHttpError(HttpError error) {
+    mockRequest().thenThrow(error);
+  }
 
   setUp(() {
     httpClient = HttpClientSpy();
@@ -40,5 +48,11 @@ void main() {
         'passwordConfirmation': params.passwordConfirmation,
       },
     ));
+  });
+
+  test('Should throw UnexpectedError if HttpClient returns 400', () async {
+    mockHttpError(HttpError.badRequest);
+    final future = sut.add(params);
+    expect(future, throwsA(DomainError.unexpected));
   });
 }
