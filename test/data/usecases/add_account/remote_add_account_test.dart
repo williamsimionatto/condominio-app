@@ -55,4 +55,10 @@ void main() {
     final future = sut.add(params);
     expect(future, throwsA(DomainError.unexpected));
   });
+
+  test('Should throw UnexpectedError if HttpClient returns 400', () async {
+    mockHttpError(HttpError.notFound);
+    final future = sut.add(params);
+    expect(future, throwsA(DomainError.unexpected));
+  });
 }
