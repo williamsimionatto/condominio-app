@@ -25,6 +25,7 @@ class _SignUpState extends State<SignUpPage> {
   @override
   void dispose() {
     super.dispose();
+    widget.presenter.dispose();
   }
 
   @override
