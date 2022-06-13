@@ -10,6 +10,7 @@ class SignUpState {
   String? name;
   String? password;
   String? passwordConfirmation;
+  String? navigateTo;
   bool? isLoading;
 
   String? emailError;
@@ -60,6 +61,9 @@ class StreamSignUpPresenter {
   Stream<String?>? get mainErrorStream =>
       _controller?.stream.map((state) => state.mainError).distinct();
 
+  Stream<String?>? get navigateToStream =>
+      _controller?.stream.map((state) => state.navigateTo).distinct();
+
   StreamSignUpPresenter({
     required this.validation,
     required this.addAccount,
@@ -109,6 +113,7 @@ class StreamSignUpPresenter {
       ));
 
       await saveCurrentAccount.save(account);
+      _state.navigateTo = '/users';
       _update();
     } on DomainError catch (error) {
       switch (error) {
