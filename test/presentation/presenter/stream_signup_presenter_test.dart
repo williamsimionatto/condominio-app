@@ -1,3 +1,4 @@
+import 'package:condominioapp/domain/helpers/helpers.dart';
 import 'package:faker/faker.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -36,6 +37,13 @@ void main() {
 
   void mockAddAccount() {
     mockAddAccountCall().thenAnswer((_) async => AccountEntity(token: token));
+  }
+
+  PostExpectation mockSaveCurrentAccountCall() =>
+      when(saveCurrentAccount.save(any as AccountEntity));
+
+  void mockSaveCurrentAccountError() {
+    mockSaveCurrentAccountCall().thenThrow(DomainError.unexpected);
   }
 
   setUp(() {
@@ -275,5 +283,21 @@ void main() {
 
     sut.dispose();
     sut.validateEmail(email);
+  });
+
+  test('Should emit UnexpectedError if SaveCurrentAccount fails', () async* {
+    mockSaveCurrentAccountError();
+    sut.validateName(name);
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+    sut.validatePasswordConfirmation(passwordConfirmation);
+
+    expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
+    sut.mainErrorStream?.listen(expectAsync1((error) => expect(
+          error,
+          'Algo errado aconteceu. Tente novamente em breve.',
+        )));
+
+    await sut.add();
   });
 }

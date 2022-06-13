@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:condominioapp/domain/helpers/helpers.dart';
 import 'package:condominioapp/domain/usecases/usecases.dart';
 
 import '../protocols/protocols.dart';
@@ -9,11 +10,14 @@ class SignUpState {
   String? name;
   String? password;
   String? passwordConfirmation;
+  bool? isLoading;
 
   String? emailError;
   String? nameError;
   String? passwordError;
   String? passwordConfirmationError;
+  String? mainError;
+
   bool get isFormValid =>
       nameError == '' &&
       emailError == '' &&
@@ -49,6 +53,12 @@ class StreamSignUpPresenter {
 
   Stream<bool?>? get isFormValidStream =>
       _controller?.stream.map((state) => state.isFormValid).distinct();
+
+  Stream<bool?>? get isLoadingStream =>
+      _controller?.stream.map((state) => state.isLoading).distinct();
+
+  Stream<String?>? get mainErrorStream =>
+      _controller?.stream.map((state) => state.mainError).distinct();
 
   StreamSignUpPresenter({
     required this.validation,
@@ -89,14 +99,26 @@ class StreamSignUpPresenter {
   }
 
   Future<void> add() async {
-    final account = await addAccount.add(AddAccountParams(
-      name: _state.name!,
-      email: _state.email!,
-      password: _state.password!,
-      passwordConfirmation: _state.passwordConfirmation!,
-    ));
+    try {
+      _state.isLoading = true;
+      final account = await addAccount.add(AddAccountParams(
+        name: _state.name!,
+        email: _state.email!,
+        password: _state.password!,
+        passwordConfirmation: _state.passwordConfirmation!,
+      ));
 
-    await saveCurrentAccount.save(account);
+      await saveCurrentAccount.save(account);
+      _update();
+    } on DomainError catch (error) {
+      switch (error) {
+        default:
+          _state.mainError = error.description;
+          _state.isLoading = false;
+          _update();
+          break;
+      }
+    }
   }
 
   void dispose() {
