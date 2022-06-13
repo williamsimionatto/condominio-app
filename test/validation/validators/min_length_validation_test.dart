@@ -1,23 +1,8 @@
-import 'package:condominioapp/presentation/protocols/validation.dart';
 import 'package:faker/faker.dart';
 import 'package:test/test.dart';
 
-import 'package:condominioapp/validation/protocols/protocols.dart';
-
-class MinLengthValidation implements FieldValidation {
-  final int size;
-  @override
-  final String field;
-
-  MinLengthValidation({required this.size, required this.field});
-
-  @override
-  ValidationError validate(String value) {
-    return value != null as String && value.length >= size
-        ? null as ValidationError
-        : ValidationError.invalidField;
-  }
-}
+import 'package:condominioapp/presentation/protocols/validation.dart';
+import 'package:condominioapp/validation/validators/validators.dart';
 
 void main() {
   late MinLengthValidation sut;
