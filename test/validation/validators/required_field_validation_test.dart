@@ -1,3 +1,4 @@
+import 'package:condominioapp/presentation/protocols/validation.dart';
 import 'package:test/test.dart';
 
 import 'package:condominioapp/validation/validators/validators.dart';
@@ -10,14 +11,14 @@ void main() {
   });
 
   test('Should return null if value is not empty', () {
-    expect(sut.validate('any_value'), '');
+    expect(sut.validate('any_value'), null);
   });
 
   test('Should return error if value is empty', () {
-    expect(sut.validate(''), 'Campo obrigatório');
+    expect(sut.validate(''), ValidationError.requiredField);
   });
 
   test('Should return error if value is null', () {
-    expect(sut.validate(null as String), 'Campo obrigatório');
+    expect(sut.validate(null as String), ValidationError.requiredField);
   });
 }

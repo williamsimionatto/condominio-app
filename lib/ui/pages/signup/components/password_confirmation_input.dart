@@ -1,3 +1,4 @@
+import 'package:condominioapp/presentation/protocols/validation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +13,7 @@ class PasswordConfirmationInput extends StatelessWidget {
   Widget build(BuildContext context) {
     final presenter = Provider.of<SignUpPresenter>(context);
 
-    return StreamBuilder<String?>(
+    return StreamBuilder<ValidationError?>(
       stream: presenter.passwordConfirmationErrorStream,
       builder: (context, snapshot) {
         return TextFormField(
@@ -23,7 +24,7 @@ class PasswordConfirmationInput extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
             icon: Icon(Icons.lock, color: Theme.of(context).primaryColor),
-            errorText: snapshot.data?.isEmpty == true ? null : snapshot.data,
+            errorText: snapshot.data?.description,
           ),
           style: const TextStyle(color: Colors.white),
           keyboardType: TextInputType.name,

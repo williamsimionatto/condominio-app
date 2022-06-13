@@ -14,17 +14,17 @@ class SignUpState {
   String? navigateTo;
   bool? isLoading;
 
-  String? emailError;
-  String? nameError;
-  String? passwordError;
-  String? passwordConfirmationError;
+  ValidationError? emailError;
+  ValidationError? nameError;
+  ValidationError? passwordError;
+  ValidationError? passwordConfirmationError;
   String? mainError;
 
   bool get isFormValid =>
-      nameError == '' &&
-      emailError == '' &&
-      passwordError == '' &&
-      passwordConfirmationError == '' &&
+      nameError == null &&
+      emailError == null &&
+      passwordError == null &&
+      passwordConfirmationError == null &&
       name != null &&
       email != null &&
       password != null &&
@@ -41,16 +41,16 @@ class StreamSignUpPresenter implements SignUpPresenter {
   final _state = SignUpState();
 
   @override
-  Stream<String?>? get emailErrorStream =>
+  Stream<ValidationError?>? get emailErrorStream =>
       _controller?.stream.map((state) => state.emailError).distinct();
   @override
-  Stream<String?>? get nameErrorStream =>
+  Stream<ValidationError?>? get nameErrorStream =>
       _controller?.stream.map((state) => state.nameError).distinct();
   @override
-  Stream<String?>? get passwordErrorStream =>
+  Stream<ValidationError?>? get passwordErrorStream =>
       _controller?.stream.map((state) => state.passwordError).distinct();
   @override
-  Stream<String?>? get passwordConfirmationErrorStream => _controller?.stream
+  Stream<ValidationError?>? get passwordConfirmationErrorStream => _controller?.stream
       .map((state) => state.passwordConfirmationError)
       .distinct();
   @override

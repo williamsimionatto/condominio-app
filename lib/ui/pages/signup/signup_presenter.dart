@@ -1,8 +1,10 @@
+import 'package:condominioapp/presentation/protocols/validation.dart';
+
 abstract class SignUpPresenter {
-  Stream<String?>? get nameErrorStream;
-  Stream<String?>? get emailErrorStream;
-  Stream<String?>? get passwordErrorStream;
-  Stream<String?>? get passwordConfirmationErrorStream;
+  Stream<ValidationError?>? get nameErrorStream;
+  Stream<ValidationError?>? get emailErrorStream;
+  Stream<ValidationError?>? get passwordErrorStream;
+  Stream<ValidationError?>? get passwordConfirmationErrorStream;
   Stream<bool?>? get isFormValidStream;
   Stream<bool?>? get isLoadingStream;
   Stream<String?>? get mainErrorStream;
