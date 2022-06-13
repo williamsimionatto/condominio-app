@@ -1,19 +1,25 @@
-import 'package:condominioapp/presentation/presenter/presenter.dart';
 import 'package:faker/faker.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
+import 'package:condominioapp/domain/entities/entities.dart';
+import 'package:condominioapp/domain/usecases/usecases.dart';
+import 'package:condominioapp/presentation/presenter/presenter.dart';
 import 'package:condominioapp/presentation/protocols/protocols.dart';
 
 class ValidationSpy extends Mock implements Validation {}
 
+class AddAccountSpy extends Mock implements AddAccount {}
+
 void main() {
   late StreamSignUpPresenter sut;
   late ValidationSpy validation;
+  late AddAccountSpy addAccount;
   late String email;
   late String name;
   late String password;
   late String passwordConfirmation;
+  late String token;
 
   PostExpectation mockValidationCall(String field) =>
       when(validation.validate(field: field, value: 'value'));
@@ -22,16 +28,26 @@ void main() {
     mockValidationCall(field ?? 'field').thenReturn(value);
   }
 
+  PostExpectation mockAddAccountCall() =>
+      when(addAccount.add(any as AddAccountParams));
+
+  void mockAddAccount() {
+    mockAddAccountCall().thenAnswer((_) async => AccountEntity(token: token));
+  }
+
   setUp(() {
     validation = ValidationSpy();
-    sut = StreamSignUpPresenter(validation: validation);
+    addAccount = AddAccountSpy();
+    sut = StreamSignUpPresenter(validation: validation, addAccount: addAccount);
 
     email = faker.internet.email();
     name = faker.person.name();
     password = faker.internet.password();
     passwordConfirmation = faker.internet.password();
+    token = faker.guid.guid();
 
     mockValidaton();
+    mockAddAccount();
   });
 
   group('E-mail', () {
@@ -217,6 +233,22 @@ void main() {
     await Future.delayed(Duration.zero);
     sut.validatePasswordConfirmation(passwordConfirmation);
     await Future.delayed(Duration.zero);
+  });
+
+  test('Should call AddAccount with correct values', () async {
+    sut.validateName(name);
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+    sut.validatePasswordConfirmation(passwordConfirmation);
+
+    await sut.add();
+
+    verify(addAccount.add(AddAccountParams(
+      name: name,
+      email: email,
+      password: password,
+      passwordConfirmation: passwordConfirmation,
+    ))).called(1);
   });
 
   test('should not emit after dispose', () {

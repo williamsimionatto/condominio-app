@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:condominioapp/domain/usecases/usecases.dart';
+
 import '../protocols/protocols.dart';
 
 class SignUpState {
@@ -25,6 +27,7 @@ class SignUpState {
 
 class StreamSignUpPresenter {
   final Validation validation;
+  final AddAccount addAccount;
 
   StreamController<SignUpState>? _controller =
       StreamController<SignUpState>.broadcast();
@@ -48,6 +51,7 @@ class StreamSignUpPresenter {
 
   StreamSignUpPresenter({
     required this.validation,
+    required this.addAccount,
   });
 
   void _update() => _controller?.add(_state);
@@ -80,6 +84,15 @@ class StreamSignUpPresenter {
       value: passwordConfirmation,
     );
     _update();
+  }
+
+  Future<void> add() async {
+    await addAccount.add(AddAccountParams(
+      name: _state.name!,
+      email: _state.email!,
+      password: _state.password!,
+      passwordConfirmation: _state.passwordConfirmation!,
+    ));
   }
 
   void dispose() {
