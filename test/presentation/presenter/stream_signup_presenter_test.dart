@@ -11,10 +11,13 @@ class ValidationSpy extends Mock implements Validation {}
 
 class AddAccountSpy extends Mock implements AddAccount {}
 
+class SaveCurrentAccountSpy extends Mock implements SaveCurrentAccount {}
+
 void main() {
   late StreamSignUpPresenter sut;
   late ValidationSpy validation;
   late AddAccountSpy addAccount;
+  late SaveCurrentAccountSpy saveCurrentAccount;
   late String email;
   late String name;
   late String password;
@@ -38,7 +41,12 @@ void main() {
   setUp(() {
     validation = ValidationSpy();
     addAccount = AddAccountSpy();
-    sut = StreamSignUpPresenter(validation: validation, addAccount: addAccount);
+    saveCurrentAccount = SaveCurrentAccountSpy();
+    sut = StreamSignUpPresenter(
+      validation: validation,
+      addAccount: addAccount,
+      saveCurrentAccount: saveCurrentAccount,
+    );
 
     email = faker.internet.email();
     name = faker.person.name();
@@ -249,6 +257,17 @@ void main() {
       password: password,
       passwordConfirmation: passwordConfirmation,
     ))).called(1);
+  });
+
+  test('Should call SaveCurrentAccount with correct values', () async {
+    sut.validateName(name);
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+    sut.validatePasswordConfirmation(passwordConfirmation);
+
+    await sut.add();
+
+    verify(saveCurrentAccount.save(AccountEntity(token: token))).called(1);
   });
 
   test('should not emit after dispose', () {

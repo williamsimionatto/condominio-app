@@ -28,6 +28,7 @@ class SignUpState {
 class StreamSignUpPresenter {
   final Validation validation;
   final AddAccount addAccount;
+  final SaveCurrentAccount saveCurrentAccount;
 
   StreamController<SignUpState>? _controller =
       StreamController<SignUpState>.broadcast();
@@ -52,6 +53,7 @@ class StreamSignUpPresenter {
   StreamSignUpPresenter({
     required this.validation,
     required this.addAccount,
+    required this.saveCurrentAccount,
   });
 
   void _update() => _controller?.add(_state);
@@ -87,12 +89,14 @@ class StreamSignUpPresenter {
   }
 
   Future<void> add() async {
-    await addAccount.add(AddAccountParams(
+    final account = await addAccount.add(AddAccountParams(
       name: _state.name!,
       email: _state.email!,
       password: _state.password!,
       passwordConfirmation: _state.passwordConfirmation!,
     ));
+
+    await saveCurrentAccount.save(account);
   }
 
   void dispose() {
