@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:condominioapp/domain/helpers/helpers.dart';
 import 'package:condominioapp/domain/usecases/usecases.dart';
+import 'package:condominioapp/ui/pages/pages.dart';
 
 import '../protocols/protocols.dart';
 
@@ -30,7 +31,7 @@ class SignUpState {
       passwordConfirmation != null;
 }
 
-class StreamSignUpPresenter {
+class StreamSignUpPresenter implements SignUpPresenter {
   final Validation validation;
   final AddAccount addAccount;
   final SaveCurrentAccount saveCurrentAccount;
@@ -39,28 +40,30 @@ class StreamSignUpPresenter {
       StreamController<SignUpState>.broadcast();
   final _state = SignUpState();
 
+  @override
   Stream<String?>? get emailErrorStream =>
       _controller?.stream.map((state) => state.emailError).distinct();
-
+  @override
   Stream<String?>? get nameErrorStream =>
       _controller?.stream.map((state) => state.nameError).distinct();
-
+  @override
   Stream<String?>? get passwordErrorStream =>
       _controller?.stream.map((state) => state.passwordError).distinct();
-
+  @override
   Stream<String?>? get passwordConfirmationErrorStream => _controller?.stream
       .map((state) => state.passwordConfirmationError)
       .distinct();
-
+  @override
   Stream<bool?>? get isFormValidStream =>
       _controller?.stream.map((state) => state.isFormValid).distinct();
 
+  @override
   Stream<bool?>? get isLoadingStream =>
       _controller?.stream.map((state) => state.isLoading).distinct();
-
+  @override
   Stream<String?>? get mainErrorStream =>
       _controller?.stream.map((state) => state.mainError).distinct();
-
+  @override
   Stream<String?>? get navigateToStream =>
       _controller?.stream.map((state) => state.navigateTo).distinct();
 
@@ -72,18 +75,21 @@ class StreamSignUpPresenter {
 
   void _update() => _controller?.add(_state);
 
+  @override
   void validateEmail(String email) {
     _state.email = email;
     _state.emailError = validation.validate(field: 'email', value: email);
     _update();
   }
 
+  @override
   void validateName(String name) {
     _state.name = name;
     _state.nameError = validation.validate(field: 'name', value: name);
     _update();
   }
 
+  @override
   void validatePassword(String password) {
     _state.password = password;
     _state.passwordError = validation.validate(
@@ -93,6 +99,7 @@ class StreamSignUpPresenter {
     _update();
   }
 
+  @override
   void validatePasswordConfirmation(String passwordConfirmation) {
     _state.passwordConfirmation = passwordConfirmation;
     _state.passwordConfirmationError = validation.validate(
@@ -102,6 +109,7 @@ class StreamSignUpPresenter {
     _update();
   }
 
+  @override
   Future<void> add() async {
     try {
       _state.isLoading = true;
@@ -129,6 +137,7 @@ class StreamSignUpPresenter {
     }
   }
 
+  @override
   void dispose() {
     _controller?.close();
     _controller = null;
