@@ -39,6 +39,10 @@ void main() {
     mockAddAccountCall().thenAnswer((_) async => AccountEntity(token: token));
   }
 
+  void mockAddAccountError(DomainError error) {
+    mockAddAccountCall().thenThrow(error);
+  }
+
   PostExpectation mockSaveCurrentAccountCall() =>
       when(saveCurrentAccount.save(any as AccountEntity));
 
@@ -308,6 +312,36 @@ void main() {
     sut.validatePasswordConfirmation(passwordConfirmation);
 
     expectLater(sut.isLoadingStream, emits(true));
+
+    await sut.add();
+  });
+
+  test('Should emit correct events on EmailInUseError', () async {
+    mockAddAccountError(DomainError.emailInUse);
+    sut.validateName(name);
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+    sut.validatePasswordConfirmation(passwordConfirmation);
+
+    expectLater(sut.isLoadingStream, emits(false));
+    sut.mainErrorStream?.listen((error) {
+      expect(error, 'Email já está em uso');
+    });
+
+    await sut.add();
+  });
+
+  test('Should emit correct events on UnexpectedError', () async {
+    mockAddAccountError(DomainError.unexpected);
+    sut.validateName(name);
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+    sut.validatePasswordConfirmation(passwordConfirmation);
+
+    expectLater(sut.isLoadingStream, emits(false));
+    sut.mainErrorStream?.listen((error) {
+      expect(error, 'Algo errado aconteceu. Tente novamente em breve.');
+    });
 
     await sut.add();
   });

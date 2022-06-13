@@ -112,12 +112,15 @@ class StreamSignUpPresenter {
       _update();
     } on DomainError catch (error) {
       switch (error) {
+        case DomainError.emailInUse:
+          _state.mainError = error.description;
+          break;
         default:
           _state.mainError = error.description;
-          _state.isLoading = false;
-          _update();
           break;
       }
+      _state.isLoading = false;
+      _update();
     }
   }
 
