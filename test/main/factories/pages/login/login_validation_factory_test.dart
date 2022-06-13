@@ -11,6 +11,7 @@ void main() {
       const RequiredFieldValidation('email'),
       const EmailValidation('email'),
       const RequiredFieldValidation('password'),
+      const MinLengthValidation(size: 3, field: 'password')
     ]);
   });
 }

@@ -7,7 +7,7 @@ class CompareFieldsValidation implements FieldValidation {
   final String field;
   final String valueToCompare;
 
-  CompareFieldsValidation({
+  const CompareFieldsValidation({
     required this.field,
     required this.valueToCompare,
   });

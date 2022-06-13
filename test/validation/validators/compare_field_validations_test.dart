@@ -6,7 +6,7 @@ void main() {
   late CompareFieldsValidation sut;
 
   setUp(() {
-    sut = CompareFieldsValidation(
+    sut = const CompareFieldsValidation(
         field: 'any_field', valueToCompare: 'any_value');
   });
 
