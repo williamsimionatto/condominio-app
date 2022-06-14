@@ -2,7 +2,9 @@ import 'package:faker/faker.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
+import 'package:condominioapp/domain/helpers/helpers.dart';
 import 'package:condominioapp/domain/entities/entities.dart';
+
 import 'package:condominioapp/data/models/models.dart';
 import 'package:condominioapp/data/http/http.dart';
 
@@ -13,11 +15,15 @@ class RemoteLoadUsers {
   RemoteLoadUsers({required this.url, required this.httpClient});
 
   Future<List<UserEntity>> load() async {
-    final httpResponse = await httpClient.request(url: url, method: 'get');
+    try {
+      final httpResponse = await httpClient.request(url: url, method: 'get');
 
-    return httpResponse!
-        .map((json) => RemoteUserModel.fromJson(json).toEntity())
-        .toList();
+      return httpResponse!
+          .map((json) => RemoteUserModel.fromJson(json).toEntity())
+          .toList();
+    } on HttpError {
+      throw DomainError.unexpected;
+    }
   }
 }
 
@@ -87,5 +93,17 @@ void main() {
         cpf: list[1]['cpf'],
       ),
     ]);
+  });
+
+  test(
+      'Should return UnexpectError if HttpClient returns 200 with invalid data',
+      () async {
+    mockHttpData([
+      {'invalid_key': 'invalid_value'}
+    ]);
+
+    final future = sut.load();
+
+    expect(future, throwsA(DomainError.unexpected));
   });
 }

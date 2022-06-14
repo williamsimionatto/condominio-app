@@ -1,4 +1,5 @@
-import 'package:condominioapp/domain/entities/entities.dart';
+import '../../domain/entities/entities.dart';
+import '../../data/http/http.dart';
 
 class RemoteUserModel {
   final int id;
@@ -16,6 +17,16 @@ class RemoteUserModel {
   });
 
   factory RemoteUserModel.fromJson(Map json) {
+    if (!json.keys.toSet().containsAll([
+      'id',
+      'name',
+      'email',
+      'active',
+      'cpf',
+    ])) {
+      throw HttpError.invalidData;
+    }
+
     return RemoteUserModel(
       id: json['id'],
       name: json['name'],
