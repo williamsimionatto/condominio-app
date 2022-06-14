@@ -30,6 +30,12 @@ class App extends StatelessWidget {
           transition: Transition.fadeIn,
         ),
         GetPage(
+          name: '/users',
+          page: () => const Scaffold(body: Text('Usuários')),
+          transition: Transition.fadeIn,
+        ),
+        GetPage(name: '/users/add', page: makeSignUpPage),
+        GetPage(
           name: '/home',
           page: () => const Scaffold(body: Text('Home')),
           transition: Transition.fadeIn,

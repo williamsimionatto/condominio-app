@@ -1,11 +1,15 @@
-import 'package:condominioapp/presentation/protocols/validation.dart';
+import 'package:equatable/equatable.dart';
 
+import '../../presentation/protocols/validation.dart';
 import '../../validation/protocols/field_validation.dart';
 
-class CompareFieldsValidation implements FieldValidation {
+class CompareFieldsValidation extends Equatable implements FieldValidation {
   @override
   final String field;
   final String fieldToCompare;
+
+  @override
+  List get props => [field, fieldToCompare];
 
   const CompareFieldsValidation({
     required this.field,
