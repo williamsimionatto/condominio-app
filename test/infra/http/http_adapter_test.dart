@@ -149,7 +149,7 @@ void main() {
 
     void mockResponse(int statusCode,
         {String body = '{"any_key":"any_value"}'}) {
-      mockRequest().thenAnswer((_) async => Response('', statusCode));
+      mockRequest().thenAnswer((_) async => Response(body, statusCode));
     }
 
     setUp(() {
@@ -163,6 +163,18 @@ void main() {
         'content-type': 'application/json',
         'accept': 'application/json'
       }));
+    });
+
+    test('Should return data if get returns 200', () async {
+      final response = await sut.request(url: url, method: 'get');
+      expect(response, {'any_key': 'any_value'});
+    });
+
+    test('Should return null if get returns 200 without data', () async {
+      mockResponse(200, body: '');
+
+      final response = await sut.request(url: url, method: 'get');
+      expect(response, null);
     });
   });
 }
