@@ -79,6 +79,7 @@ class StreamLoginPresenter implements LoginPresenter {
   @override
   Future<void> auth() async {
     try {
+      _state.mainError = null;
       _state.isLoading = true;
       _update();
       final account = await authentication.auth(
@@ -94,7 +95,7 @@ class StreamLoginPresenter implements LoginPresenter {
     }
   }
 
-  ValidationError _validateField(String field) {
+  ValidationError? _validateField(String field) {
     final formData = {
       'email': _state.email,
       'password': _state.password,
@@ -102,7 +103,7 @@ class StreamLoginPresenter implements LoginPresenter {
 
     final error = validation.validate(field: field, input: formData);
 
-    return error ?? null as ValidationError;
+    return error;
   }
 
   void _update() => _controller?.add(_state);

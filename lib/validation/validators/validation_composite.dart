@@ -18,6 +18,6 @@ class ValidationComposite implements Validation {
       }
     }
 
-    return error as ValidationError;
+    return error;
   }
 }

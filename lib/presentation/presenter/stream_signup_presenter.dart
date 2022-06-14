@@ -105,6 +105,7 @@ class StreamSignUpPresenter implements SignUpPresenter {
   @override
   Future<void> add() async {
     try {
+      _state.mainError = null;
       _state.isLoading = true;
       final account = await addAccount.add(AddAccountParams(
         name: _state.name!,
