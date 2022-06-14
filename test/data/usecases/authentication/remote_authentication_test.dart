@@ -7,7 +7,7 @@ import 'package:condominioapp/domain/usecases/authentication.dart';
 import 'package:condominioapp/data/http/http.dart';
 import 'package:condominioapp/data/usecases/usecases.dart';
 
-class HttpClientSpy extends Mock implements HttpClient {}
+class HttpClientSpy extends Mock implements HttpClient<Map> {}
 
 void main() {
   late RemoteAuthentication sut;
