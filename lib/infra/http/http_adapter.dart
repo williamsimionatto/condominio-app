@@ -23,6 +23,8 @@ class HttpAdapter implements HttpClient {
       if (method == 'post') {
         response =
             await client.post(Uri.parse(url), headers: headers, body: jsonBody);
+      } else if (method == 'get') {
+        response = await client.get(Uri.parse(url), headers: headers);
       }
     } catch (error) {
       throw HttpError.serverError;
@@ -32,20 +34,21 @@ class HttpAdapter implements HttpClient {
   }
 
   Map _handleResponse(Response response) {
-    if (response.statusCode == 200) {
-      return response.body.isEmpty ? null : jsonDecode(response.body);
-    } else if (response.statusCode == 204) {
-      return null as Map;
-    } else if (response.statusCode == 400) {
-      throw HttpError.badRequest;
-    } else if (response.statusCode == 401) {
-      throw HttpError.unauthorized;
-    } else if (response.statusCode == 403) {
-      throw HttpError.forbidden;
-    } else if (response.statusCode == 404) {
-      throw HttpError.notFound;
-    } else {
-      throw HttpError.serverError;
+    switch (response.statusCode) {
+      case 200:
+        return response.body.isEmpty ? null : jsonDecode(response.body);
+      case 204:
+        return null as Map;
+      case 400:
+        throw HttpError.badRequest;
+      case 401:
+        throw HttpError.unauthorized;
+      case 403:
+        throw HttpError.forbidden;
+      case 404:
+        throw HttpError.notFound;
+      default:
+        throw HttpError.serverError;
     }
   }
 }
