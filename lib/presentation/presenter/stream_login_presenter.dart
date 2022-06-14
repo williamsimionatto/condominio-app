@@ -11,14 +11,14 @@ class LoginState {
   String? password;
   bool? isLoading = false;
 
-  String? emailError;
-  String? passwordError;
+  ValidationError? emailError;
+  ValidationError? passwordError;
   String? mainError;
   String? navigateTo;
 
   bool get isFormValid =>
-      emailError == '' &&
-      passwordError == '' &&
+      emailError == null &&
+      passwordError == null &&
       email != null &&
       password != null;
 }
@@ -33,11 +33,11 @@ class StreamLoginPresenter implements LoginPresenter {
   final _state = LoginState();
 
   @override
-  Stream<String?>? get emailErrorStream =>
+  Stream<ValidationError?>? get emailErrorStream =>
       _controller?.stream.map((state) => state.emailError).distinct();
 
   @override
-  Stream<String?>? get passwordErrorStream =>
+  Stream<ValidationError?>? get passwordErrorStream =>
       _controller?.stream.map((state) => state.passwordError).distinct();
 
   @override
@@ -62,26 +62,24 @@ class StreamLoginPresenter implements LoginPresenter {
     required this.saveCurrentAccount,
   });
 
-  void _update() => _controller?.add(_state);
-
   @override
   void validateEmail(String email) {
     _state.email = email;
-    _state.emailError = validation.validate(field: 'email', value: email);
+    _state.emailError = _validateField('email');
     _update();
   }
 
   @override
   void validatePassword(String password) {
     _state.password = password;
-    _state.passwordError =
-        validation.validate(field: 'password', value: password);
+    _state.passwordError = _validateField('password');
     _update();
   }
 
   @override
   Future<void> auth() async {
     try {
+      _state.mainError = null;
       _state.isLoading = true;
       _update();
       final account = await authentication.auth(
@@ -96,6 +94,19 @@ class StreamLoginPresenter implements LoginPresenter {
       _update();
     }
   }
+
+  ValidationError? _validateField(String field) {
+    final formData = {
+      'email': _state.email,
+      'password': _state.password,
+    };
+
+    final error = validation.validate(field: field, input: formData);
+
+    return error;
+  }
+
+  void _update() => _controller?.add(_state);
 
   @override
   void dispose() {

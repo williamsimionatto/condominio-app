@@ -1,3 +1,4 @@
+import 'package:condominioapp/presentation/protocols/validation.dart';
 import 'package:equatable/equatable.dart';
 
 import '../protocols/protocols.dart';
@@ -12,7 +13,7 @@ class RequiredFieldValidation extends Equatable implements FieldValidation {
   const RequiredFieldValidation(this.field);
 
   @override
-  String validate(String? value) {
-    return value?.isNotEmpty == true ? '' : 'Campo obrigatório';
+  ValidationError? validate(Map input) {
+    return input[field]?.isNotEmpty == true ? null : ValidationError.requiredField;
   }
 }

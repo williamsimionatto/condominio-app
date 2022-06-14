@@ -1,16 +1,15 @@
+import 'package:condominioapp/ui/pages/pages.dart';
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
-import '../login_presenter.dart';
 
-class LoginButton extends StatelessWidget {
-  const LoginButton({
+class SignUpButton extends StatelessWidget {
+  const SignUpButton({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final presenter = Provider.of<LoginPresenter>(context);
+    final presenter = Provider.of<SignUpPresenter>(context);
     return StreamBuilder<bool?>(
       stream: presenter.isFormValidStream,
       builder: (context, snapshot) {
@@ -28,7 +27,7 @@ class LoginButton extends StatelessWidget {
               },
             ),
           ),
-          onPressed: snapshot.data == true ? presenter.auth : null,
+          onPressed: snapshot.data == true ? presenter.add : null,
           child: const Text('Entrar'),
         );
       },

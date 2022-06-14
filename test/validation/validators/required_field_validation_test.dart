@@ -1,3 +1,4 @@
+import 'package:condominioapp/presentation/protocols/validation.dart';
 import 'package:test/test.dart';
 
 import 'package:condominioapp/validation/validators/validators.dart';
@@ -6,18 +7,22 @@ void main() {
   late RequiredFieldValidation sut;
 
   setUp(() {
-    sut = RequiredFieldValidation('Test');
+    sut = const RequiredFieldValidation('any_field');
   });
 
   test('Should return null if value is not empty', () {
-    expect(sut.validate('any_value'), '');
+    final formData = {'any_field': 'any_value'};
+
+    expect(sut.validate(formData), null);
   });
 
   test('Should return error if value is empty', () {
-    expect(sut.validate(''), 'Campo obrigatório');
+    final formData = {'any_field': ''};
+    expect(sut.validate(formData), ValidationError.requiredField);
   });
 
   test('Should return error if value is null', () {
-    expect(sut.validate(null as String), 'Campo obrigatório');
+    final formData = {'any_field': null as String};
+    expect(sut.validate(formData), ValidationError.requiredField);
   });
 }

@@ -25,7 +25,7 @@ void main() {
   late String token;
 
   PostExpectation mockValidationCall(String field) =>
-      when(validation.validate(field: field, value: 'value'));
+      when(validation.validate(field: field, input: anyNamed('input') as Map));
 
   void mockValidaton({String? field, String? value}) {
     mockValidationCall(field ?? 'field').thenReturn(value);
@@ -70,8 +70,9 @@ void main() {
 
   test('Shoul call Validation with correct email', () {
     sut.validateEmail(email);
+    final formData = {'email': email, 'password': null};
 
-    verify(validation.validate(field: 'email', value: email)).called(1);
+    verify(validation.validate(field: 'email', input: formData)).called(1);
   });
 
   test('Should emit email error if validation fails', () async* {
@@ -97,8 +98,9 @@ void main() {
 
   test('Shoul call Validation with correct password', () {
     sut.validatePassword(password);
+    final formData = {'email': null, 'password': password};
 
-    verify(validation.validate(field: 'password', value: password)).called(1);
+    verify(validation.validate(field: 'password', input: formData)).called(1);
   });
 
   test('Should emit password error if validation fails', () async* {
@@ -174,9 +176,11 @@ void main() {
     sut.validateEmail(email);
     sut.validatePassword(password);
 
-    expectLater(sut.isLoadingStream, emits(false));
-    sut.mainErrorStream?.listen(expectAsync1((error) =>
-        expect(error, 'Algo errado aconteceu. Tente novamente em breve.')));
+    expectLater(
+        sut.mainErrorStream,
+        emitsInOrder(
+            [null, 'Algo errado aconteceu. Tente novamente em breve.']));
+    expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
 
     await sut.auth();
   });
@@ -185,6 +189,7 @@ void main() {
     sut.validateEmail(email);
     sut.validatePassword(password);
 
+    expectLater(sut.mainErrorStream, emits(null));
     expectLater(sut.isLoadingStream, emits(true));
 
     await sut.auth();

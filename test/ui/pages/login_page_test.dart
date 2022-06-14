@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:condominioapp/presentation/protocols/validation.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,16 +13,16 @@ class LoginPresenterSpy extends Mock implements LoginPresenter {}
 
 void main() {
   late LoginPresenter presenter;
-  late StreamController<String> emailErrorController;
-  late StreamController<String> passwordErrorController;
+  late StreamController<ValidationError> emailErrorController;
+  late StreamController<ValidationError> passwordErrorController;
   late StreamController<String> mainErrorController;
   late StreamController<String> navigateToController;
   late StreamController<bool> isFormValidController;
   late StreamController<bool> isLoadingController;
 
   void initStreams() {
-    emailErrorController = StreamController<String>();
-    passwordErrorController = StreamController<String>();
+    emailErrorController = StreamController<ValidationError>();
+    passwordErrorController = StreamController<ValidationError>();
     mainErrorController = StreamController<String>();
     navigateToController = StreamController<String>();
 
@@ -136,30 +137,27 @@ void main() {
         (WidgetTester tester) async {
       await loadPage(tester);
 
-      emailErrorController.add('any error');
+      emailErrorController.add(ValidationError.invalidField);
       await tester.pump();
 
-      expect(find.text('any error'), findsOneWidget);
+      expect(find.text('Campo inválido'), findsOneWidget);
+    });
+
+    testWidgets('Should present no error if email is empty',
+        (WidgetTester tester) async {
+      await loadPage(tester);
+
+      emailErrorController.add(ValidationError.requiredField);
+      await tester.pump();
+
+      expect(find.text('Campo obrigatório'), findsOneWidget);
     });
 
     testWidgets('Should present no error if email is valid',
         (WidgetTester tester) async {
       await loadPage(tester);
 
-      emailErrorController.add(null as String);
-      await tester.pump();
-
-      expect(
-          find.descendant(
-              of: find.bySemanticsLabel('E-mail'), matching: find.byType(Text)),
-          findsOneWidget);
-    });
-
-    testWidgets('Should present no error if email is valid',
-        (WidgetTester tester) async {
-      await loadPage(tester);
-
-      emailErrorController.add('');
+      emailErrorController.add(null as ValidationError);
       await tester.pump();
 
       expect(
@@ -174,30 +172,27 @@ void main() {
         (WidgetTester tester) async {
       await loadPage(tester);
 
-      passwordErrorController.add('any error');
+      passwordErrorController.add(ValidationError.invalidField);
       await tester.pump();
 
-      expect(find.text('any error'), findsOneWidget);
+      expect(find.text('Campo inválido'), findsOneWidget);
+    });
+
+    testWidgets('Should present no error if password is empty',
+        (WidgetTester tester) async {
+      await loadPage(tester);
+
+      passwordErrorController.add(ValidationError.requiredField);
+      await tester.pump();
+
+      expect(find.text('Campo obrigatório'), findsOneWidget);
     });
 
     testWidgets('Should present no error if password is valid',
         (WidgetTester tester) async {
       await loadPage(tester);
 
-      passwordErrorController.add(null as String);
-      await tester.pump();
-
-      expect(
-          find.descendant(
-              of: find.bySemanticsLabel('Senha'), matching: find.byType(Text)),
-          findsOneWidget);
-    });
-
-    testWidgets('Should present no error if password is valid',
-        (WidgetTester tester) async {
-      await loadPage(tester);
-
-      passwordErrorController.add('');
+      passwordErrorController.add(null as ValidationError);
       await tester.pump();
 
       expect(
@@ -237,7 +232,9 @@ void main() {
 
     isFormValidController.add(true);
     await tester.pump();
-    await tester.tap(find.byType(ElevatedButton));
+    final button = find.byType(ElevatedButton);
+    await tester.ensureVisible(button);
+    await tester.tap(button);
     await tester.pump();
 
     verify(presenter.auth()).called(1);
