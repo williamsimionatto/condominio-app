@@ -1,4 +1,4 @@
-enum DomainError { unexpected, invalidCredentials, emailInUse }
+enum DomainError { unexpected, invalidCredentials, emailInUse, accessDenied }
 
 extension DomainErrorExtension on DomainError {
   String get description {
@@ -7,6 +7,8 @@ extension DomainErrorExtension on DomainError {
         return 'Credencias Inválidas';
       case DomainError.emailInUse:
         return 'Email já está em uso';
+      case DomainError.accessDenied:
+        return 'Acesso Negado';
       default:
         return 'Algo errado aconteceu. Tente novamente em breve.';
     }
