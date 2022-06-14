@@ -5,29 +5,8 @@ import 'package:test/test.dart';
 import 'package:condominioapp/domain/helpers/helpers.dart';
 import 'package:condominioapp/domain/entities/entities.dart';
 
-import 'package:condominioapp/data/models/models.dart';
 import 'package:condominioapp/data/http/http.dart';
-
-class RemoteLoadUsers {
-  final String url;
-  final HttpClient<List<Map>> httpClient;
-
-  RemoteLoadUsers({required this.url, required this.httpClient});
-
-  Future<List<UserEntity>> load() async {
-    try {
-      final httpResponse = await httpClient.request(url: url, method: 'get');
-
-      return httpResponse!
-          .map((json) => RemoteUserModel.fromJson(json).toEntity())
-          .toList();
-    } on HttpError catch (error) {
-      throw error == HttpError.forbidden
-          ? DomainError.accessDenied
-          : DomainError.unexpected;
-    }
-  }
-}
+import 'package:condominioapp/data/usecases/usecases.dart';
 
 class HttpClientSpy extends Mock implements HttpClient<List<Map>> {}
 
