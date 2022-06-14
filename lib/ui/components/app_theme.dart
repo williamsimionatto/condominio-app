@@ -1,51 +1,48 @@
 import 'package:flutter/material.dart';
+import '../../ui/components/components.dart';
 
 ThemeData makeAppTheme() {
-  var backgroundColor = const Color(0xFF252422);
-  var primaryColor = const Color(0xFFF24B4B);
-  var primaryColorLight = const Color(0xFFFF7582);
-  var withColor = const Color(0xFFF2F0D8);
-
-  final inputDecorationTheme = InputDecorationTheme(
-    enabledBorder:
-        OutlineInputBorder(borderSide: BorderSide(color: primaryColorLight)),
-    focusedBorder:
-        OutlineInputBorder(borderSide: BorderSide(color: primaryColor)),
+  const inputDecorationTheme = InputDecorationTheme(
+    enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: AppColorsDark.primaryColorLight)),
+    focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: AppColorsDark.primaryColor)),
     alignLabelWithHint: true,
-    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+    contentPadding: EdgeInsets.symmetric(horizontal: 16),
   );
 
   final buttonTheme = ButtonThemeData(
-    colorScheme: ColorScheme.dark(primary: primaryColor),
-    buttonColor: primaryColor,
-    splashColor: primaryColorLight,
+    colorScheme: const ColorScheme.dark(primary: AppColorsDark.primaryColor),
+    buttonColor: AppColorsDark.primaryColor,
+    splashColor: AppColorsDark.primaryColorLight,
     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(9),
     ),
   );
 
-  final textTheme = TextTheme(
+  const textTheme = TextTheme(
     headline1: TextStyle(
       fontSize: 30,
       fontWeight: FontWeight.bold,
-      color: primaryColor,
+      color: AppColorsDark.primaryColor,
     ),
     headline2: TextStyle(
       fontSize: 20,
       fontWeight: FontWeight.bold,
-      color: withColor,
+      color: AppColorsDark.withColor,
     ),
   );
 
   return ThemeData.dark().copyWith(
-    primaryColor: primaryColor,
-    backgroundColor: backgroundColor,
-    primaryColorLight: primaryColorLight,
-    disabledColor: primaryColorLight,
+    primaryColor: AppColorsDark.primaryColor,
+    backgroundColor: AppColorsDark.backgroundColor,
+    primaryColorLight: AppColorsDark.primaryColorLight,
+    disabledColor: AppColorsDark.primaryColorLight,
     textTheme: textTheme,
     inputDecorationTheme: inputDecorationTheme,
     buttonTheme: buttonTheme,
-    colorScheme: ColorScheme.fromSwatch().copyWith(secondary: withColor),
+    colorScheme:
+        ColorScheme.fromSwatch().copyWith(secondary: AppColorsDark.withColor),
   );
 }
