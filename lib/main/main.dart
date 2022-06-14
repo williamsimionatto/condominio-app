@@ -4,6 +4,7 @@ import 'package:get/route_manager.dart';
 
 import '../ui/components/components.dart';
 
+import '../../ui/pages/pages.dart';
 import 'factories/factories.dart';
 
 void main() {
@@ -25,6 +26,11 @@ class App extends StatelessWidget {
       getPages: [
         GetPage(name: '/', page: makeSplashPage, transition: Transition.fade),
         GetPage(
+          name: '/home',
+          page: () => const HomePage(),
+          transition: Transition.fadeIn,
+        ),
+        GetPage(
           name: '/login',
           page: makeLoginPage,
           transition: Transition.fadeIn,
@@ -34,12 +40,7 @@ class App extends StatelessWidget {
           page: () => const Scaffold(body: Text('Usuários')),
           transition: Transition.fadeIn,
         ),
-        GetPage(name: '/users/add', page: makeSignUpPage),
-        GetPage(
-          name: '/home',
-          page: () => const Scaffold(body: Text('Home')),
-          transition: Transition.fadeIn,
-        )
+        GetPage(name: '/users/add', page: makeSignUpPage)
       ],
     );
   }
