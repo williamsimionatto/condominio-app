@@ -26,7 +26,7 @@ void main() {
   late String token;
 
   PostExpectation mockValidationCall(String field) =>
-      when(validation.validate(field: field, value: 'value'));
+      when(validation.validate(field: field, input: anyNamed('input') as Map));
 
   void mockValidaton({String? field, String? value}) {
     mockValidationCall(field ?? 'field').thenReturn(value);
@@ -72,9 +72,15 @@ void main() {
 
   group('E-mail', () {
     test('Shoul call Validation with correct email', () {
+      final formData = {
+        'name': null,
+        'email': email,
+        'password': null,
+        'passwordConfirmation': null
+      };
       sut.validateEmail(email);
 
-      verify(validation.validate(field: 'email', value: email)).called(1);
+      verify(validation.validate(field: 'email', input: formData)).called(1);
     });
 
     test('Should emit invalidFieldError if email is invalid', () async* {
@@ -114,9 +120,15 @@ void main() {
 
   group('Name', () {
     test('Shoul call Validation with correct name', () {
+      final formData = {
+        'name': name,
+        'email': null,
+        'password': null,
+        'passwordConfirmation': null
+      };
       sut.validateName(name);
 
-      verify(validation.validate(field: 'name', value: name)).called(1);
+      verify(validation.validate(field: 'name', input: formData)).called(1);
     });
 
     test('Should emit invalidFieldError if name is invalid', () async* {
@@ -155,9 +167,15 @@ void main() {
 
   group('Password', () {
     test('Shoul call Validation with correct password', () {
+      final formData = {
+        'name': null,
+        'email': null,
+        'password': password,
+        'passwordConfirmation': null
+      };
       sut.validatePassword(password);
 
-      verify(validation.validate(field: 'password', value: password)).called(1);
+      verify(validation.validate(field: 'password', input: formData)).called(1);
     });
 
     test('Should emit invalidFieldError if password is invalid', () async* {
@@ -197,10 +215,17 @@ void main() {
 
   group('Password Confirmation', () {
     test('Shoul call Validation with correct password confirmation', () {
+      final formData = {
+        'name': null,
+        'email': null,
+        'password': null,
+        'passwordConfirmation': passwordConfirmation
+      };
+
       sut.validatePasswordConfirmation(passwordConfirmation);
 
       verify(validation.validate(
-              field: 'passwordConfirmation', value: passwordConfirmation))
+              field: 'passwordConfirmation', input: formData))
           .called(1);
     });
 

@@ -50,9 +50,10 @@ class StreamSignUpPresenter implements SignUpPresenter {
   Stream<ValidationError?>? get passwordErrorStream =>
       _controller?.stream.map((state) => state.passwordError).distinct();
   @override
-  Stream<ValidationError?>? get passwordConfirmationErrorStream => _controller?.stream
-      .map((state) => state.passwordConfirmationError)
-      .distinct();
+  Stream<ValidationError?>? get passwordConfirmationErrorStream =>
+      _controller?.stream
+          .map((state) => state.passwordConfirmationError)
+          .distinct();
   @override
   Stream<bool?>? get isFormValidStream =>
       _controller?.stream.map((state) => state.isFormValid).distinct();
@@ -73,39 +74,31 @@ class StreamSignUpPresenter implements SignUpPresenter {
     required this.saveCurrentAccount,
   });
 
-  void _update() => _controller?.add(_state);
-
   @override
   void validateEmail(String email) {
     _state.email = email;
-    _state.emailError = validation.validate(field: 'email', value: email);
+    _state.emailError = _validateField('email');
     _update();
   }
 
   @override
   void validateName(String name) {
     _state.name = name;
-    _state.nameError = validation.validate(field: 'name', value: name);
+    _state.nameError = _validateField('name');
     _update();
   }
 
   @override
   void validatePassword(String password) {
     _state.password = password;
-    _state.passwordError = validation.validate(
-      field: 'password',
-      value: password,
-    );
+    _state.passwordError = _validateField('password');
     _update();
   }
 
   @override
   void validatePasswordConfirmation(String passwordConfirmation) {
     _state.passwordConfirmation = passwordConfirmation;
-    _state.passwordConfirmationError = validation.validate(
-      field: 'passwordConfirmation',
-      value: passwordConfirmation,
-    );
+    _state.passwordConfirmationError = _validateField('passwordConfirmation');
     _update();
   }
 
@@ -136,6 +129,21 @@ class StreamSignUpPresenter implements SignUpPresenter {
       _update();
     }
   }
+
+  ValidationError _validateField(String field) {
+    final formData = {
+      'name': _state.name,
+      'email': _state.email,
+      'password': _state.password,
+      'passwordConfirmation': _state.passwordConfirmation,
+    };
+
+    final error = validation.validate(field: field, input: formData);
+
+    return error ?? null as ValidationError;
+  }
+
+  void _update() => _controller?.add(_state);
 
   @override
   void dispose() {

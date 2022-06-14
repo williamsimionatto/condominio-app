@@ -62,20 +62,17 @@ class StreamLoginPresenter implements LoginPresenter {
     required this.saveCurrentAccount,
   });
 
-  void _update() => _controller?.add(_state);
-
   @override
   void validateEmail(String email) {
     _state.email = email;
-    _state.emailError = validation.validate(field: 'email', value: email);
+    _state.emailError = _validateField('email');
     _update();
   }
 
   @override
   void validatePassword(String password) {
     _state.password = password;
-    _state.passwordError =
-        validation.validate(field: 'password', value: password);
+    _state.passwordError = _validateField('password');
     _update();
   }
 
@@ -96,6 +93,19 @@ class StreamLoginPresenter implements LoginPresenter {
       _update();
     }
   }
+
+  ValidationError _validateField(String field) {
+    final formData = {
+      'email': _state.email,
+      'password': _state.password,
+    };
+
+    final error = validation.validate(field: field, input: formData);
+
+    return error ?? null as ValidationError;
+  }
+
+  void _update() => _controller?.add(_state);
 
   @override
   void dispose() {

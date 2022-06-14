@@ -7,18 +7,22 @@ void main() {
   late RequiredFieldValidation sut;
 
   setUp(() {
-    sut = const RequiredFieldValidation('Test');
+    sut = const RequiredFieldValidation('any_field');
   });
 
   test('Should return null if value is not empty', () {
-    expect(sut.validate('any_value'), null);
+    final formData = {'any_field': 'any_value'};
+
+    expect(sut.validate(formData), null);
   });
 
   test('Should return error if value is empty', () {
-    expect(sut.validate(''), ValidationError.requiredField);
+    final formData = {'any_field': ''};
+    expect(sut.validate(formData), ValidationError.requiredField);
   });
 
   test('Should return error if value is null', () {
-    expect(sut.validate(null as String), ValidationError.requiredField);
+    final formData = {'any_field': null as String};
+    expect(sut.validate(formData), ValidationError.requiredField);
   });
 }

@@ -14,15 +14,15 @@ void main() {
   late FieldValidationSpy validation3;
 
   void mockValidation1(ValidationError error) {
-    when(validation1.validate('any_value')).thenReturn(error);
+    when(validation1.validate({'any_field': 'any_value'})).thenReturn(error);
   }
 
   void mockValidation2(ValidationError error) {
-    when(validation2.validate('any_value')).thenReturn(error);
+    when(validation2.validate({'any_field': 'any_value'})).thenReturn(error);
   }
 
   void mockValidation3(ValidationError error) {
-    when(validation3.validate('any_value')).thenReturn(error);
+    when(validation3.validate({'any_field': 'any_value'})).thenReturn(error);
   }
 
   setUp(() {
@@ -42,7 +42,8 @@ void main() {
 
   test('Should return null if all validations returns null or empty', () {
     // mockValidation2(ValidationError.requiredField);
-    final error = sut.validate(field: 'any_field', value: 'any_value');
+    final error =
+        sut.validate(field: 'any_field', input: {'any_field': 'any_value'});
     expect(error, null);
   });
 
@@ -51,7 +52,8 @@ void main() {
     mockValidation2(ValidationError.requiredField);
     mockValidation3(ValidationError.invalidField);
 
-    final error = sut.validate(field: 'any_field', value: 'any_value');
+    final error =
+        sut.validate(field: 'any_field', input: {'any_field': 'any_value'});
     expect(error, ValidationError.requiredField);
   });
 }
