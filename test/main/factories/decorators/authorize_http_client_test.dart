@@ -21,7 +21,8 @@ class AUthorizeHttpClientDecorator {
     Map? headers,
   }) async {
     final token = await fetchSecureCacheStorage.fetchSecure('token');
-    final authorizedHeaders = {'Authorization': 'Bearer $token'};
+    final authorizedHeaders = headers ?? {}
+      ..addAll({'Authorization': 'Bearer $token'});
 
     await decoratee.request(
         url: url, method: method, body: body, headers: authorizedHeaders);
@@ -70,9 +71,16 @@ void main() {
 
   test('Should call decoratee with access token on header', () async {
     await sut.request(url: url, method: method, body: body);
-
     verify(httpClient.request(url: url, method: method, body: body, headers: {
       'Authorization': 'Bearer $token',
+    })).called(1);
+
+    await sut.request(url: url, method: method, body: body, headers: {
+      'any_header': 'any_value',
+    });
+    verify(httpClient.request(url: url, method: method, body: body, headers: {
+      'Authorization': 'Bearer $token',
+      'any_header': 'any_value',
     })).called(1);
   });
 }
