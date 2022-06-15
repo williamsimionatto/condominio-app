@@ -40,7 +40,7 @@ class _UsersPageState extends State<UsersPage> {
           });
 
           return StreamBuilder<List<UserViewModel>?>(
-            stream: widget.presenter.loadUsersStream,
+            stream: widget.presenter.usersStream,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Column(
