@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import '../../../../ui/components/components.dart';
+import '../../../pages/users/users.dart';
 
 class UserItem extends StatelessWidget {
-  const UserItem({Key? key}) : super(key: key);
+  late UserViewModel viewModel;
+
+  UserItem(this.viewModel, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Card(
+    return Card(
       child: ListTile(
-        title: Text("William Simionatto Nepomuceno"),
-        subtitle: Text("Condômino"),
-        trailing: Icon(Icons.keyboard_arrow_right),
+        title: Text(viewModel.name),
+        trailing: const Icon(Icons.keyboard_arrow_right),
         iconColor: AppColorsDark.withColor,
       ),
     );

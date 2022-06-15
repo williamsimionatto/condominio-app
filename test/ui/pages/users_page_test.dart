@@ -45,6 +45,23 @@ void main() {
     await tester.pumpWidget(userPage);
   }
 
+  List<UserViewModel> makeUsers() => [
+        UserViewModel(
+          id: 1,
+          name: 'Usuário 1',
+          email: 'usuario1@mail.com',
+          active: true,
+          cpf: 123456789,
+        ),
+        UserViewModel(
+          id: 2,
+          name: 'Usuário 2',
+          email: 'usuario@2mail.com',
+          active: false,
+          cpf: 123456789,
+        ),
+      ];
+
   tearDown(() {
     closeStreams();
   });
@@ -80,5 +97,20 @@ void main() {
         findsOneWidget);
     expect(find.text('Recarregar'), findsOneWidget);
     expect(find.text('Usuário 1'), findsNothing);
+  });
+
+  testWidgets('Should presenter list if loadUsersStream succeeds',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    loadUsersController.add(makeUsers());
+    await tester.pump();
+
+    expect(find.text('Algo errado aconteceu. Tente novamente em breve.'),
+        findsNothing);
+    expect(find.text('Recarregar'), findsNothing);
+
+    expect(find.text('Usuário 1'), findsOneWidget);
+    expect(find.text('Usuário 2'), findsOneWidget);
   });
 }
