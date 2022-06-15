@@ -1,4 +1,5 @@
 import 'package:condominioapp/data/http/http_client.dart';
+import 'package:condominioapp/data/http/http_error.dart';
 import 'package:faker/faker.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -21,16 +22,20 @@ class AUthorizeHttpClientDecorator implements HttpClient {
     Map? body,
     Map? headers,
   }) async {
-    final token = await fetchSecureCacheStorage.fetchSecure('token');
-    final authorizedHeaders = headers ?? {}
-      ..addAll({'Authorization': 'Bearer $token'});
+    try {
+      final token = await fetchSecureCacheStorage.fetchSecure('token');
+      final authorizedHeaders = headers ?? {}
+        ..addAll({'Authorization': 'Bearer $token'});
 
-    return await decoratee.request(
-      url: url,
-      method: method,
-      body: body,
-      headers: authorizedHeaders,
-    );
+      return await decoratee.request(
+        url: url,
+        method: method,
+        body: body,
+        headers: authorizedHeaders,
+      );
+    } catch (error) {
+      throw HttpError.forbidden;
+    }
   }
 }
 
@@ -53,6 +58,10 @@ void main() {
     token = faker.jwt.valid();
     when(fetchSecureCacheStorage.fetchSecure('token'))
         .thenAnswer((_) async => token);
+  }
+
+  void mockTokenError() {
+    when(fetchSecureCacheStorage.fetchSecure('token')).thenThrow(Exception());
   }
 
   void mockHttpResponse() {
@@ -105,5 +114,13 @@ void main() {
     final response = await sut.request(url: url, method: method, body: body);
 
     expect(response, httpResponse);
+  });
+
+  test('Should thorw ForbiddenError if FetchSecureCacheStorage thorws',
+      () async {
+    mockTokenError();
+    final future = sut.request(url: url, method: method, body: body);
+
+    expect(future, throwsA(HttpError.forbidden));
   });
 }
