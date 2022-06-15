@@ -46,9 +46,9 @@ class _UsersPageState extends State<UsersPage> {
                 return Column(
                   children: [
                     Text(snapshot.error as String),
-                    const ElevatedButton(
-                      onPressed: null,
-                      child: Text('Recarregar'),
+                    ElevatedButton(
+                      onPressed: widget.presenter.loadData,
+                      child: const Text('Recarregar'),
                     ),
                   ],
                 );
