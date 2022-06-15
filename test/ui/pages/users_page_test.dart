@@ -7,9 +7,10 @@ import 'package:mockito/mockito.dart';
 class UsersPresenterSpy extends Mock implements UsersPresenter {}
 
 void main() {
-  testWidgets('Should call LoadUsers on page load',
-      (WidgetTester tester) async {
-    final presenter = UsersPresenterSpy();
+  late UsersPresenter presenter;
+
+  Future<void> loadPage(WidgetTester tester) async {
+    presenter = UsersPresenterSpy();
 
     final userPage = GetMaterialApp(
       initialRoute: '/users',
@@ -17,8 +18,12 @@ void main() {
         GetPage(name: '/users', page: () => UsersPage(presenter)),
       ],
     );
-
     await tester.pumpWidget(userPage);
+  }
+
+  testWidgets('Should call LoadUsers on page load',
+      (WidgetTester tester) async {
+    await loadPage(tester);
 
     verify(presenter.loadData()).called(1);
   });
