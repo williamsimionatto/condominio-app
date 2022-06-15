@@ -1,7 +1,7 @@
-import 'package:condominioapp/presentation/protocols/validation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../login_presenter.dart';
+import '../../../../presentation/protocols/protocols.dart';
 
 class EmailInput extends StatelessWidget {
   const EmailInput({
@@ -13,21 +13,23 @@ class EmailInput extends StatelessWidget {
     final presenter = Provider.of<LoginPresenter>(context);
 
     return StreamBuilder<ValidationError?>(
-        stream: presenter.emailErrorStream,
-        builder: (context, snapshot) {
-          return TextFormField(
-            decoration: InputDecoration(
-              labelText: 'E-mail',
-              labelStyle: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold),
-              icon: Icon(Icons.email, color: Theme.of(context).primaryColor),
-              errorText: snapshot.data?.description,
+      stream: presenter.emailErrorStream,
+      builder: (context, snapshot) {
+        return TextFormField(
+          decoration: InputDecoration(
+            labelText: 'E-mail',
+            labelStyle: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontWeight: FontWeight.bold,
             ),
-            style: const TextStyle(color: Colors.white),
-            keyboardType: TextInputType.emailAddress,
-            onChanged: presenter.validateEmail,
-          );
-        });
+            icon: Icon(Icons.email, color: Theme.of(context).primaryColor),
+            errorText: snapshot.data?.description,
+          ),
+          style: const TextStyle(color: Colors.white),
+          keyboardType: TextInputType.emailAddress,
+          onChanged: presenter.validateEmail,
+        );
+      },
+    );
   }
 }

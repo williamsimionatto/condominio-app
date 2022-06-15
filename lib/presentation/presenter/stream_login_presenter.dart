@@ -101,9 +101,7 @@ class StreamLoginPresenter implements LoginPresenter {
       'password': _state.password,
     };
 
-    final error = validation.validate(field: field, input: formData);
-
-    return error;
+    return validation.validate(field: field, input: formData);
   }
 
   void _update() => _controller?.add(_state);

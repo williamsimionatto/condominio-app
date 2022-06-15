@@ -1,7 +1,7 @@
-import 'package:condominioapp/presentation/protocols/validation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../signup_presenter.dart';
+import '../../../../presentation/protocols/protocols.dart';
 
 class EmailInput extends StatelessWidget {
   const EmailInput({

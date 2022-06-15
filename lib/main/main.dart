@@ -37,8 +37,9 @@ class App extends StatelessWidget {
         ),
         GetPage(
           name: '/users',
-          page: () => const Scaffold(body: Text('Usuários')),
-          transition: Transition.fadeIn,
+          page: () => const UserListPage(),
+          transition: Transition.leftToRight,
+          transitionDuration: const Duration(milliseconds: 500),
         ),
         GetPage(name: '/users/add', page: makeSignUpPage)
       ],

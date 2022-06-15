@@ -28,7 +28,7 @@ class SignUpButton extends StatelessWidget {
             ),
           ),
           onPressed: snapshot.data == true ? presenter.add : null,
-          child: const Text('Entrar'),
+          child: const Text('Adicionar'),
         );
       },
     );
