@@ -1,3 +1,4 @@
+import 'package:condominioapp/domain/helpers/helpers.dart';
 import 'package:condominioapp/ui/pages/pages.dart';
 import 'package:get/get.dart';
 import 'package:mockito/mockito.dart';
@@ -18,19 +19,23 @@ class GetxUsersPresenter {
   GetxUsersPresenter({required this.loadUsers});
 
   Future<void> loadData() async {
-    _isLoading.value = true;
-    final users = await loadUsers.load();
-    _users.value = users
-        .map((user) => UserViewModel(
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              active: user.active,
-              cpf: user.cpf,
-            ))
-        .toList();
-
-    _isLoading.value = false;
+    try {
+      _isLoading.value = true;
+      final users = await loadUsers.load();
+      _users.value = users
+          .map((user) => UserViewModel(
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                active: user.active,
+                cpf: user.cpf,
+              ))
+          .toList();
+    } on DomainError {
+      _users.subject.addError(DomainError.unexpected.description);
+    } finally {
+      _isLoading.value = false;
+    }
   }
 }
 
@@ -63,6 +68,10 @@ void main() {
     when(loadUsers.load()).thenAnswer((_) async => data);
   }
 
+  void mockLoadUsersError() {
+    when(loadUsers.load()).thenThrow(DomainError.unexpected);
+  }
+
   setUp(() {
     loadUsers = LoadUsersSpy();
     sut = GetxUsersPresenter(loadUsers: loadUsers);
@@ -92,6 +101,20 @@ void main() {
             cpf: users[1].cpf,
           )
         ])));
+    await sut.loadData();
+  });
+
+  test('Should emit correct events on failure', () async {
+    mockLoadUsersError();
+
+    expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
+    sut.usersStream.listen(
+      null,
+      onError: expectAsync1(
+        (error) => expect(error, DomainError.unexpected.description),
+      ),
+    );
+
     await sut.loadData();
   });
 }
