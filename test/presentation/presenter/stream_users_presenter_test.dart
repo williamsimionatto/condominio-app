@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:condominioapp/domain/helpers/helpers.dart';
 import 'package:condominioapp/ui/pages/pages.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -10,11 +11,12 @@ import 'package:condominioapp/domain/usecases/usecases.dart';
 class UserState {
   bool? isLoading = false;
   late List<UserViewModel>? users;
+  String? mainError;
 }
 
 class StreamUsersPresenter {
   final LoadUsers loadUsers;
-  final bool isLoading = true;
+  final bool? isLoading = true;
 
   StreamController<UserState>? _controller =
       StreamController<UserState>.broadcast();
@@ -27,26 +29,37 @@ class StreamUsersPresenter {
   Stream<List<UserViewModel>?>? get loadUsersStream =>
       _controller?.stream.map((state) => state.users).distinct();
 
+  Stream<String?>? get mainErrorStream =>
+      _controller?.stream.map((state) => state.mainError).distinct();
+
   StreamUsersPresenter({required this.loadUsers});
 
   Future<void> loadData() async {
-    _state.isLoading = true;
-    _update();
-    final users = await loadUsers.load();
-    _state.users = users
-        .map(
-          (user) => UserViewModel(
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            active: user.active,
-            cpf: user.cpf,
-          ),
-        )
-        .toList();
+    try {
+      _state.mainError = null;
+      _state.isLoading = true;
+      _update();
 
-    _state.isLoading = false;
-    _update();
+      final users = await loadUsers.load();
+      _state.users = users
+          .map(
+            (user) => UserViewModel(
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              active: user.active,
+              cpf: user.cpf,
+            ),
+          )
+          .toList();
+
+      _update();
+    } on DomainError catch (error) {
+      _state.mainError = error.description;
+    } finally {
+      _state.isLoading = false;
+      _update();
+    }
   }
 
   void _update() => _controller?.add(_state);
@@ -81,6 +94,10 @@ void main() {
     when(loadUsers.load()).thenAnswer((_) async => data);
   }
 
+  void mockLoadUsersError() {
+    when(loadUsers.load()).thenThrow(DomainError.unexpected);
+  }
+
   setUp(() {
     loadUsers = LoadUsersSpy();
     sut = StreamUsersPresenter(loadUsers: loadUsers);
@@ -111,6 +128,17 @@ void main() {
             cpf: users[1].cpf,
           ),
         ])));
+
+    await sut.loadData();
+  });
+
+  test('Should emit correct events on failure', () async* {
+    mockLoadUsersError();
+
+    expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
+
+    expectLater(sut.mainErrorStream,
+        emitsInOrder([null, DomainError.unexpected.description]));
 
     await sut.loadData();
   });
