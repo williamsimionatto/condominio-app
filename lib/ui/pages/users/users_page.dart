@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
 
 import '../../components/components.dart';
 
-import 'users_presenter.dart';
+import '../../pages/sidebar/sidebar.dart';
 import '../../pages/users/components/components.dart';
 
-import '../../pages/sidebar/sidebar.dart';
+import 'users_presenter.dart';
 
 class UsersPage extends StatefulWidget {
   final UsersPresenter presenter;
@@ -33,6 +33,14 @@ class _UsersPageState extends State<UsersPage> {
       ),
       body: Builder(
         builder: (BuildContext context) {
+          widget.presenter.isLoadingStream?.listen((isLoading) {
+            if (isLoading == true) {
+              showLoading(context);
+            } else {
+              hideLoading(context);
+            }
+          });
+
           return ListView.builder(
             itemCount: 20,
             padding: const EdgeInsets.all(8),
