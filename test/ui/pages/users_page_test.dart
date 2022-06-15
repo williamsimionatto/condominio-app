@@ -46,14 +46,14 @@ void main() {
   }
 
   List<UserViewModel> makeUsers() => [
-        UserViewModel(
+        const UserViewModel(
           id: 1,
           name: 'Usuário 1',
           email: 'usuario1@mail.com',
           active: true,
           cpf: 123456789,
         ),
-        UserViewModel(
+        const UserViewModel(
           id: 2,
           name: 'Usuário 2',
           email: 'usuario@2mail.com',

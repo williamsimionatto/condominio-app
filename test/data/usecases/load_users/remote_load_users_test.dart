@@ -8,7 +8,7 @@ import 'package:condominioapp/domain/entities/entities.dart';
 import 'package:condominioapp/data/http/http.dart';
 import 'package:condominioapp/data/usecases/usecases.dart';
 
-class HttpClientSpy extends Mock implements HttpClient<List<Map>> {}
+class HttpClientSpy extends Mock implements HttpClient {}
 
 void main() {
   late String url;
@@ -48,8 +48,7 @@ void main() {
   setUp(() {
     url = faker.internet.httpUrl();
     httpClient = HttpClientSpy();
-    sut = RemoteLoadUsers(
-        url: url, httpClient: httpClient as HttpClient<List<Map>>);
+    sut = RemoteLoadUsers(url: url, httpClient: httpClient);
 
     mockHttpData(mockValidData());
   });

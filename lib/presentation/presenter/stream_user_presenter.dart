@@ -10,7 +10,7 @@ class UserState {
   String? mainError;
 }
 
-class StreamUsersPresenter {
+class StreamUsersPresenter implements UsersPresenter {
   final LoadUsers loadUsers;
   final bool? isLoading = true;
 
@@ -19,17 +19,21 @@ class StreamUsersPresenter {
 
   final _state = UserState();
 
+  @override
   Stream<bool?>? get isLoadingStream =>
       _controller?.stream.map((state) => state.isLoading).distinct();
 
+  @override
   Stream<List<UserViewModel>?>? get loadUsersStream =>
       _controller?.stream.map((state) => state.users).distinct();
 
+  @override
   Stream<String?>? get mainErrorStream =>
       _controller?.stream.map((state) => state.mainError).distinct();
 
   StreamUsersPresenter({required this.loadUsers});
 
+  @override
   Future<void> loadData() async {
     try {
       _state.mainError = null;

@@ -7,6 +7,7 @@ class UserViewModel extends Equatable {
   final bool active;
   final int cpf;
 
+  @override
   List get props => [id, name, email, active, cpf];
 
   const UserViewModel({

@@ -1,4 +1,3 @@
-
 import '../../../domain/entities/entities.dart';
 import '../../../domain/helpers/helpers.dart';
 import '../../../domain/usecases/load_users.dart';
@@ -6,9 +5,9 @@ import '../../../domain/usecases/load_users.dart';
 import '../../http/http.dart';
 import '../../models/models.dart';
 
-class RemoteLoadUsers implements LoadUsers{
+class RemoteLoadUsers implements LoadUsers {
   final String url;
-  final HttpClient<List<Map>> httpClient;
+  final HttpClient httpClient;
 
   RemoteLoadUsers({required this.url, required this.httpClient});
 
@@ -17,8 +16,8 @@ class RemoteLoadUsers implements LoadUsers{
     try {
       final httpResponse = await httpClient.request(url: url, method: 'get');
 
-      return httpResponse!
-          .map((json) => RemoteUserModel.fromJson(json).toEntity())
+      return httpResponse
+          .map<UserEntity>((json) => RemoteUserModel.fromJson(json).toEntity())
           .toList();
     } on HttpError catch (error) {
       throw error == HttpError.forbidden
