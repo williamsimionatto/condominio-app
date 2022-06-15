@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:condominioapp/ui/pages/pages.dart';
+import '../../../../ui/pages/pages.dart';
+import '../../../../main/factories/pages/pages.dart';
 
-Widget makeUsersPage() => UsersPage(null as UsersPresenter);
+Widget makeUsersPage() => UsersPage(makeStreamUsersPresenter());

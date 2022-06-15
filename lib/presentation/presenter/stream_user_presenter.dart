@@ -6,7 +6,7 @@ import 'package:condominioapp/ui/pages/pages.dart';
 
 class UserState {
   bool? isLoading = false;
-  late List<UserViewModel>? users;
+  late List<UserViewModel>? users = [];
   String? mainError;
 }
 

@@ -5,4 +5,4 @@ import '../../../domain/usecases/usecases.dart';
 import '../../../main/factories/http/http.dart';
 
 LoadUsers makeRemoteLoadUsers() =>
-    RemoteLoadUsers(url: makeApiUrl('users'), httpClient: makeHttpAdapter());
+    RemoteLoadUsers(url: makeApiUrl('user'), httpClient: makeHttpAdapter());
