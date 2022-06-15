@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:condominioapp/domain/helpers/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/route_manager.dart';
@@ -12,18 +13,23 @@ class UsersPresenterSpy extends Mock implements UsersPresenter {}
 void main() {
   late UsersPresenter presenter;
   late StreamController<bool> isLoadingController;
+  late StreamController<List<UserViewModel>> loadUsersController;
 
   void initStreams() {
     isLoadingController = StreamController<bool>();
+    loadUsersController = StreamController<List<UserViewModel>>();
   }
 
   void mockStreams() {
     when(presenter.isLoadingStream)
         .thenAnswer((_) => isLoadingController.stream);
+    when(presenter.loadUsersStream)
+        .thenAnswer((_) => loadUsersController.stream);
   }
 
   void closeStreams() {
     isLoadingController.close();
+    loadUsersController.close();
   }
 
   Future<void> loadPage(WidgetTester tester) async {
@@ -61,5 +67,18 @@ void main() {
     isLoadingController.add(false);
     await tester.pump();
     expect(find.byType(CircularProgressIndicator), findsNothing);
+  });
+
+  testWidgets('Should presenter error if loadUsersStream fails',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    loadUsersController.addError(DomainError.unexpected.description);
+    await tester.pump();
+
+    expect(find.text('Algo errado aconteceu. Tente novamente em breve.'),
+        findsOneWidget);
+    expect(find.text('Recarregar'), findsOneWidget);
+    expect(find.text('Usuário 1'), findsNothing);
   });
 }
