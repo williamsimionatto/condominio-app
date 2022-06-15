@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 import 'package:condominioapp/data/cache/cache.dart';
 
 class AUthorizeHttpClientDecorator {
-  final FetchSecureCacheStorage fetchSecureCacheStorage;
+  FetchSecureCacheStorage fetchSecureCacheStorage;
 
   AUthorizeHttpClientDecorator({required this.fetchSecureCacheStorage});
 
@@ -13,17 +13,21 @@ class AUthorizeHttpClientDecorator {
   }
 }
 
-class AUthorizeHttpClientDecoratorSpy extends Mock
+class AuthorizeHttpClientDecoratorSpy extends Mock
     implements FetchSecureCacheStorage {}
 
 void main() {
-  test('Should call FetchSecureCacheStorage with correct key', () async {
-    final fetchSecureCacheStorage = AUthorizeHttpClientDecoratorSpy();
+  late FetchSecureCacheStorage fetchSecureCacheStorage;
+  late AUthorizeHttpClientDecorator sut;
+  setUp(() {
+    fetchSecureCacheStorage = AuthorizeHttpClientDecoratorSpy();
 
-    final sut = AUthorizeHttpClientDecorator(
+    sut = AUthorizeHttpClientDecorator(
       fetchSecureCacheStorage: fetchSecureCacheStorage,
     );
+  });
 
+  test('Should call FetchSecureCacheStorage with correct key', () async {
     await sut.request();
 
     verify(fetchSecureCacheStorage.fetchSecure('token')).called(1);
