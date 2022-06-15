@@ -37,7 +37,7 @@ class App extends StatelessWidget {
         ),
         GetPage(
           name: '/users',
-          page: () => const UserListPage(),
+          page: makeUsersPage,
           transition: Transition.cupertino,
         ),
         GetPage(name: '/users/add', page: makeSignUpPage)
