@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 
 import 'package:condominioapp/data/cache/cache.dart';
 
-class AUthorizeHttpClientDecorator {
+class AUthorizeHttpClientDecorator implements HttpClient {
   FetchSecureCacheStorage fetchSecureCacheStorage;
   HttpClient decoratee;
 
@@ -14,7 +14,8 @@ class AUthorizeHttpClientDecorator {
     required this.decoratee,
   });
 
-  Future<void> request({
+  @override
+  Future<dynamic> request({
     required String url,
     required String method,
     Map? body,
@@ -24,8 +25,12 @@ class AUthorizeHttpClientDecorator {
     final authorizedHeaders = headers ?? {}
       ..addAll({'Authorization': 'Bearer $token'});
 
-    await decoratee.request(
-        url: url, method: method, body: body, headers: authorizedHeaders);
+    return await decoratee.request(
+      url: url,
+      method: method,
+      body: body,
+      headers: authorizedHeaders,
+    );
   }
 }
 
@@ -42,11 +47,22 @@ void main() {
   late String method;
   late Map? body;
   late String token;
+  late String httpResponse;
 
   void mockToken() {
     token = faker.jwt.valid();
     when(fetchSecureCacheStorage.fetchSecure('token'))
         .thenAnswer((_) async => token);
+  }
+
+  void mockHttpResponse() {
+    httpResponse = faker.randomGenerator.string(50);
+    when(httpClient.request(
+      url: anyNamed('url') as String,
+      method: anyNamed('method') as String,
+      body: anyNamed('body'),
+      headers: anyNamed('headers'),
+    )).thenAnswer((_) async => httpResponse);
   }
 
   setUp(() {
@@ -61,6 +77,7 @@ void main() {
     method = faker.randomGenerator.string(10);
     body = {'any_key': 'any_value'};
     mockToken();
+    mockHttpResponse();
   });
 
   test('Should call FetchSecureCacheStorage with correct key', () async {
@@ -82,5 +99,11 @@ void main() {
       'Authorization': 'Bearer $token',
       'any_header': 'any_value',
     })).called(1);
+  });
+
+  test('Should return same result as decoratee', () async {
+    final response = await sut.request(url: url, method: method, body: body);
+
+    expect(response, httpResponse);
   });
 }
