@@ -15,12 +15,15 @@ class StreamUsersPresenter {
 class LoadUsersSpy extends Mock implements LoadUsers {}
 
 void main() {
+  late LoadUsers loadUsers;
+  late StreamUsersPresenter sut;
+
+  setUp(() {
+    loadUsers = LoadUsersSpy();
+    sut = StreamUsersPresenter(loadUsers: loadUsers);
+  });
   test('Should call LoadUsers on loadData', () async {
-    final loadUsers = LoadUsersSpy();
-    final sut = StreamUsersPresenter(loadUsers: loadUsers);
-
     await sut.loadData();
-
     verify(loadUsers.load()).called(1);
   });
 }
