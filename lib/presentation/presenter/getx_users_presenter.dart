@@ -5,7 +5,7 @@ import '../../../domain/usecases/usecases.dart';
 
 import '../../../ui/pages/pages.dart';
 
-class GetxUsersPresenter implements UsersPresenter {
+class GetxUsersPresenter extends GetxController implements UsersPresenter {
   final LoadUsers loadUsers;
 
   final _isLoading = true.obs;
