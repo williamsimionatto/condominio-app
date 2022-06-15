@@ -61,6 +61,7 @@ class StreamSignUpPresenter implements SignUpPresenter {
   @override
   Stream<bool?>? get isLoadingStream =>
       _controller?.stream.map((state) => state.isLoading).distinct();
+
   @override
   Stream<String?>? get mainErrorStream =>
       _controller?.stream.map((state) => state.mainError).distinct();

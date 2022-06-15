@@ -4,17 +4,17 @@ import '../../ui/components/components.dart';
 ThemeData makeAppTheme() {
   const inputDecorationTheme = InputDecorationTheme(
     enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: AppColorsDark.primaryColorLight)),
+        borderSide: BorderSide(color: AppColorsDark.withColor)),
     focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: AppColorsDark.primaryColor)),
+        borderSide: BorderSide(color: AppColorsDark.withColor)),
     alignLabelWithHint: true,
     contentPadding: EdgeInsets.symmetric(horizontal: 16),
   );
 
   final buttonTheme = ButtonThemeData(
-    colorScheme: const ColorScheme.dark(primary: AppColorsDark.primaryColor),
-    buttonColor: AppColorsDark.primaryColor,
-    splashColor: AppColorsDark.primaryColorLight,
+    colorScheme: const ColorScheme.dark(primary: AppColorsDark.withColor),
+    buttonColor: AppColorsDark.withColor,
+    splashColor: AppColorsDark.withColor,
     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(9),

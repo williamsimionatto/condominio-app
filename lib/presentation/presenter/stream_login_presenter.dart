@@ -82,6 +82,7 @@ class StreamLoginPresenter implements LoginPresenter {
       _state.mainError = null;
       _state.isLoading = true;
       _update();
+
       final account = await authentication.auth(
           AuthenticationParams(email: _state.email!, secret: _state.password!));
       await saveCurrentAccount.save(account!);

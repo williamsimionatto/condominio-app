@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 
 import '../../components/components.dart';
 import '../../pages/sidebar/sidebar.dart';
@@ -67,7 +68,7 @@ class UserListPage extends StatelessWidget {
         backgroundColor: Theme.of(context).primaryColor,
         child: const Icon(Icons.add),
         onPressed: () {
-          Navigator.of(context).pushNamed('/users/add');
+          Get.offAllNamed("users/add");
         },
       ),
     );
