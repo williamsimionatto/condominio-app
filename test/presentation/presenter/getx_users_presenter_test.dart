@@ -20,15 +20,15 @@ void main() {
           id: 1,
           name: 'Usuário 1',
           email: 'usuario1@mail.com',
-          active: true,
-          cpf: 123456789,
+          active: 'S',
+          cpf: "123456789",
         ),
         const UserEntity(
           id: 1,
           name: 'Usuário 1',
           email: 'usuario1@mail.com',
-          active: true,
-          cpf: 123456789,
+          active: 'S',
+          cpf: "123456789",
         ),
       ];
 

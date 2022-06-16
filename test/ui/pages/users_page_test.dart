@@ -49,15 +49,15 @@ void main() {
           id: 1,
           name: 'Usuário 1',
           email: 'usuario1@mail.com',
-          active: true,
-          cpf: 123456789,
+          active: 'S',
+          cpf: "123456789",
         ),
         const UserViewModel(
           id: 2,
           name: 'Usuário 2',
           email: 'usuario@2mail.com',
-          active: false,
-          cpf: 123456789,
+          active: 'N',
+          cpf: "123456789",
         ),
       ];
 

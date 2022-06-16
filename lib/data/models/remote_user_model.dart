@@ -5,8 +5,8 @@ class RemoteUserModel {
   final int id;
   final String name;
   final String email;
-  final bool active;
-  final int cpf;
+  final String active;
+  final String cpf;
 
   RemoteUserModel({
     required this.id,

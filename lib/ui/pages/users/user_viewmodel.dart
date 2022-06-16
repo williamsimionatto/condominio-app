@@ -4,8 +4,8 @@ class UserViewModel extends Equatable {
   final int id;
   final String name;
   final String email;
-  final bool active;
-  final int cpf;
+  final String active;
+  final String cpf;
 
   @override
   List get props => [id, name, email, active, cpf];
