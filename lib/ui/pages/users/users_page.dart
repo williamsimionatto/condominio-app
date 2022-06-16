@@ -18,8 +18,6 @@ class UsersPage extends StatefulWidget {
 class _UsersPageState extends State<UsersPage> {
   @override
   Widget build(BuildContext context) {
-    widget.presenter.loadData();
-
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       drawer: const NavBar(),
@@ -38,6 +36,8 @@ class _UsersPageState extends State<UsersPage> {
               hideLoading(context);
             }
           });
+
+          widget.presenter.loadData();
 
           return StreamBuilder<List<UserViewModel>?>(
             stream: widget.presenter.usersStream,
