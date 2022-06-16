@@ -14,9 +14,11 @@ void main() {
   late UsersPresenter presenter;
   late StreamController<bool> isLoadingController;
   late StreamController<List<UserViewModel>> loadUsersController;
+  late StreamController<bool> isSessionExpiredController;
 
   void initStreams() {
     isLoadingController = StreamController<bool>();
+    isSessionExpiredController = StreamController<bool>();
     loadUsersController = StreamController<List<UserViewModel>>();
   }
 
@@ -24,11 +26,15 @@ void main() {
     when(presenter.isLoadingStream)
         .thenAnswer((_) => isLoadingController.stream);
     when(presenter.usersStream).thenAnswer((_) => loadUsersController.stream);
+
+    when(presenter.isSessionExpiredStream)
+        .thenAnswer((_) => isSessionExpiredController.stream);
   }
 
   void closeStreams() {
     isLoadingController.close();
     loadUsersController.close();
+    isSessionExpiredController.close();
   }
 
   Future<void> loadPage(WidgetTester tester) async {
@@ -39,6 +45,8 @@ void main() {
       initialRoute: '/users',
       getPages: [
         GetPage(name: '/users', page: () => UsersPage(presenter)),
+        GetPage(
+            name: '/login', page: () => const Scaffold(body: Text('Login'))),
       ],
     );
     await tester.pumpWidget(userPage);
@@ -126,5 +134,21 @@ void main() {
     await tester.tap(find.text('Recarregar'));
 
     verify(presenter.loadData()).called(2);
+  });
+
+  testWidgets('Should logout', (WidgetTester tester) async {
+    await loadPage(tester);
+
+    isSessionExpiredController.add(true);
+    await tester.pumpAndSettle();
+    expect(Get.currentRoute, '/login');
+  });
+  testWidgets('Should not logout', (WidgetTester tester) async {
+    await loadPage(tester);
+
+    isSessionExpiredController.add(false);
+    await tester.pumpAndSettle();
+    expect(Get.currentRoute, '/users');
+    await loadPage(tester);
   });
 }
