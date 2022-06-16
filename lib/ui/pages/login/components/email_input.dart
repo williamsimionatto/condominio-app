@@ -1,8 +1,8 @@
 import 'package:condominioapp/ui/components/components.dart';
+import 'package:condominioapp/ui/helpers/errors/errors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../login_presenter.dart';
-import '../../../../presentation/protocols/protocols.dart';
 
 class EmailInput extends StatelessWidget {
   const EmailInput({
@@ -13,7 +13,7 @@ class EmailInput extends StatelessWidget {
   Widget build(BuildContext context) {
     final presenter = Provider.of<LoginPresenter>(context);
 
-    return StreamBuilder<ValidationError?>(
+    return StreamBuilder<UIError?>(
       stream: presenter.emailErrorStream,
       builder: (context, snapshot) {
         return TextFormField(
