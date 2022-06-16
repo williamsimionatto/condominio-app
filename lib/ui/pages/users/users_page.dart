@@ -1,9 +1,9 @@
-import 'package:condominioapp/ui/pages/pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../components/components.dart';
 
+import '../../pages/pages.dart';
 import '../../pages/users/components/components.dart';
 
 class UsersPage extends StatefulWidget {
