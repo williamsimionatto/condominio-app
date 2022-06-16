@@ -5,6 +5,7 @@ import '../../domain/usecases/usecases.dart';
 import '../../ui/pages/pages.dart';
 
 import '../protocols/protocols.dart';
+import '../mixins/mixins.dart';
 
 class LoginState {
   String? email;
@@ -23,7 +24,7 @@ class LoginState {
       password != null;
 }
 
-class StreamLoginPresenter implements LoginPresenter {
+class StreamLoginPresenter with LoadingManager implements LoginPresenter {
   final Validation validation;
   final Authentication authentication;
   final SaveCurrentAccount saveCurrentAccount;
@@ -52,10 +53,6 @@ class StreamLoginPresenter implements LoginPresenter {
   Stream<bool?>? get isFormValidStream =>
       _controller?.stream.map((state) => state.isFormValid).distinct();
 
-  @override
-  Stream<bool?>? get isLoadingStream =>
-      _controller?.stream.map((state) => state.isLoading).distinct();
-
   StreamLoginPresenter({
     required this.validation,
     required this.authentication,
@@ -80,8 +77,8 @@ class StreamLoginPresenter implements LoginPresenter {
   Future<void> auth() async {
     try {
       _state.mainError = null;
-      _state.isLoading = true;
       _update();
+      isLoading = true;
 
       final account = await authentication.auth(
           AuthenticationParams(email: _state.email!, secret: _state.password!));
@@ -91,8 +88,8 @@ class StreamLoginPresenter implements LoginPresenter {
       _update();
     } on DomainError catch (error) {
       _state.mainError = error.description;
-      _state.isLoading = false;
       _update();
+      isLoading = false;
     }
   }
 
