@@ -58,7 +58,7 @@ void main() {
 
   test('Should emit correct events on success', () async {
     expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
-    sut.usersStream.listen(expectAsync1((users) => expect(users, [
+    sut.usersStream.listen(expectAsync1((usersData) => expect(usersData, [
           UserViewModel(
             id: users[0].id,
             name: users[0].name,

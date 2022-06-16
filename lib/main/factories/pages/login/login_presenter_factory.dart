@@ -4,7 +4,7 @@ import '../../../../ui/pages/pages.dart';
 import '../../factories.dart';
 
 LoginPresenter makeLoginPresenter() {
-  return StreamLoginPresenter(
+  return GetxLoginPresenter(
     authentication: makeRemoteAuthentication(),
     validation: makeLoginValidation(),
     saveCurrentAccount: makeLocalSaveCurrentAccount(),

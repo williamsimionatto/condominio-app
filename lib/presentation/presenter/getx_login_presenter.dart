@@ -18,7 +18,7 @@ class LoginState {
   ValidationError? passwordError;
 }
 
-class StreamLoginPresenter
+class GetxLoginPresenter extends GetxController
     with LoadingManager, NavigationManager, FormManager, ErrorManager
     implements LoginPresenter {
   final Validation validation;
@@ -36,7 +36,7 @@ class StreamLoginPresenter
   @override
   Stream<UIError?> get passwordErrorStream => _passwordError.stream;
 
-  StreamLoginPresenter({
+  GetxLoginPresenter({
     required this.validation,
     required this.authentication,
     required this.saveCurrentAccount,
