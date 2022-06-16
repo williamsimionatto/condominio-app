@@ -73,4 +73,22 @@ void main() {
       expect(future, throwsA(const TypeMatcher<Exception>()));
     });
   });
+
+  group('deleteSecure', () {
+    void mockDeleteSecureError() =>
+        when(secureStorage.delete(key: key)).thenThrow(Exception());
+
+    test('Should call delete with correct value', () async {
+      await sut.deleteSecure(key);
+
+      verify(secureStorage.delete(key: key)).called(1);
+    });
+
+    test('Should thorw if delete thorws', () async {
+      mockDeleteSecureError();
+      final future = sut.deleteSecure(key);
+
+      expect(future, throwsA(const TypeMatcher<Exception>()));
+    });
+  });
 }
