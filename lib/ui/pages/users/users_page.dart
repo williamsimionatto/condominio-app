@@ -43,14 +43,9 @@ class _UsersPageState extends State<UsersPage> {
             stream: widget.presenter.usersStream,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                return Column(
-                  children: [
-                    Text(snapshot.error as String),
-                    ElevatedButton(
-                      onPressed: widget.presenter.loadData,
-                      child: const Text('Recarregar'),
-                    ),
-                  ],
+                return ReloadScreen(
+                  error: '${snapshot.error}',
+                  reload: widget.presenter.loadData,
                 );
               }
 

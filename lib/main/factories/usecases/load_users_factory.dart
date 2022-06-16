@@ -5,6 +5,5 @@ import '../../factories/factories.dart';
 
 LoadUsers makeRemoteLoadUsers() => RemoteLoadUsers(
       url: makeApiUrl('user'),
-      httpClient: makeHttpAdapter(),
+      httpClient: makeAuthorizeHttpClientDecorator(),
     );
-// makeAuthorizeHttpClientDecorator
