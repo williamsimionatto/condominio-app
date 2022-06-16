@@ -22,7 +22,7 @@ class PasswordInput extends StatelessWidget {
                 color: AppColorsDark.withColor,
                 fontWeight: FontWeight.bold,
               ),
-              icon: const Icon(Icons.email, color: AppColorsDark.withColor),
+              icon: const Icon(Icons.lock, color: AppColorsDark.withColor),
               errorText: snapshot.data?.description,
             ),
             obscureText: true,

@@ -21,27 +21,31 @@ class HttpAdapter implements HttpClient {
         'content-type': 'application/json',
         'accept': 'application/json',
       });
-
     final jsonBody = body != null ? jsonEncode(body) : null;
     var response = Response('', 500);
-
+    Future<Response>? futureResponse;
     try {
       if (method == 'post') {
-        response = await client.post(
+        futureResponse = client.post(
           Uri.parse(url),
           headers: defaultHeaders,
           body: jsonBody,
         );
       } else if (method == 'get') {
-        response = await client.get(Uri.parse(url), headers: defaultHeaders);
+        futureResponse = client.get(Uri.parse(url), headers: defaultHeaders);
       } else if (method == 'put') {
-        response = await client.put(Uri.parse(url),
-            headers: defaultHeaders, body: jsonBody);
+        futureResponse = client.put(
+          Uri.parse(url),
+          headers: defaultHeaders,
+          body: jsonBody,
+        );
+      }
+      if (futureResponse != null) {
+        response = await futureResponse.timeout(const Duration(seconds: 10));
       }
     } catch (error) {
       throw HttpError.serverError;
     }
-
     return _handleResponse(response);
   }
 

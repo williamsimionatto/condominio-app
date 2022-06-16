@@ -17,13 +17,9 @@ class RemoteUserModel {
   });
 
   factory RemoteUserModel.fromJson(Map json) {
-    if (!json.keys.toSet().containsAll([
-      'id',
-      'name',
-      'email',
-      'active',
-      'cpf',
-    ])) {
+    if (!json.keys
+        .toSet()
+        .containsAll(['id', 'name', 'email', 'active', 'cpf'])) {
       throw HttpError.invalidData;
     }
 

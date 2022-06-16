@@ -35,11 +35,7 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Theme.of(context).backgroundColor,
       body: Builder(builder: (context) {
         widget.presenter.isLoadingStream?.listen((isLoading) async {
-          if (isLoading == true) {
-            await showLoading(context);
-          } else {
-            hideLoading(context);
-          }
+          isLoading == true ? await showLoading(context) : hideLoading(context);
         });
 
         widget.presenter.mainErrorStream?.listen((error) {
