@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:condominioapp/ui/helpers/erros/errors.dart';
+import 'package:get/state_manager.dart';
+
 import '../../domain/helpers/helpers.dart';
 import '../../domain/usecases/usecases.dart';
 import '../../ui/pages/pages.dart';
@@ -10,48 +13,28 @@ import '../mixins/mixins.dart';
 class LoginState {
   String? email;
   String? password;
-  bool? isLoading = false;
 
   ValidationError? emailError;
   ValidationError? passwordError;
-  String? mainError;
-  String? navigateTo;
-
-  bool get isFormValid =>
-      emailError == null &&
-      passwordError == null &&
-      email != null &&
-      password != null;
 }
 
-class StreamLoginPresenter with LoadingManager implements LoginPresenter {
+class StreamLoginPresenter
+    with LoadingManager, NavigationManager, FormManager, ErrorManager
+    implements LoginPresenter {
   final Validation validation;
   final Authentication authentication;
   final SaveCurrentAccount saveCurrentAccount;
 
-  StreamController<LoginState>? _controller =
-      StreamController<LoginState>.broadcast();
-  final _state = LoginState();
+  final _emailError = Rx<UIError?>(null);
+  final _passwordError = Rx<UIError?>(null);
+
+  String? _email;
+  String? _password;
 
   @override
-  Stream<ValidationError?>? get emailErrorStream =>
-      _controller?.stream.map((state) => state.emailError).distinct();
-
+  Stream<UIError?> get emailErrorStream => _emailError.stream;
   @override
-  Stream<ValidationError?>? get passwordErrorStream =>
-      _controller?.stream.map((state) => state.passwordError).distinct();
-
-  @override
-  Stream<String?>? get mainErrorStream =>
-      _controller?.stream.map((state) => state.mainError).distinct();
-
-  @override
-  Stream<String?>? get navigateToStream =>
-      _controller?.stream.map((state) => state.navigateTo).distinct();
-
-  @override
-  Stream<bool?>? get isFormValidStream =>
-      _controller?.stream.map((state) => state.isFormValid).distinct();
+  Stream<UIError?> get passwordErrorStream => _passwordError.stream;
 
   StreamLoginPresenter({
     required this.validation,
@@ -60,53 +43,66 @@ class StreamLoginPresenter with LoadingManager implements LoginPresenter {
   });
 
   @override
-  void validateEmail(String email) {
-    _state.email = email;
-    _state.emailError = _validateField('email');
-    _update();
-  }
-
-  @override
-  void validatePassword(String password) {
-    _state.password = password;
-    _state.passwordError = _validateField('password');
-    _update();
-  }
-
-  @override
   Future<void> auth() async {
     try {
-      _state.mainError = null;
-      _update();
+      mainError = null;
       isLoading = true;
 
-      final account = await authentication.auth(
-          AuthenticationParams(email: _state.email!, secret: _state.password!));
+      final account = await authentication
+          .auth(AuthenticationParams(email: _email!, secret: _password!));
       await saveCurrentAccount.save(account!);
 
-      _state.navigateTo = '/home';
-      _update();
+      navigateTo = '/home';
     } on DomainError catch (error) {
-      _state.mainError = error.description;
-      _update();
+      switch (error) {
+        case DomainError.invalidCredentials:
+          mainError = UIError.invalidCredentials;
+          break;
+        default:
+          mainError = UIError.unexpected;
+          break;
+      }
       isLoading = false;
     }
   }
 
-  ValidationError? _validateField(String field) {
-    final formData = {
-      'email': _state.email,
-      'password': _state.password,
-    };
+  @override
+  void validateEmail(String email) {
+    _email = email;
+    _emailError.value = _validateField('email');
 
-    return validation.validate(field: field, input: formData);
+    _validateForm();
   }
 
-  void _update() => _controller?.add(_state);
-
   @override
-  void dispose() {
-    _controller?.close();
-    _controller = null;
+  void validatePassword(String password) {
+    _password = password;
+    _passwordError.value = _validateField('password');
+
+    _validateForm();
+  }
+
+  UIError? _validateField(String field) {
+    final formData = {
+      'email': _email,
+      'password': _password,
+    };
+
+    final error = validation.validate(field: field, input: formData);
+    switch (error) {
+      case ValidationError.invalidField:
+        return UIError.invalidField;
+      case ValidationError.requiredField:
+        return UIError.requiredField;
+      default:
+        return null;
+    }
+  }
+
+  void _validateForm() {
+    isFormValid = _emailError.value == null &&
+        _passwordError.value == null &&
+        _email != null &&
+        _password != null;
   }
 }

@@ -1,9 +1,9 @@
-import 'package:condominioapp/presentation/protocols/validation.dart';
+import 'package:condominioapp/ui/helpers/erros/errors.dart';
 
 abstract class LoginPresenter {
-  Stream<ValidationError?>? get emailErrorStream;
-  Stream<ValidationError?>? get passwordErrorStream;
-  Stream<String?>? get mainErrorStream;
+  Stream<UIError?>? get emailErrorStream;
+  Stream<UIError?>? get passwordErrorStream;
+  Stream<UIError?>? get mainErrorStream;
   Stream<String?>? get navigateToStream;
   Stream<bool?>? get isFormValidStream;
   Stream<bool?>? get isLoadingStream;
@@ -11,5 +11,4 @@ abstract class LoginPresenter {
   void validateEmail(String email);
   void validatePassword(String password);
   Future<void> auth();
-  void dispose();
 }
