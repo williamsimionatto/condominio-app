@@ -1,56 +1,28 @@
+import 'package:condominioapp/ui/mixins/mixins.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/components.dart';
 import 'login_presenter.dart';
 import 'components/components.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends StatelessWidget
+    with KeyboardManager, LoadingManager, UIErrorManager, NavigationManager {
   final LoginPresenter presenter;
 
-  const LoginPage(this.presenter, {Key? key}) : super(key: key);
-
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  void _hideKeyboard() {
-    final currenctFocus = FocusScope.of(context);
-    if (!currenctFocus.hasPrimaryFocus) {
-      currenctFocus.unfocus();
-    }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  LoginPage(this.presenter, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: Builder(builder: (context) {
-        widget.presenter.isLoadingStream?.listen((isLoading) async {
-          isLoading == true ? await showLoading(context) : hideLoading(context);
-        });
-
-        widget.presenter.mainErrorStream?.listen((error) {
-          if (error != null) {
-            showErrorMessage(context, error as String);
-          }
-        });
-
-        widget.presenter.navigateToStream?.listen((page) {
-          if (page?.isNotEmpty == true) {
-            Get.offAllNamed(page as String);
-          }
-        });
+        handleLoading(context, presenter.isLoadingStream);
+        handleMainError(context, presenter.mainErrorStream);
+        handleNavigation(presenter.navigateToStream, clear: true);
 
         return GestureDetector(
-          onTap: _hideKeyboard,
+          onTap: () => hideKeyboard(context),
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
@@ -58,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
                 Padding(
                   padding: const EdgeInsets.all(38),
                   child: Provider(
-                    create: (_) => widget.presenter,
+                    create: (_) => presenter,
                     child: Form(
                       child: Column(
                         children: const <Widget>[
