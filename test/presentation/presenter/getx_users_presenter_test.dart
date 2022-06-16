@@ -80,7 +80,7 @@ void main() {
     sut.usersStream.listen(
       null,
       onError: expectAsync1(
-        (error) => expect(error, DomainError.unexpected.description),
+        (error,) => expect(error, DomainError.unexpected.description),
       ),
     );
 

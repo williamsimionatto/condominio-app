@@ -14,7 +14,8 @@ class GetxUsersPresenter extends GetxController implements UsersPresenter {
   @override
   Stream<bool> get isLoadingStream => _isLoading.stream;
   @override
-  Stream<List<UserViewModel>> get usersStream => _users.stream;
+  Stream<List<UserViewModel>> get usersStream =>
+      _users.stream.map((users) => users.toList());
 
   GetxUsersPresenter({required this.loadUsers});
 
@@ -33,7 +34,10 @@ class GetxUsersPresenter extends GetxController implements UsersPresenter {
               ))
           .toList();
     } on DomainError {
-      _users.subject.addError(DomainError.unexpected.description);
+      _users.subject.addError(
+        DomainError.unexpected.description,
+        StackTrace.empty,
+      );
     } finally {
       _isLoading.value = false;
     }
