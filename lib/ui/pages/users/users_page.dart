@@ -37,6 +37,12 @@ class _UsersPageState extends State<UsersPage> {
             }
           });
 
+          widget.presenter.isSessionExpiredStream?.listen((isExpired) {
+            if (isExpired == true) {
+              Get.offAllNamed('/login');
+            }
+          });
+
           widget.presenter.loadData();
 
           return StreamBuilder<List<UserViewModel>?>(
