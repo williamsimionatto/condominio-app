@@ -1,5 +1,5 @@
 import 'package:condominioapp/ui/components/components.dart';
-import 'package:condominioapp/ui/helpers/erros/errors.dart';
+import 'package:condominioapp/ui/helpers/errors/errors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../login_presenter.dart';

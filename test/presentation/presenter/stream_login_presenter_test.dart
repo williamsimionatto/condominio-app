@@ -1,4 +1,4 @@
-import 'package:condominioapp/ui/helpers/erros/errors.dart';
+import 'package:condominioapp/ui/helpers/helpers.dart';
 import 'package:faker/faker.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';

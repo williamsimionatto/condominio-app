@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:condominioapp/ui/helpers/erros/errors.dart';
+import 'package:condominioapp/ui/helpers/helpers.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';

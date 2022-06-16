@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:condominioapp/ui/helpers/erros/errors.dart';
-import 'package:get/state_manager.dart';
+import 'package:condominioapp/ui/helpers/helpers.dart';
+import 'package:get/get.dart';
 
 import '../../domain/helpers/helpers.dart';
 import '../../domain/usecases/usecases.dart';
