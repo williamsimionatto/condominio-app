@@ -7,14 +7,18 @@ import 'package:test/test.dart';
 import 'package:condominioapp/data/cache/cache.dart';
 import 'package:condominioapp/main/decorators/decorators.dart';
 
-class AuthorizeHttpClientDecoratorSpy extends Mock
+class FetchSecureCacheStorageSpy extends Mock
     implements FetchSecureCacheStorage {}
+
+class DeleteSecureCacheStorageSpy extends Mock
+    implements DeleteSecureCacheStorage {}
 
 class HttpClientSpy extends Mock implements HttpClient {}
 
 void main() {
   late HttpClient httpClient;
   late FetchSecureCacheStorage fetchSecureCacheStorage;
+  late DeleteSecureCacheStorage deleteSecureCacheStorage;
   late AuthorizeHttpClientDecorator sut;
   late String url;
   late String method;
@@ -53,9 +57,11 @@ void main() {
 
   setUp(() {
     httpClient = HttpClientSpy();
-    fetchSecureCacheStorage = AuthorizeHttpClientDecoratorSpy();
+    deleteSecureCacheStorage = DeleteSecureCacheStorageSpy();
+    fetchSecureCacheStorage = FetchSecureCacheStorageSpy();
     sut = AuthorizeHttpClientDecorator(
       fetchSecureCacheStorage: fetchSecureCacheStorage,
+      deleteSecureCacheStorage: deleteSecureCacheStorage,
       decoratee: httpClient,
     );
 
@@ -99,6 +105,7 @@ void main() {
     final future = sut.request(url: url, method: method, body: body);
 
     expect(future, throwsA(HttpError.forbidden));
+    verify(deleteSecureCacheStorage.deleteSecure('token')).called(1);
   });
 
   test('Should rethorw if decoratee throws', () async {
