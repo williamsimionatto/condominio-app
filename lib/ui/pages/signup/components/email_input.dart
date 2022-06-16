@@ -1,7 +1,8 @@
-import 'package:condominioapp/presentation/protocols/validation.dart';
+import 'package:condominioapp/ui/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../signup_presenter.dart';
+import '../../../../presentation/protocols/protocols.dart';
 
 class EmailInput extends StatelessWidget {
   const EmailInput({
@@ -18,11 +19,11 @@ class EmailInput extends StatelessWidget {
         return TextFormField(
           decoration: InputDecoration(
             labelText: 'E-mail',
-            labelStyle: TextStyle(
-              color: Theme.of(context).primaryColor,
+            labelStyle: const TextStyle(
+              color: AppColorsDark.withColor,
               fontWeight: FontWeight.bold,
             ),
-            icon: Icon(Icons.email, color: Theme.of(context).primaryColor),
+            icon: const Icon(Icons.email, color: AppColorsDark.withColor),
             errorText: snapshot.data?.description,
           ),
           style: const TextStyle(color: Colors.white),

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
-class AppColorsDark {
-  static const Color backgroundColor = Color(0xFF252422);
-  static const Color primaryColor = Color(0xFFF24B4B);
-  static const Color primaryColorLight = Color(0xFFFF7582);
-  static const Color withColor = Color(0xFFF2F0D8);
+abstract class AppColors {
+  static late Color backgroundColor;
+  static late Color primaryColor;
+  static late Color primaryColorLight;
+  static late Color withColor;
+  static late Color alertColor;
+  static late Color warnigColor;
+  static late Color successColor;
+  static late ButtonStyle buttonStyle;
 }

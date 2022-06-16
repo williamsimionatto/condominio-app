@@ -11,7 +11,6 @@ class SignUpState {
   String? name;
   String? password;
   String? passwordConfirmation;
-  String? navigateTo;
   bool? isLoading;
 
   ValidationError? emailError;
@@ -19,6 +18,7 @@ class SignUpState {
   ValidationError? passwordError;
   ValidationError? passwordConfirmationError;
   String? mainError;
+  String? navigateTo;
 
   bool get isFormValid =>
       nameError == null &&
@@ -61,6 +61,7 @@ class StreamSignUpPresenter implements SignUpPresenter {
   @override
   Stream<bool?>? get isLoadingStream =>
       _controller?.stream.map((state) => state.isLoading).distinct();
+
   @override
   Stream<String?>? get mainErrorStream =>
       _controller?.stream.map((state) => state.mainError).distinct();
@@ -107,6 +108,8 @@ class StreamSignUpPresenter implements SignUpPresenter {
     try {
       _state.mainError = null;
       _state.isLoading = true;
+      _update();
+
       final account = await addAccount.add(AddAccountParams(
         name: _state.name!,
         email: _state.email!,
@@ -118,20 +121,13 @@ class StreamSignUpPresenter implements SignUpPresenter {
       _state.navigateTo = '/users';
       _update();
     } on DomainError catch (error) {
-      switch (error) {
-        case DomainError.emailInUse:
-          _state.mainError = error.description;
-          break;
-        default:
-          _state.mainError = error.description;
-          break;
-      }
+      _state.mainError = error.description;
       _state.isLoading = false;
       _update();
     }
   }
 
-  ValidationError _validateField(String field) {
+  ValidationError? _validateField(String field) {
     final formData = {
       'name': _state.name,
       'email': _state.email,
@@ -139,9 +135,7 @@ class StreamSignUpPresenter implements SignUpPresenter {
       'passwordConfirmation': _state.passwordConfirmation,
     };
 
-    final error = validation.validate(field: field, input: formData);
-
-    return error ?? null as ValidationError;
+    return validation.validate(field: field, input: formData);
   }
 
   void _update() => _controller?.add(_state);

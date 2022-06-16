@@ -33,10 +33,16 @@ class _SignUpState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text("Usuários"),
+        backgroundColor: Theme.of(context).primaryColor,
+        titleTextStyle: Theme.of(context).textTheme.headline2,
+      ),
       body: Builder(builder: (context) {
-        widget.presenter.isLoadingStream?.listen((isLoading) {
+        widget.presenter.isLoadingStream?.listen((isLoading) async {
           if (isLoading == true) {
-            showLoading(context);
+            await showLoading(context);
           } else {
             hideLoading(context);
           }
@@ -73,7 +79,7 @@ class _SignUpState extends State<SignUpPage> {
                           ),
                           PasswordInput(),
                           Padding(
-                            padding: EdgeInsets.only(top: 24, bottom: 32),
+                            padding: EdgeInsets.symmetric(vertical: 8),
                             child: PasswordConfirmationInput(),
                           ),
                           Center(

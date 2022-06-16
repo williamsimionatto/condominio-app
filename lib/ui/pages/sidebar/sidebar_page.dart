@@ -10,8 +10,8 @@ class NavBar extends StatelessWidget {
       backgroundColor: Theme.of(context).backgroundColor,
       child: ListView(
         padding: EdgeInsets.zero,
-        children: const [
-          UserAccountsDrawerHeader(
+        children: [
+          const UserAccountsDrawerHeader(
             accountName: Text('Willim Simionatto',
                 style: TextStyle(fontSize: 20, color: AppColorsDark.withColor)),
             accountEmail: Text('Administrador',
@@ -19,13 +19,34 @@ class NavBar extends StatelessWidget {
             decoration: BoxDecoration(color: AppColorsDark.primaryColor),
           ),
           ListTile(
-            title: Text('Usuários',
-                style: TextStyle(fontSize: 15, color: AppColorsDark.withColor)),
+            title: const Text(
+              'ínicio',
+              style: TextStyle(fontSize: 15, color: AppColorsDark.withColor),
+            ),
+            leading: const Icon(
+              Icons.home,
+              color: AppColorsDark.withColor,
+            ),
+            onTap: () {
+              Navigator.of(context).popAndPushNamed('/home');
+            },
           ),
-          Divider(),
+          const Divider(),
           ListTile(
-            title: Text('Sair',
-                style: TextStyle(fontSize: 15, color: AppColorsDark.withColor)),
+            title: const Text(
+              'Usuários',
+              style: TextStyle(fontSize: 15, color: AppColorsDark.withColor),
+            ),
+            onTap: () {
+              Navigator.of(context).popAndPushNamed('/users');
+            },
+          ),
+          const Divider(),
+          const ListTile(
+            title: Text(
+              'Sair',
+              style: TextStyle(fontSize: 15, color: AppColorsDark.withColor),
+            ),
             leading: Icon(Icons.exit_to_app, color: AppColorsDark.primaryColor),
           ),
         ],

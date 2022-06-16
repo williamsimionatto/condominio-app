@@ -1,4 +1,5 @@
 import 'package:condominioapp/presentation/protocols/validation.dart';
+import 'package:condominioapp/ui/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../login_presenter.dart';
@@ -17,13 +18,11 @@ class PasswordInput extends StatelessWidget {
           return TextFormField(
             decoration: InputDecoration(
               labelText: 'Senha',
-              labelStyle: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold),
-              icon: Icon(
-                Icons.lock,
-                color: Theme.of(context).primaryColor,
+              labelStyle: const TextStyle(
+                color: AppColorsDark.withColor,
+                fontWeight: FontWeight.bold,
               ),
+              icon: const Icon(Icons.lock, color: AppColorsDark.withColor),
               errorText: snapshot.data?.description,
             ),
             obscureText: true,
