@@ -21,15 +21,15 @@ void main() {
           'id': faker.randomGenerator.integer(10, min: 1),
           'name': faker.person.name(),
           'email': faker.internet.email(),
-          'active': faker.randomGenerator.boolean(),
-          'cpf': faker.randomGenerator.integer(11, min: 11)
+          'active': faker.randomGenerator.element(['S', 'N']),
+          'cpf': faker.randomGenerator.string(11, min: 11)
         },
         {
           'id': faker.randomGenerator.integer(10, min: 1),
           'name': faker.person.name(),
           'email': faker.internet.email(),
-          'active': faker.randomGenerator.boolean(),
-          'cpf': faker.randomGenerator.integer(11, min: 11)
+          'active': faker.randomGenerator.element(['S', 'N']),
+          'cpf': faker.randomGenerator.string(11, min: 11)
         }
       ];
 

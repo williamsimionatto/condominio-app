@@ -40,9 +40,9 @@ class _SignUpState extends State<SignUpPage> {
         titleTextStyle: Theme.of(context).textTheme.headline2,
       ),
       body: Builder(builder: (context) {
-        widget.presenter.isLoadingStream?.listen((isLoading) {
+        widget.presenter.isLoadingStream?.listen((isLoading) async {
           if (isLoading == true) {
-            showLoading(context);
+            await showLoading(context);
           } else {
             hideLoading(context);
           }

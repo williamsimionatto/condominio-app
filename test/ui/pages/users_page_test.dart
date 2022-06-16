@@ -72,8 +72,7 @@ void main() {
     verify(presenter.loadData()).called(1);
   });
 
-  testWidgets('Should call handle loading correctly',
-      (WidgetTester tester) async {
+  testWidgets('Should handle loading correctly', (WidgetTester tester) async {
     await loadPage(tester);
 
     isLoadingController.add(true);
@@ -83,6 +82,10 @@ void main() {
     isLoadingController.add(false);
     await tester.pump();
     expect(find.byType(CircularProgressIndicator), findsNothing);
+
+    isLoadingController.add(true);
+    await tester.pump();
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 
   testWidgets('Should presenter error if loadUsersStream fails',
