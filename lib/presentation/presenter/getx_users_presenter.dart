@@ -38,11 +38,15 @@ class GetxUsersPresenter extends GetxController implements UsersPresenter {
                 cpf: user.cpf,
               ))
           .toList();
-    } on DomainError {
-      _users.subject.addError(
-        DomainError.unexpected.description,
-        StackTrace.empty,
-      );
+    } on DomainError catch (error) {
+      if (error == DomainError.accessDenied) {
+        _isSessionExpired.value = true;
+      } else {
+        _users.subject.addError(
+          DomainError.unexpected.description,
+          StackTrace.empty,
+        );
+      }
     } finally {
       _isLoading.value = false;
     }

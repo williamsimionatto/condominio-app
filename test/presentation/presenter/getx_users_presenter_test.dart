@@ -41,6 +41,10 @@ void main() {
     when(loadUsers.load()).thenThrow(DomainError.unexpected);
   }
 
+  void mockAccessDeniedError() {
+    when(loadUsers.load()).thenThrow(DomainError.accessDenied);
+  }
+
   setUp(() {
     loadUsers = LoadUsersSpy();
     sut = GetxUsersPresenter(loadUsers: loadUsers);
@@ -80,9 +84,18 @@ void main() {
     sut.usersStream.listen(
       null,
       onError: expectAsync1(
-        (error,) => expect(error, DomainError.unexpected.description),
+        (error) => expect(error, DomainError.unexpected.description),
       ),
     );
+
+    await sut.loadData();
+  });
+
+  test('Should emit correct events on access denied', () async {
+    mockAccessDeniedError();
+
+    expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
+    expectLater(sut.isSessionExpiredStream, emits(true));
 
     await sut.loadData();
   });
