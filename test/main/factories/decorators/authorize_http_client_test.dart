@@ -5,41 +5,7 @@ import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
 import 'package:condominioapp/data/cache/cache.dart';
-
-class AUthorizeHttpClientDecorator implements HttpClient {
-  FetchSecureCacheStorage fetchSecureCacheStorage;
-  HttpClient decoratee;
-
-  AUthorizeHttpClientDecorator({
-    required this.fetchSecureCacheStorage,
-    required this.decoratee,
-  });
-
-  @override
-  Future<dynamic> request({
-    required String url,
-    required String method,
-    Map? body,
-    Map? headers,
-  }) async {
-    try {
-      final token = await fetchSecureCacheStorage.fetchSecure('token');
-      final authorizedHeaders = headers ?? {}
-        ..addAll({'Authorization': 'Bearer $token'});
-
-      return await decoratee.request(
-        url: url,
-        method: method,
-        body: body,
-        headers: authorizedHeaders,
-      );
-    } on HttpError {
-      rethrow;
-    } catch (error) {
-      throw HttpError.forbidden;
-    }
-  }
-}
+import 'package:condominioapp/main/decorators/decorators.dart';
 
 class AuthorizeHttpClientDecoratorSpy extends Mock
     implements FetchSecureCacheStorage {}
@@ -49,7 +15,7 @@ class HttpClientSpy extends Mock implements HttpClient {}
 void main() {
   late HttpClient httpClient;
   late FetchSecureCacheStorage fetchSecureCacheStorage;
-  late AUthorizeHttpClientDecorator sut;
+  late AuthorizeHttpClientDecorator sut;
   late String url;
   late String method;
   late Map? body;
@@ -88,7 +54,7 @@ void main() {
   setUp(() {
     httpClient = HttpClientSpy();
     fetchSecureCacheStorage = AuthorizeHttpClientDecoratorSpy();
-    sut = AUthorizeHttpClientDecorator(
+    sut = AuthorizeHttpClientDecorator(
       fetchSecureCacheStorage: fetchSecureCacheStorage,
       decoratee: httpClient,
     );
