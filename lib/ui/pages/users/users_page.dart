@@ -29,9 +29,9 @@ class _UsersPageState extends State<UsersPage> {
       ),
       body: Builder(
         builder: (BuildContext context) {
-          widget.presenter.isLoadingStream?.listen((isLoading) {
+          widget.presenter.isLoadingStream?.listen((isLoading) async {
             if (isLoading == true) {
-              showLoading(context);
+              await showLoading(context);
             } else {
               hideLoading(context);
             }
@@ -72,7 +72,7 @@ class _UsersPageState extends State<UsersPage> {
         backgroundColor: Theme.of(context).primaryColor,
         child: const Icon(Icons.add),
         onPressed: () {
-          Get.offAllNamed("users/add");
+          Get.toNamed("users/add");
         },
       ),
     );
