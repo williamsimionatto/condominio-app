@@ -25,11 +25,12 @@ class LoginPage extends StatelessWidget
           onTap: () => hideKeyboard(context),
           child: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 const LoginHeader(),
                 Padding(
                   padding: const EdgeInsets.all(38),
-                  child: Provider(
+                  child: ListenableProvider(
                     create: (_) => presenter,
                     child: Form(
                       child: Column(
