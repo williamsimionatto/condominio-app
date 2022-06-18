@@ -86,4 +86,16 @@ void main() {
         findsOneWidget);
     expect(find.text('Recarregar'), findsOneWidget);
   });
+
+  testWidgets('Should call LoadUsers on reload button click',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    loadUserController.addError(UIError.unexpected.description);
+    await tester.pump();
+
+    await tester.tap(find.text('Recarregar'));
+
+    verify(presenter.loadData()).called(2);
+  });
 }
