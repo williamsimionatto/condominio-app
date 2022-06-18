@@ -10,9 +10,9 @@ class GetxUserPresenter extends GetxController
     with LoadingManager
     implements UserPresenter {
   final LoadUser loadUser;
-  final int userId;
+  final String userId;
 
-  final _user = Rx<UserViewModel>(null as UserViewModel);
+  final _user = Rx<UserViewModel?>(null);
 
   @override
   Stream<UserViewModel?>? get userStream => _user.stream;

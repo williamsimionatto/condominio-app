@@ -12,7 +12,7 @@ class RemoteLoadUser implements LoadUser {
   RemoteLoadUser({required this.url, required this.httpClient});
 
   @override
-  Future<UserEntity> loadByUser({int? userId}) async {
+  Future<UserEntity> loadByUser({String? userId}) async {
     try {
       final httpResponse = await httpClient.request(url: url, method: 'get');
       return RemoteUserModel.fromJson(httpResponse).toEntity();

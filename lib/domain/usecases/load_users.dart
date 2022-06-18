@@ -5,5 +5,5 @@ abstract class LoadUsers {
 }
 
 abstract class LoadUser {
-  Future<UserEntity> loadByUser({int userId});
+  Future<UserEntity> loadByUser({String userId});
 }

@@ -15,7 +15,7 @@ void main() {
   late LoadUser loadUser;
   late GetxUserPresenter sut;
   late UserEntity user;
-  late int userId;
+  late String userId;
 
   UserEntity mockValidData() => const UserEntity(
         id: 1,
@@ -28,17 +28,17 @@ void main() {
 
   void mockLoadUser(UserEntity data) {
     user = data;
-    when(loadUser.loadByUser(userId: anyNamed('userId') as int))
+    when(loadUser.loadByUser(userId: anyNamed('userId') as String))
         .thenAnswer((_) async => data);
   }
 
   void mockLoadUserError() {
-    when(loadUser.loadByUser(userId: anyNamed('userId') as int))
+    when(loadUser.loadByUser(userId: anyNamed('userId') as String))
         .thenThrow(DomainError.unexpected);
   }
 
   setUp(() {
-    userId = 1;
+    userId = '1';
     loadUser = LoadUserSpy();
     sut = GetxUserPresenter(loadUser: loadUser, userId: userId);
     mockLoadUser(mockValidData());

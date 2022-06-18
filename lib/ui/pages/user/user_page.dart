@@ -21,9 +21,7 @@ class UserPage extends StatelessWidget with LoadingManager {
         backgroundColor: Theme.of(context).primaryColor,
         titleTextStyle: Theme.of(context).textTheme.headline2,
       ),
-      body: Builder(builder: (
-        context,
-      ) {
+      body: Builder(builder: (context) {
         handleLoading(context, presenter.isLoadingStream);
         presenter.loadData();
 
