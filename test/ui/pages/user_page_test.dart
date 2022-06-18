@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:condominioapp/ui/helpers/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
@@ -13,18 +14,23 @@ void main() {
   late UserPresenterSpy presenter;
 
   late StreamController<bool> isLoadingController;
+  late StreamController<UserViewModel> loadUserController;
 
   void initStreams() {
     isLoadingController = StreamController<bool>();
+    loadUserController = StreamController<UserViewModel>();
   }
 
   void mockStreams() {
     when(presenter.isLoadingStream)
         .thenAnswer((_) => isLoadingController.stream);
+
+    when(presenter.userStream).thenAnswer((_) => loadUserController.stream);
   }
 
   void closeStreams() {
     isLoadingController.close();
+    loadUserController.close();
   }
 
   Future<void> loadPage(WidgetTester tester) async {
@@ -67,5 +73,17 @@ void main() {
     isLoadingController.add(true);
     await tester.pump();
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  });
+
+  testWidgets('Should presenter error if loadUserStream fails',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    loadUserController.addError(UIError.unexpected.description);
+    await tester.pump();
+
+    expect(find.text('Algo errado aconteceu. Tente novamente em breve.'),
+        findsOneWidget);
+    expect(find.text('Recarregar'), findsOneWidget);
   });
 }

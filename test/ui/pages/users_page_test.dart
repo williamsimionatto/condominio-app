@@ -61,6 +61,7 @@ void main() {
           email: 'usuario1@mail.com',
           active: 'S',
           cpf: "123456789",
+          roleId: 1,
         ),
         const UserViewModel(
           id: 2,
@@ -68,6 +69,7 @@ void main() {
           email: 'usuario@2mail.com',
           active: 'N',
           cpf: "123456789",
+          roleId: 1,
         ),
       ];
 

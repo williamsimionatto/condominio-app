@@ -67,6 +67,7 @@ void main() {
             email: users[0].email,
             active: users[0].active,
             cpf: users[0].cpf,
+            roleId: users[0].roleId,
           ),
           UserViewModel(
             id: users[1].id,
@@ -74,6 +75,7 @@ void main() {
             email: users[1].email,
             active: users[1].active,
             cpf: users[1].cpf,
+            roleId: users[1].roleId,
           )
         ])));
     await sut.loadData();

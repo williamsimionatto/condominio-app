@@ -44,7 +44,7 @@ class _UsersPageState extends State<UsersPage>
               if (snapshot.hasError) {
                 return ReloadScreen(
                   error: '${snapshot.error}',
-                  reload: widget.presenter.loadData,
+                  reload: widget.presenter.loadData
                 );
               }
 

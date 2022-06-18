@@ -1,3 +1,4 @@
+import 'package:condominioapp/ui/components/components.dart';
 import 'package:condominioapp/ui/mixins/loading_manager.dart';
 import 'package:flutter/material.dart';
 
@@ -19,11 +20,29 @@ class UserPage extends StatelessWidget with LoadingManager {
         backgroundColor: Theme.of(context).primaryColor,
         titleTextStyle: Theme.of(context).textTheme.headline2,
       ),
-      body: Builder(builder: (context) {
+      body: Builder(builder: (
+        context,
+      ) {
         handleLoading(context, presenter.isLoadingStream);
         presenter.loadData();
 
-        return const Text("User Page");
+        return StreamBuilder<UserViewModel?>(
+          stream: presenter.userStream,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return ReloadScreen(
+                error: '${snapshot.error}',
+                reload: presenter.loadData,
+              );
+            }
+
+            if (snapshot.hasData) {
+              return const Text("User Page");
+            }
+
+            return const SizedBox(height: 0);
+          },
+        );
       }),
     );
   }

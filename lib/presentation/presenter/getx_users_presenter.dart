@@ -31,6 +31,7 @@ class GetxUsersPresenter extends GetxController
                 email: user.email,
                 active: user.active,
                 cpf: user.cpf,
+                roleId: user.roleId,
               ))
           .toList();
     } on DomainError catch (error) {
