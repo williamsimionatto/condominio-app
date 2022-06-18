@@ -5,6 +5,7 @@ import '../../components/components.dart';
 
 import '../../pages/pages.dart';
 import '../../pages/users/components/components.dart';
+import '../../mixins/mixins.dart';
 
 class UsersPage extends StatefulWidget {
   final UsersPresenter presenter;
@@ -15,9 +16,12 @@ class UsersPage extends StatefulWidget {
   State<UsersPage> createState() => _UsersPageState();
 }
 
-class _UsersPageState extends State<UsersPage> {
+class _UsersPageState extends State<UsersPage>
+    with LoadingManager, SessionManager, RouteAware {
   @override
   Widget build(BuildContext context) {
+    Get.find<RouteObserver>()
+        .subscribe(this, ModalRoute.of(context) as PageRoute);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       drawer: const NavBar(),
@@ -29,19 +33,8 @@ class _UsersPageState extends State<UsersPage> {
       ),
       body: Builder(
         builder: (BuildContext context) {
-          widget.presenter.isLoadingStream?.listen((isLoading) async {
-            if (isLoading == true) {
-              await showLoading(context);
-            } else {
-              hideLoading(context);
-            }
-          });
-
-          widget.presenter.isSessionExpiredStream?.listen((isExpired) {
-            if (isExpired == true) {
-              Get.offAllNamed('/login');
-            }
-          });
+          handleLoading(context, widget.presenter.isLoadingStream);
+          handleSessionExpired(widget.presenter.isSessionExpiredStream);
 
           widget.presenter.loadData();
 
@@ -77,5 +70,16 @@ class _UsersPageState extends State<UsersPage> {
         },
       ),
     );
+  }
+
+  @override
+  void didPopNext() {
+    widget.presenter.loadData();
+  }
+
+  @override
+  void dispose() {
+    Get.find<RouteObserver>().unsubscribe(this);
+    super.dispose();
   }
 }

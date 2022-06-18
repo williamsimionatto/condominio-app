@@ -1,5 +1,6 @@
 import 'package:condominioapp/ui/components/components.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class NavBar extends StatelessWidget {
   const NavBar({Key? key}) : super(key: key);
@@ -12,7 +13,7 @@ class NavBar extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           const UserAccountsDrawerHeader(
-            accountName: Text('Willim Simionatto',
+            accountName: Text('William Simionatto',
                 style: TextStyle(fontSize: 20, color: AppColorsDark.withColor)),
             accountEmail: Text('Administrador',
                 style: TextStyle(fontSize: 15, color: AppColorsDark.withColor)),
@@ -28,7 +29,7 @@ class NavBar extends StatelessWidget {
               color: AppColorsDark.withColor,
             ),
             onTap: () {
-              Navigator.of(context).popAndPushNamed('/home');
+              Get.offNamed('/home');
             },
           ),
           const Divider(),
@@ -38,7 +39,7 @@ class NavBar extends StatelessWidget {
               style: TextStyle(fontSize: 15, color: AppColorsDark.withColor),
             ),
             onTap: () {
-              Navigator.of(context).popAndPushNamed('/users');
+              Get.offNamed('/users');
             },
           ),
           const Divider(),
