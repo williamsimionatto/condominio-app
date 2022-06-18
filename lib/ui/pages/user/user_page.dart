@@ -1,8 +1,9 @@
+import 'package:condominioapp/ui/mixins/loading_manager.dart';
 import 'package:flutter/material.dart';
 
 import '../../pages/pages.dart';
 
-class UserPage extends StatelessWidget {
+class UserPage extends StatelessWidget with LoadingManager {
   final UserPresenter presenter;
 
   const UserPage(this.presenter, {Key? key}) : super(key: key);
@@ -19,6 +20,7 @@ class UserPage extends StatelessWidget {
         titleTextStyle: Theme.of(context).textTheme.headline2,
       ),
       body: Builder(builder: (context) {
+        handleLoading(context, presenter.isLoadingStream);
         presenter.loadData();
 
         return const Text("User Page");
