@@ -73,7 +73,7 @@ class _UsersPageState extends State<UsersPage> {
         backgroundColor: Theme.of(context).primaryColor,
         child: const Icon(Icons.add),
         onPressed: () {
-          Get.toNamed("users/add");
+          Get.offNamed("users/add");
         },
       ),
     );
