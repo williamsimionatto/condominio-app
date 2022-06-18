@@ -7,7 +7,7 @@ import '../../../domain/usecases/usecases.dart';
 import '../../../ui/pages/pages.dart';
 
 class GetxUsersPresenter extends GetxController
-    with SessionManager, LoadingManager
+    with SessionManager, LoadingManager, NavigationManager
     implements UsersPresenter {
   final LoadUsers loadUsers;
 
@@ -46,5 +46,10 @@ class GetxUsersPresenter extends GetxController
     } finally {
       isLoading = false;
     }
+  }
+
+  @override
+  void goToUser(int userId) {
+    navigateTo = '/user/$userId';
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 import '../../components/components.dart';
 
@@ -17,7 +18,7 @@ class UsersPage extends StatefulWidget {
 }
 
 class _UsersPageState extends State<UsersPage>
-    with LoadingManager, SessionManager, RouteAware {
+    with LoadingManager, SessionManager, NavigationManager, RouteAware {
   @override
   Widget build(BuildContext context) {
     Get.find<RouteObserver>()
@@ -35,6 +36,7 @@ class _UsersPageState extends State<UsersPage>
         builder: (BuildContext context) {
           handleLoading(context, widget.presenter.isLoadingStream);
           handleSessionExpired(widget.presenter.isSessionExpiredStream);
+          handleNavigation(widget.presenter.navigateToStream);
 
           widget.presenter.loadData();
 
@@ -44,16 +46,14 @@ class _UsersPageState extends State<UsersPage>
               if (snapshot.hasError) {
                 return ReloadScreen(
                   error: '${snapshot.error}',
-                  reload: widget.presenter.loadData
+                  reload: widget.presenter.loadData,
                 );
               }
 
               if (snapshot.hasData) {
-                return ListView(
-                  padding: const EdgeInsets.all(8),
-                  children: snapshot.data!
-                      .map((viewModel) => UserItem(viewModel))
-                      .toList(),
+                return Provider(
+                  create: (_) => widget.presenter,
+                  child: UserListView(users: snapshot.data!),
                 );
               }
 
@@ -81,5 +81,21 @@ class _UsersPageState extends State<UsersPage>
   void dispose() {
     Get.find<RouteObserver>().unsubscribe(this);
     super.dispose();
+  }
+}
+
+class UserListView extends StatelessWidget {
+  final List<UserViewModel> users;
+
+  const UserListView({
+    Key? key,
+    required this.users,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+        padding: const EdgeInsets.all(8),
+        children: users.map((viewModel) => UserItem(viewModel)).toList());
   }
 }

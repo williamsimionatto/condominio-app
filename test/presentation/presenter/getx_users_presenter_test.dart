@@ -103,4 +103,11 @@ void main() {
 
     await sut.loadData();
   });
+
+  test('Should got to UserPage on user click', () async {
+    sut.navigateToStream
+        .listen(expectAsync1((page) => expect(page, '/user/1')));
+
+    sut.goToUser(1);
+  });
 }
