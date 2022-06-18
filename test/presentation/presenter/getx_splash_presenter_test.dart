@@ -12,7 +12,7 @@ class LoadCurrentAccountSpy extends Mock implements LoadCurrentAccount {}
 class JWTValidatorSpy extends Mock implements JWTValidator {}
 
 void main() {
-  late StreamSplashPresenter sut;
+  late GetxSplashPresenter sut;
   late LoadCurrentAccount loadCurrentAccount;
   late JWTValidator jwtValidator;
 
@@ -30,7 +30,7 @@ void main() {
   setUp(() {
     loadCurrentAccount = LoadCurrentAccountSpy();
     jwtValidator = JWTValidatorSpy();
-    sut = StreamSplashPresenter(
+    sut = GetxSplashPresenter(
       loadCurrentAccount: loadCurrentAccount,
       jwtValidator: jwtValidator,
     );
@@ -44,21 +44,21 @@ void main() {
   });
 
   test('Should go to home page on success', () async* {
-    sut.navigateToStream?.listen((page) => expect(page, '/home'));
+    sut.navigateToStream.listen((page) => expect(page, '/home'));
 
     await sut.checkAccount(durationInSeconds: 0);
   });
 
   test('Should go to login page on null result', () async* {
     mockLoadCurrentAccount(account: null as AccountEntity);
-    sut.navigateToStream?.listen((page) => expect(page, '/login'));
+    sut.navigateToStream.listen((page) => expect(page, '/login'));
 
     await sut.checkAccount(durationInSeconds: 0);
   });
 
   test('Should go to login page on error', () async* {
     mockLoadCurrentAccountError();
-    sut.navigateToStream?.listen((page) => expect(page, '/login'));
+    sut.navigateToStream.listen((page) => expect(page, '/login'));
 
     await sut.checkAccount(durationInSeconds: 0);
   });

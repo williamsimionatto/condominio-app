@@ -4,7 +4,7 @@ import '../../../../ui/pages/pages.dart';
 import '../../factories.dart';
 
 SplashPresenter makeSplashPresenter() {
-  return StreamSplashPresenter(
+  return GetxSplashPresenter(
     loadCurrentAccount: makeLocalLoadCurrentAccount(),
     jwtValidator: makeJWTValidator(),
   );

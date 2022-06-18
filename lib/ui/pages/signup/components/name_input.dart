@@ -1,5 +1,5 @@
-import 'package:condominioapp/presentation/protocols/validation.dart';
 import 'package:condominioapp/ui/components/components.dart';
+import 'package:condominioapp/ui/helpers/helpers.dart';
 import 'package:condominioapp/ui/pages/pages.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +13,7 @@ class NameInput extends StatelessWidget {
   Widget build(BuildContext context) {
     final presenter = Provider.of<SignUpPresenter>(context);
 
-    return StreamBuilder<ValidationError?>(
+    return StreamBuilder<UIError?>(
       stream: presenter.nameErrorStream,
       builder: (context, snapshot) {
         return TextFormField(

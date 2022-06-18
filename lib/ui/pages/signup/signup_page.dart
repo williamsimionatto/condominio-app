@@ -1,33 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'components/components.dart';
 
-import 'package:condominioapp/ui/components/components.dart';
 import 'package:condominioapp/ui/pages/pages.dart';
+import 'package:condominioapp/ui/mixins/mixins.dart';
 
-class SignUpPage extends StatefulWidget {
+class SignUpPage extends StatelessWidget
+    with KeyboardManager, LoadingManager, UIErrorManager, NavigationManager {
   final SignUpPresenter presenter;
 
-  const SignUpPage(this.presenter, {Key? key}) : super(key: key);
-
-  @override
-  State<SignUpPage> createState() => _SignUpState();
-}
-
-class _SignUpState extends State<SignUpPage> {
-  void _hideKeyboard() {
-    final currenctFocus = FocusScope.of(context);
-    if (!currenctFocus.hasPrimaryFocus) {
-      currenctFocus.unfocus();
-    }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    widget.presenter.dispose();
-  }
+  SignUpPage(this.presenter, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,46 +22,31 @@ class _SignUpState extends State<SignUpPage> {
         titleTextStyle: Theme.of(context).textTheme.headline2,
       ),
       body: Builder(builder: (context) {
-        widget.presenter.isLoadingStream?.listen((isLoading) async {
-          if (isLoading == true) {
-            await showLoading(context);
-          } else {
-            hideLoading(context);
-          }
-        });
-
-        widget.presenter.mainErrorStream?.listen((error) {
-          if (error?.isNotEmpty == true) {
-            showErrorMessage(context, error as String);
-          }
-        });
-
-        widget.presenter.navigateToStream?.listen((page) {
-          if (page?.isNotEmpty == true) {
-            Get.offAllNamed(page as String);
-          }
-        });
+        handleLoading(context, presenter.isLoadingStream);
+        handleMainError(context, presenter.mainErrorStream);
+        handleNavigation(presenter.navigateToStream, clear: false);
 
         return GestureDetector(
-          onTap: _hideKeyboard,
+          onTap: () => hideKeyboard(context),
           child: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(38),
-                  child: Provider(
-                    create: (_) => widget.presenter,
+                  child: ListenableProvider(
+                    create: (_) => presenter,
                     child: Form(
                       child: Column(
                         children: const <Widget>[
                           NameInput(),
                           Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8),
+                            padding: EdgeInsets.symmetric(vertical: 16),
                             child: EmailInput(),
                           ),
                           PasswordInput(),
                           Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8),
+                            padding: EdgeInsets.symmetric(vertical: 16),
                             child: PasswordConfirmationInput(),
                           ),
                           Center(
