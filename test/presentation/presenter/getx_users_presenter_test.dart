@@ -22,6 +22,7 @@ void main() {
           email: 'usuario1@mail.com',
           active: 'S',
           cpf: "123456789",
+          roleId: 1,
         ),
         const UserEntity(
           id: 1,
@@ -29,6 +30,7 @@ void main() {
           email: 'usuario1@mail.com',
           active: 'S',
           cpf: "123456789",
+          roleId: 1,
         ),
       ];
 

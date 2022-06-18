@@ -68,6 +68,7 @@ void main() {
         email: list[0]['email'],
         active: list[0]['active'],
         cpf: list[0]['cpf'],
+        roleId: list[0]['roleId'],
       ),
       UserEntity(
         id: list[1]['id'],
@@ -75,6 +76,7 @@ void main() {
         email: list[1]['email'],
         active: list[1]['active'],
         cpf: list[1]['cpf'],
+        roleId: list[1]['roleId'],
       ),
     ]);
   });
