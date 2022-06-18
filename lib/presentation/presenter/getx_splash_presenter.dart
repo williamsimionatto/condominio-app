@@ -1,25 +1,18 @@
 import 'dart:async';
 
+import 'package:get/get_state_manager/get_state_manager.dart';
+
 import '../../domain/usecases/usecases.dart';
 import '../../ui/pages/pages.dart';
+import '../mixins/mixins.dart';
 
-class SplashState {
-  String? navigateTo;
-}
-
-class StreamSplashPresenter implements SplashPresenter {
+class GetxSplashPresenter extends GetxController
+    with NavigationManager
+    implements SplashPresenter {
   final LoadCurrentAccount loadCurrentAccount;
   final JWTValidator jwtValidator;
 
-  StreamController<SplashState>? _controller =
-      StreamController<SplashState>.broadcast();
-  final _state = SplashState();
-
-  @override
-  Stream<String?>? get navigateToStream =>
-      _controller?.stream.map((state) => state.navigateTo).distinct();
-
-  StreamSplashPresenter({
+  GetxSplashPresenter({
     required this.loadCurrentAccount,
     required this.jwtValidator,
   });
@@ -30,19 +23,14 @@ class StreamSplashPresenter implements SplashPresenter {
     try {
       final account = await loadCurrentAccount.load();
       if (account.token.isEmpty == true) {
-        _state.navigateTo = '/home';
+        navigateTo = '/home';
       } else if (jwtValidator.hasExpired(account.token)) {
-        _state.navigateTo = '/login';
+        navigateTo = '/login';
       } else {
-        _state.navigateTo = '/home';
+        navigateTo = '/home';
       }
-
-      _update();
     } catch (error) {
-      _state.navigateTo = '/login';
-      _update();
+      navigateTo = '/login';
     }
   }
-
-  void _update() => _controller?.add(_state);
 }
