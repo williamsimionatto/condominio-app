@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../../pages/pages.dart';
 
 class UserPage extends StatelessWidget {
-  const UserPage({Key? key}) : super(key: key);
+  final UserPresenter presenter;
+
+  const UserPage(this.presenter, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,11 @@ class UserPage extends StatelessWidget {
         backgroundColor: Theme.of(context).primaryColor,
         titleTextStyle: Theme.of(context).textTheme.headline2,
       ),
-      body: const Text("User Page"),
+      body: Builder(builder: (context) {
+        presenter.loadData();
+
+        return const Text("User Page");
+      }),
     );
   }
 }
