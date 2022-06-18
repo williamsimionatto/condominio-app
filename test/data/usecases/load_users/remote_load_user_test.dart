@@ -54,15 +54,16 @@ void main() {
     final result = await sut.loadByUser();
 
     expect(
-        result,
-        UserEntity(
-          id: user['id'],
-          name: user['name'],
-          email: user['email'],
-          active: user['active'],
-          cpf: user['cpf'],
-          roleId: user['roleId'],
-        ));
+      result,
+      UserEntity(
+        id: user['id'],
+        name: user['name'],
+        email: user['email'],
+        active: user['active'],
+        cpf: user['cpf'],
+        roleId: user['roleId'],
+      ),
+    );
   });
 
   test(

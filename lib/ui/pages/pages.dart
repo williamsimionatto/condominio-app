@@ -4,3 +4,4 @@ export 'add_user/add_user.dart';
 export 'sidebar/sidebar.dart';
 export 'home/home.dart';
 export 'users/users.dart';
+export 'user/user.dart';

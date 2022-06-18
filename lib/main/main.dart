@@ -37,6 +37,7 @@ class App extends StatelessWidget {
           transition: Transition.fadeIn,
         ),
         GetPage(name: '/users', page: makeUsersPage),
+        GetPage(name: '/user/:user_id', page: makeUserPage),
         GetPage(name: '/users/add', page: makeAddUserPage)
       ],
     );
