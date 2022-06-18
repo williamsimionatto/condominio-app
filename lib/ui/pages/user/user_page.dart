@@ -1,5 +1,6 @@
 import 'package:condominioapp/ui/components/components.dart';
 import 'package:condominioapp/ui/mixins/loading_manager.dart';
+import 'package:condominioapp/ui/pages/user/components/components.dart';
 import 'package:flutter/material.dart';
 
 import '../../pages/pages.dart';
@@ -37,7 +38,7 @@ class UserPage extends StatelessWidget with LoadingManager {
             }
 
             if (snapshot.hasData) {
-              return const Text("User Page");
+              UserForm(snapshot.data!);
             }
 
             return const SizedBox(height: 0);

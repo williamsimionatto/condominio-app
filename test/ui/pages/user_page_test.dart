@@ -16,6 +16,15 @@ void main() {
   late StreamController<bool> isLoadingController;
   late StreamController<UserViewModel> loadUserController;
 
+  UserViewModel makeUserResult() => const UserViewModel(
+        id: 1,
+        name: 'Teste',
+        email: 'teste@mail.com',
+        active: 'S',
+        cpf: "123456789",
+        roleId: 1,
+      );
+
   void initStreams() {
     isLoadingController = StreamController<bool>();
     loadUserController = StreamController<UserViewModel>();
@@ -97,5 +106,17 @@ void main() {
     await tester.tap(find.text('Recarregar'));
 
     verify(presenter.loadData()).called(2);
+  });
+
+  testWidgets('Should presenter valid data if loadUserStream succeds',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    loadUserController.add(makeUserResult());
+    await tester.pump();
+
+    expect(find.text('Algo errado aconteceu. Tente novamente em breve.'),
+        findsNothing);
+    expect(find.text('Recarregar'), findsNothing);
   });
 }
