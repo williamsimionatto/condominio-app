@@ -3,10 +3,10 @@ import 'package:condominioapp/presentation/protocols/validation.dart';
 import 'package:condominioapp/validation/protocols/field_validation.dart';
 import 'package:condominioapp/validation/validators/validators.dart';
 
-Validation makeSignUpValidation() =>
-    ValidationComposite(makeSignUpValidations());
+Validation makeAddUserValidation() =>
+    ValidationComposite(makeAddUserValidations());
 
-List<FieldValidation> makeSignUpValidations() => [
+List<FieldValidation> makeAddUserValidations() => [
       ...ValidationBuilder.field('name').required().min(3).build(),
       ...ValidationBuilder.field('email').required().email().build(),
       ...ValidationBuilder.field('password').required().min(6).build(),

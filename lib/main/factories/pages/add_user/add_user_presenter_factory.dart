@@ -4,7 +4,7 @@ import '../../../../ui/pages/pages.dart';
 import '../../../../main/factories/pages/pages.dart';
 import '../../../../main/factories/usecases/usecases.dart';
 
-SignUpPresenter makeSignUpPresenter() => GetxSignUpPresenter(
+AddUserPresenter makeAddUserPresenter() => GetxAddUserPresenter(
     addAccount: makeRemoteAddAccount(),
-    validation: makeSignUpValidation(),
+    validation: makeAddUserValidation(),
     saveCurrentAccount: makeLocalSaveCurrentAccount());

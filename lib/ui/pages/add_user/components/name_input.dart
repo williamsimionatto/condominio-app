@@ -1,34 +1,34 @@
 import 'package:condominioapp/ui/components/components.dart';
 import 'package:condominioapp/ui/helpers/helpers.dart';
+import 'package:condominioapp/ui/pages/pages.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../signup_presenter.dart';
 
-class EmailInput extends StatelessWidget {
-  const EmailInput({
+class NameInput extends StatelessWidget {
+  const NameInput({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final presenter = Provider.of<SignUpPresenter>(context);
+    final presenter = Provider.of<AddUserPresenter>(context);
 
     return StreamBuilder<UIError?>(
-      stream: presenter.emailErrorStream,
+      stream: presenter.nameErrorStream,
       builder: (context, snapshot) {
         return TextFormField(
           decoration: InputDecoration(
-            labelText: 'E-mail',
+            labelText: 'Nome',
             labelStyle: const TextStyle(
               color: AppColorsDark.withColor,
               fontWeight: FontWeight.bold,
             ),
-            icon: const Icon(Icons.email, color: AppColorsDark.withColor),
+            icon: const Icon(Icons.person, color: AppColorsDark.withColor),
             errorText: snapshot.data?.description,
           ),
           style: const TextStyle(color: Colors.white),
-          keyboardType: TextInputType.emailAddress,
-          onChanged: presenter.validateEmail,
+          keyboardType: TextInputType.name,
+          onChanged: presenter.validateName,
         );
       },
     );

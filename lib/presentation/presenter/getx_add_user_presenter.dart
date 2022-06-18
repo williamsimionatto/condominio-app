@@ -10,9 +10,9 @@ import 'package:condominioapp/ui/pages/pages.dart';
 
 import '../protocols/protocols.dart';
 
-class GetxSignUpPresenter extends GetxController
+class GetxAddUserPresenter extends GetxController
     with LoadingManager, NavigationManager, FormManager, ErrorManager
-    implements SignUpPresenter {
+    implements AddUserPresenter {
   final Validation validation;
   final AddAccount addAccount;
   final SaveCurrentAccount saveCurrentAccount;
@@ -40,7 +40,7 @@ class GetxSignUpPresenter extends GetxController
   Stream<UIError?> get passwordConfirmationErrorStream =>
       _passwordConfirmationError.stream;
 
-  GetxSignUpPresenter({
+  GetxAddUserPresenter({
     required this.validation,
     required this.addAccount,
     required this.saveCurrentAccount,

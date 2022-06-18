@@ -5,11 +5,11 @@ import 'components/components.dart';
 import 'package:condominioapp/ui/pages/pages.dart';
 import 'package:condominioapp/ui/mixins/mixins.dart';
 
-class SignUpPage extends StatelessWidget
+class AddUserPage extends StatelessWidget
     with KeyboardManager, LoadingManager, UIErrorManager, NavigationManager {
-  final SignUpPresenter presenter;
+  final AddUserPresenter presenter;
 
-  SignUpPage(this.presenter, {Key? key}) : super(key: key);
+  AddUserPage(this.presenter, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class SignUpPage extends StatelessWidget
                             child: PasswordConfirmationInput(),
                           ),
                           Center(
-                            child: SignUpButton(),
+                            child: AddUserButton(),
                           )
                         ],
                       ),

@@ -5,7 +5,7 @@ import 'package:condominioapp/validation/validators/validators.dart';
 
 void main() {
   test('Should return the correct validations', () {
-    final validations = makeSignUpValidations();
+    final validations = makeAddUserValidations();
 
     expect(validations, [
       const RequiredFieldValidation('name'),

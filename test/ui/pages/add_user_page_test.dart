@@ -10,10 +10,10 @@ import 'package:get/get.dart';
 import 'package:condominioapp/ui/pages/pages.dart';
 import 'package:mockito/mockito.dart';
 
-class SignUpPresenterSpy extends Mock implements SignUpPresenter {}
+class AddUserPresenterSpy extends Mock implements AddUserPresenter {}
 
 void main() {
-  late SignUpPresenter presenter;
+  late AddUserPresenter presenter;
   late StreamController<UIError> nameErrorController;
   late StreamController<UIError> emailErrorController;
   late StreamController<UIError> passwordErrorController;
@@ -65,21 +65,21 @@ void main() {
   }
 
   Future<void> loadPage(WidgetTester tester) async {
-    presenter = SignUpPresenterSpy();
+    presenter = AddUserPresenterSpy();
     initStreams();
     mockStreams();
 
-    final signUpPage = GetMaterialApp(
+    final addUserPage = GetMaterialApp(
       initialRoute: '/users/add',
       getPages: [
-        GetPage(name: '/users/add', page: () => SignUpPage(presenter)),
+        GetPage(name: '/users/add', page: () => AddUserPage(presenter)),
         GetPage(
           name: '/any_route',
           page: () => const Scaffold(body: Text('fake page')),
         ),
       ],
     );
-    await tester.pumpWidget(signUpPage);
+    await tester.pumpWidget(addUserPage);
   }
 
   tearDown(() {

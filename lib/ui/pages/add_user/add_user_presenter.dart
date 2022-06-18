@@ -1,7 +1,7 @@
 import 'package:condominioapp/ui/helpers/helpers.dart';
 import 'package:flutter/material.dart';
 
-abstract class SignUpPresenter implements Listenable {
+abstract class AddUserPresenter implements Listenable {
   Stream<UIError?>? get nameErrorStream;
   Stream<UIError?>? get emailErrorStream;
   Stream<UIError?>? get passwordErrorStream;

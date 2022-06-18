@@ -4,31 +4,34 @@ import 'package:condominioapp/ui/pages/pages.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class NameInput extends StatelessWidget {
-  const NameInput({
+class PasswordInput extends StatelessWidget {
+  const PasswordInput({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final presenter = Provider.of<SignUpPresenter>(context);
+    final presenter = Provider.of<AddUserPresenter>(context);
 
     return StreamBuilder<UIError?>(
-      stream: presenter.nameErrorStream,
+      stream: presenter.passwordErrorStream,
       builder: (context, snapshot) {
         return TextFormField(
           decoration: InputDecoration(
-            labelText: 'Nome',
+            labelText: 'Senha',
             labelStyle: const TextStyle(
               color: AppColorsDark.withColor,
               fontWeight: FontWeight.bold,
             ),
-            icon: const Icon(Icons.person, color: AppColorsDark.withColor),
+            icon: const Icon(
+              Icons.lock,
+              color: AppColorsDark.withColor,
+            ),
             errorText: snapshot.data?.description,
           ),
           style: const TextStyle(color: Colors.white),
-          keyboardType: TextInputType.name,
-          onChanged: presenter.validateName,
+          obscureText: true,
+          onChanged: presenter.validatePassword,
         );
       },
     );
