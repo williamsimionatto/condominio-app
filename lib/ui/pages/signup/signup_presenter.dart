@@ -1,13 +1,15 @@
-import 'package:condominioapp/presentation/protocols/validation.dart';
+import 'package:condominioapp/ui/helpers/helpers.dart';
+import 'package:flutter/material.dart';
 
-abstract class SignUpPresenter {
-  Stream<ValidationError?>? get nameErrorStream;
-  Stream<ValidationError?>? get emailErrorStream;
-  Stream<ValidationError?>? get passwordErrorStream;
-  Stream<ValidationError?>? get passwordConfirmationErrorStream;
+abstract class SignUpPresenter implements Listenable {
+  Stream<UIError?>? get nameErrorStream;
+  Stream<UIError?>? get emailErrorStream;
+  Stream<UIError?>? get passwordErrorStream;
+  Stream<UIError?>? get passwordConfirmationErrorStream;
+  Stream<UIError?>? get mainErrorStream;
+
   Stream<bool?>? get isFormValidStream;
   Stream<bool?>? get isLoadingStream;
-  Stream<String?>? get mainErrorStream;
   Stream<String?>? get navigateToStream;
 
   void validateName(String name);
@@ -16,6 +18,4 @@ abstract class SignUpPresenter {
   void validatePasswordConfirmation(String passwordConfirmation);
 
   Future<void> add();
-
-  void dispose();
 }

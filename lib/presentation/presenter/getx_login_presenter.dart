@@ -10,14 +10,6 @@ import '../../ui/pages/pages.dart';
 import '../protocols/protocols.dart';
 import '../mixins/mixins.dart';
 
-class LoginState {
-  String? email;
-  String? password;
-
-  ValidationError? emailError;
-  ValidationError? passwordError;
-}
-
 class GetxLoginPresenter extends GetxController
     with LoadingManager, NavigationManager, FormManager, ErrorManager
     implements LoginPresenter {

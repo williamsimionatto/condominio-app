@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:condominioapp/presentation/protocols/validation.dart';
+import 'package:condominioapp/ui/helpers/helpers.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,22 +14,22 @@ class SignUpPresenterSpy extends Mock implements SignUpPresenter {}
 
 void main() {
   late SignUpPresenter presenter;
-  late StreamController<ValidationError> nameErrorController;
-  late StreamController<ValidationError> emailErrorController;
-  late StreamController<ValidationError> passwordErrorController;
-  late StreamController<ValidationError> passwordConfirmationErrorController;
+  late StreamController<UIError> nameErrorController;
+  late StreamController<UIError> emailErrorController;
+  late StreamController<UIError> passwordErrorController;
+  late StreamController<UIError> passwordConfirmationErrorController;
   late StreamController<String> navigateToController;
-  late StreamController<String> mainErrorController;
+  late StreamController<UIError> mainErrorController;
   late StreamController<bool> isFormValidController;
   late StreamController<bool> isLoadingController;
 
   void initStreams() {
-    nameErrorController = StreamController<ValidationError>();
-    emailErrorController = StreamController<ValidationError>();
-    passwordErrorController = StreamController<ValidationError>();
-    passwordConfirmationErrorController = StreamController<ValidationError>();
+    nameErrorController = StreamController<UIError>();
+    emailErrorController = StreamController<UIError>();
+    passwordErrorController = StreamController<UIError>();
+    passwordConfirmationErrorController = StreamController<UIError>();
     navigateToController = StreamController<String>();
-    mainErrorController = StreamController<String>();
+    mainErrorController = StreamController<UIError>();
     isFormValidController = StreamController<bool>();
     isLoadingController = StreamController<bool>();
   }
@@ -150,15 +150,15 @@ void main() {
   testWidgets('Should presenter email error', (WidgetTester tester) async {
     await loadPage(tester);
 
-    emailErrorController.add(ValidationError.invalidField);
+    emailErrorController.add(UIError.invalidField);
     await tester.pump();
     expect(find.text('Campo inválido'), findsOneWidget);
 
-    emailErrorController.add(ValidationError.requiredField);
+    emailErrorController.add(UIError.requiredField);
     await tester.pump();
     expect(find.text('Campo obrigatório'), findsOneWidget);
 
-    emailErrorController.add(null as ValidationError);
+    emailErrorController.add(null as UIError);
     await tester.pump();
     expect(
       find.descendant(
@@ -170,15 +170,15 @@ void main() {
   testWidgets('Should presenter name error', (WidgetTester tester) async {
     await loadPage(tester);
 
-    nameErrorController.add(ValidationError.invalidField);
+    nameErrorController.add(UIError.invalidField);
     await tester.pump();
     expect(find.text('Campo inválido'), findsOneWidget);
 
-    nameErrorController.add(ValidationError.requiredField);
+    nameErrorController.add(UIError.requiredField);
     await tester.pump();
     expect(find.text('Campo obrigatório'), findsOneWidget);
 
-    nameErrorController.add(null as ValidationError);
+    nameErrorController.add(null as UIError);
     await tester.pump();
     expect(
       find.descendant(
@@ -190,15 +190,15 @@ void main() {
   testWidgets('Should presenter password error', (WidgetTester tester) async {
     await loadPage(tester);
 
-    passwordErrorController.add(ValidationError.invalidField);
+    passwordErrorController.add(UIError.invalidField);
     await tester.pump();
     expect(find.text('Campo inválido'), findsOneWidget);
 
-    passwordErrorController.add(ValidationError.requiredField);
+    passwordErrorController.add(UIError.requiredField);
     await tester.pump();
     expect(find.text('Campo obrigatório'), findsOneWidget);
 
-    passwordErrorController.add(null as ValidationError);
+    passwordErrorController.add(null as UIError);
     await tester.pump();
     expect(
       find.descendant(
@@ -211,15 +211,15 @@ void main() {
       (WidgetTester tester) async {
     await loadPage(tester);
 
-    passwordConfirmationErrorController.add(ValidationError.invalidField);
+    passwordConfirmationErrorController.add(UIError.invalidField);
     await tester.pump();
     expect(find.text('Campo inválido'), findsOneWidget);
 
-    passwordConfirmationErrorController.add(ValidationError.requiredField);
+    passwordConfirmationErrorController.add(UIError.requiredField);
     await tester.pump();
     expect(find.text('Campo obrigatório'), findsOneWidget);
 
-    passwordConfirmationErrorController.add(null as ValidationError);
+    passwordConfirmationErrorController.add(null as UIError);
     await tester.pump();
     expect(
       find.descendant(
@@ -282,7 +282,7 @@ void main() {
       (WidgetTester tester) async {
     await loadPage(tester);
 
-    mainErrorController.add('O e-mail já está sendo usado');
+    mainErrorController.add(UIError.emailInUse);
     await tester.pump();
 
     expect(find.text('O e-mail já está sendo usado'), findsOneWidget);
@@ -292,20 +292,13 @@ void main() {
       (WidgetTester tester) async {
     await loadPage(tester);
 
-    mainErrorController.add('Algo errado acounteu. Tentenovamente mais tarde');
+    mainErrorController.add(UIError.unexpected);
     await tester.pump();
 
     expect(
       find.text('Algo errado acounteu. Tentenovamente mais tarde'),
       findsOneWidget,
     );
-  });
-
-  testWidgets('Should close streams on dispose', (WidgetTester tester) async {
-    await loadPage(tester);
-    addTearDown(() {
-      verify(presenter.dispose()).called(1);
-    });
   });
 
   testWidgets('Should change page', (WidgetTester tester) async {
