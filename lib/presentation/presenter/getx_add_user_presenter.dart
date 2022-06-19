@@ -11,11 +11,15 @@ import 'package:condominioapp/ui/pages/pages.dart';
 import '../protocols/protocols.dart';
 
 class GetxAddUserPresenter extends GetxController
-    with LoadingManager, NavigationManager, FormManager, ErrorManager
+    with
+        LoadingManager,
+        NavigationManager,
+        FormManager,
+        ErrorManager,
+        SuccessManager
     implements AddUserPresenter {
   final Validation validation;
   final AddAccount addAccount;
-  final SaveCurrentAccount saveCurrentAccount;
 
   final _nameError = Rx<UIError?>(null);
   final _emailError = Rx<UIError?>(null);
@@ -26,6 +30,9 @@ class GetxAddUserPresenter extends GetxController
   String? _email;
   String? _password;
   String? _passwordConfirmation;
+  int roleId = 1;
+  String cpf = '129.500.550-60';
+  String active = 'S';
 
   @override
   Stream<UIError?> get nameErrorStream => _nameError.stream;
@@ -40,11 +47,7 @@ class GetxAddUserPresenter extends GetxController
   Stream<UIError?> get passwordConfirmationErrorStream =>
       _passwordConfirmationError.stream;
 
-  GetxAddUserPresenter({
-    required this.validation,
-    required this.addAccount,
-    required this.saveCurrentAccount,
-  });
+  GetxAddUserPresenter({required this.validation, required this.addAccount});
 
   @override
   void validateEmail(String email) {
@@ -80,15 +83,19 @@ class GetxAddUserPresenter extends GetxController
       mainError = null;
       isLoading = true;
 
-      final account = await addAccount.add(AddAccountParams(
+      final accountParams = AddAccountParams(
         name: _name!,
         email: _email!,
         password: _password!,
         passwordConfirmation: _passwordConfirmation!,
-      ));
+        roleId: roleId,
+        cpf: cpf,
+        active: active,
+      );
+      await addAccount.add(accountParams);
 
-      await saveCurrentAccount.save(account);
       navigateTo = '/users';
+      success = 'Usuário cadastrado com sucesso!';
     } on DomainError catch (error) {
       switch (error) {
         case DomainError.emailInUse:

@@ -1,13 +1,13 @@
 import 'package:condominioapp/domain/helpers/helpers.dart';
 import 'package:condominioapp/domain/usecases/usecases.dart';
-import 'package:condominioapp/presentation/mixins/loading_manager.dart';
+import 'package:condominioapp/presentation/mixins/mixins.dart';
 import 'package:condominioapp/ui/helpers/helpers.dart';
 import 'package:get/get.dart';
 
 import 'package:condominioapp/ui/pages/pages.dart';
 
 class GetxUserPresenter extends GetxController
-    with LoadingManager
+    with LoadingManager, SessionManager
     implements UserPresenter {
   final LoadUser loadUser;
   final String userId;
@@ -32,8 +32,12 @@ class GetxUserPresenter extends GetxController
         cpf: userResult.cpf,
         roleId: userResult.roleId,
       );
-    } on DomainError {
-      _user.subject.addError(UIError.unexpected.description);
+    } on DomainError catch (error) {
+      if (error == DomainError.accessDenied) {
+        isSessionExpired = true;
+      } else {
+        _user.subject.addError(UIError.unexpected.description);
+      }
     } finally {
       isLoading = false;
     }

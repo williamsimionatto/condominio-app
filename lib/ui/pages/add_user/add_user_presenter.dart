@@ -11,6 +11,7 @@ abstract class AddUserPresenter implements Listenable {
   Stream<bool?>? get isFormValidStream;
   Stream<bool?>? get isLoadingStream;
   Stream<String?>? get navigateToStream;
+  Stream<String?>? get successMessageStream;
 
   void validateName(String name);
   void validateEmail(String email);

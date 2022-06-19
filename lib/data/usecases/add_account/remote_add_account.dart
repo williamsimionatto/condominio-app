@@ -15,13 +15,13 @@ class RemoteAddAccount implements AddAccount {
   });
 
   @override
-  Future<AccountEntity> add(AddAccountParams params) async {
+  Future<UserEntity> add(AddAccountParams params) async {
     final body = RemoteAddAccountParams.fromDomain(params).toJson();
     try {
       final httpResponse =
           await httpClient.request(url: url, method: 'post', body: body);
 
-      return RemoteAccountModel.fromJson(httpResponse).toEntity();
+      return RemoteUserModel.fromJson(httpResponse).toEntity();
     } on HttpError catch (error) {
       throw error == HttpError.forbidden
           ? DomainError.emailInUse
@@ -35,12 +35,18 @@ class RemoteAddAccountParams {
   final String email;
   final String password;
   final String passwordConfirmation;
+  final String active;
+  final int roleId;
+  final String cpf;
 
   RemoteAddAccountParams({
     required this.name,
     required this.email,
     required this.password,
     required this.passwordConfirmation,
+    required this.active,
+    required this.roleId,
+    required this.cpf,
   });
 
   factory RemoteAddAccountParams.fromDomain(AddAccountParams entity) {
@@ -49,6 +55,9 @@ class RemoteAddAccountParams {
       email: entity.email,
       password: entity.password,
       passwordConfirmation: entity.passwordConfirmation,
+      active: entity.active,
+      roleId: entity.roleId,
+      cpf: entity.cpf,
     );
   }
 
@@ -56,6 +65,9 @@ class RemoteAddAccountParams {
         'name': name,
         'email': email,
         'password': password,
-        'passwordConfirmation': passwordConfirmation
+        'password_confirmation': passwordConfirmation,
+        'active': active,
+        'perfil_id': roleId,
+        'cpf': cpf,
       };
 }

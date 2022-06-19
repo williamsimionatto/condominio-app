@@ -5,6 +5,4 @@ import '../../../../main/factories/pages/pages.dart';
 import '../../../../main/factories/usecases/usecases.dart';
 
 AddUserPresenter makeAddUserPresenter() => GetxAddUserPresenter(
-    addAccount: makeRemoteAddAccount(),
-    validation: makeAddUserValidation(),
-    saveCurrentAccount: makeLocalSaveCurrentAccount());
+    addAccount: makeRemoteAddAccount(), validation: makeAddUserValidation());
