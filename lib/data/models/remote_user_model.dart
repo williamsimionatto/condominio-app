@@ -7,6 +7,7 @@ class RemoteUserModel {
   final String email;
   final String active;
   final String cpf;
+  final int roleId;
 
   RemoteUserModel({
     required this.id,
@@ -14,6 +15,7 @@ class RemoteUserModel {
     required this.email,
     required this.active,
     required this.cpf,
+    required this.roleId,
   });
 
   factory RemoteUserModel.fromJson(Map json) {
@@ -29,6 +31,7 @@ class RemoteUserModel {
       email: json['email'],
       active: json['active'],
       cpf: json['cpf'],
+      roleId: json['perfil_id'],
     );
   }
 
@@ -39,6 +42,7 @@ class RemoteUserModel {
       email: email,
       active: active,
       cpf: cpf,
+      roleId: roleId,
     );
   }
 }

@@ -15,11 +15,13 @@ void main() {
   late StreamController<bool> isLoadingController;
   late StreamController<List<UserViewModel>> loadUsersController;
   late StreamController<bool> isSessionExpiredController;
+  late StreamController<String> navigateToController;
 
   void initStreams() {
     isLoadingController = StreamController<bool>();
     isSessionExpiredController = StreamController<bool>();
     loadUsersController = StreamController<List<UserViewModel>>();
+    navigateToController = StreamController<String>();
   }
 
   void mockStreams() {
@@ -29,12 +31,16 @@ void main() {
 
     when(presenter.isSessionExpiredStream)
         .thenAnswer((_) => isSessionExpiredController.stream);
+
+    when(presenter.navigateToStream)
+        .thenAnswer((_) => navigateToController.stream);
   }
 
   void closeStreams() {
     isLoadingController.close();
     loadUsersController.close();
     isSessionExpiredController.close();
+    navigateToController.close();
   }
 
   Future<void> loadPage(WidgetTester tester) async {
@@ -49,6 +55,9 @@ void main() {
         GetPage(name: '/users', page: () => UsersPage(presenter)),
         GetPage(
             name: '/login', page: () => const Scaffold(body: Text('Login'))),
+        GetPage(
+            name: '/any_route',
+            page: () => const Scaffold(body: Text('fake page'))),
       ],
     );
     await tester.pumpWidget(userPage);
@@ -61,6 +70,7 @@ void main() {
           email: 'usuario1@mail.com',
           active: 'S',
           cpf: "123456789",
+          roleId: 1,
         ),
         const UserViewModel(
           id: 2,
@@ -68,6 +78,7 @@ void main() {
           email: 'usuario@2mail.com',
           active: 'N',
           cpf: "123456789",
+          roleId: 1,
         ),
       ];
 
@@ -138,6 +149,29 @@ void main() {
     verify(presenter.loadData()).called(2);
   });
 
+  testWidgets('Should call gotoUser on user click',
+      (WidgetTester tester) async {
+    await loadPage(tester);
+
+    loadUsersController.add(makeUsers());
+    await tester.pump();
+
+    await tester.tap(find.text('Usuário 1'));
+    await tester.pump();
+
+    verify(presenter.goToUser(1)).called(1);
+  });
+
+  testWidgets('Should change page', (WidgetTester tester) async {
+    await loadPage(tester);
+
+    navigateToController.add('/any_route');
+    await tester.pumpAndSettle();
+
+    expect(Get.currentRoute, '/any_route');
+    expect(find.text('fake page'), findsOneWidget);
+  });
+
   testWidgets('Should logout', (WidgetTester tester) async {
     await loadPage(tester);
 
@@ -145,6 +179,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(Get.currentRoute, '/login');
   });
+
   testWidgets('Should not logout', (WidgetTester tester) async {
     await loadPage(tester);
 

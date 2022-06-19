@@ -13,31 +13,23 @@ class HttpClientSpy extends Mock implements HttpClient {}
 void main() {
   late String url;
   late HttpClient httpClient;
-  late RemoteLoadUsers sut;
-  late List<Map> list;
+  late RemoteLoadUser sut;
+  late Map user;
 
-  List<Map> mockValidData() => [
-        {
-          'id': faker.randomGenerator.integer(10, min: 1),
-          'name': faker.person.name(),
-          'email': faker.internet.email(),
-          'active': faker.randomGenerator.element(['S', 'N']),
-          'cpf': faker.randomGenerator.string(11, min: 11)
-        },
-        {
-          'id': faker.randomGenerator.integer(10, min: 1),
-          'name': faker.person.name(),
-          'email': faker.internet.email(),
-          'active': faker.randomGenerator.element(['S', 'N']),
-          'cpf': faker.randomGenerator.string(11, min: 11)
-        }
-      ];
+  Map mockValidData() => {
+        'id': faker.randomGenerator.integer(10, min: 1),
+        'name': faker.person.name(),
+        'email': faker.internet.email(),
+        'active': faker.randomGenerator.element(['S', 'N']),
+        'cpf': faker.randomGenerator.string(11, min: 11),
+        'perfil_id': faker.randomGenerator.integer(10, min: 1),
+      };
 
   PostExpectation mockRequest() =>
       when(httpClient.request(url: anyNamed('url') as String, method: 'get'));
 
-  void mockHttpData(List<Map> data) {
-    list = data;
+  void mockHttpData(Map data) {
+    user = data;
     mockRequest().thenAnswer((_) async => data);
   }
 
@@ -48,47 +40,38 @@ void main() {
   setUp(() {
     url = faker.internet.httpUrl();
     httpClient = HttpClientSpy();
-    sut = RemoteLoadUsers(url: url, httpClient: httpClient);
+    sut = RemoteLoadUser(url: url, httpClient: httpClient);
 
     mockHttpData(mockValidData());
   });
 
   test('Should call HttpClient with correct values', () async {
-    await sut.load();
+    await sut.loadByUser();
     verify(httpClient.request(url: url, method: 'get'));
   });
 
   test('Should return users on 200', () async {
-    final users = await sut.load();
+    final result = await sut.loadByUser();
 
-    expect(users, [
+    expect(
+      result,
       UserEntity(
-        id: list[0]['id'],
-        name: list[0]['name'],
-        email: list[0]['email'],
-        active: list[0]['active'],
-        cpf: list[0]['cpf'],
-        roleId: list[0]['roleId'],
+        id: user['id'],
+        name: user['name'],
+        email: user['email'],
+        active: user['active'],
+        cpf: user['cpf'],
+        roleId: user['roleId'],
       ),
-      UserEntity(
-        id: list[1]['id'],
-        name: list[1]['name'],
-        email: list[1]['email'],
-        active: list[1]['active'],
-        cpf: list[1]['cpf'],
-        roleId: list[1]['roleId'],
-      ),
-    ]);
+    );
   });
 
   test(
       'Should return UnexpectError if HttpClient returns 200 with invalid data',
       () async {
-    mockHttpData([
-      {'invalid_key': 'invalid_value'}
-    ]);
+    mockHttpData({'invalid_key': 'invalid_value'});
 
-    final future = sut.load();
+    final future = sut.loadByUser();
 
     expect(future, throwsA(DomainError.unexpected));
   });
@@ -96,7 +79,7 @@ void main() {
   test('Should throw UnexpectedError if HttpClient returns 404', () async {
     mockHttpError(HttpError.notFound);
 
-    final future = sut.load();
+    final future = sut.loadByUser();
 
     expect(future, throwsA(DomainError.unexpected));
   });
@@ -104,7 +87,7 @@ void main() {
   test('Should throw UnexpectedError if HttpClient returns 500', () async {
     mockHttpError(HttpError.serverError);
 
-    final future = sut.load();
+    final future = sut.loadByUser();
 
     expect(future, throwsA(DomainError.unexpected));
   });
@@ -112,7 +95,7 @@ void main() {
   test('Should throw AccessDeniedError if HttpClient returns 403', () async {
     mockHttpError(HttpError.forbidden);
 
-    final future = sut.load();
+    final future = sut.loadByUser();
 
     expect(future, throwsA(DomainError.accessDenied));
   });

@@ -22,6 +22,7 @@ void main() {
           email: 'usuario1@mail.com',
           active: 'S',
           cpf: "123456789",
+          roleId: 1,
         ),
         const UserEntity(
           id: 1,
@@ -29,6 +30,7 @@ void main() {
           email: 'usuario1@mail.com',
           active: 'S',
           cpf: "123456789",
+          roleId: 1,
         ),
       ];
 
@@ -65,6 +67,7 @@ void main() {
             email: users[0].email,
             active: users[0].active,
             cpf: users[0].cpf,
+            roleId: users[0].roleId,
           ),
           UserViewModel(
             id: users[1].id,
@@ -72,6 +75,7 @@ void main() {
             email: users[1].email,
             active: users[1].active,
             cpf: users[1].cpf,
+            roleId: users[1].roleId,
           )
         ])));
     await sut.loadData();
@@ -98,5 +102,12 @@ void main() {
     expectLater(sut.isSessionExpiredStream, emits(true));
 
     await sut.loadData();
+  });
+
+  test('Should got to UserPage on user click', () async {
+    sut.navigateToStream
+        .listen(expectAsync1((page) => expect(page, '/user/1')));
+
+    sut.goToUser(1);
   });
 }

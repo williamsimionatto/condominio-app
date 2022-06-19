@@ -6,9 +6,10 @@ class UserViewModel extends Equatable {
   final String email;
   final String active;
   final String cpf;
+  final int roleId;
 
   @override
-  List get props => [id, name, email, active, cpf];
+  List get props => [id, name, email, active, cpf, roleId];
 
   const UserViewModel({
     required this.id,
@@ -16,5 +17,6 @@ class UserViewModel extends Equatable {
     required this.email,
     required this.active,
     required this.cpf,
+    required this.roleId,
   });
 }
