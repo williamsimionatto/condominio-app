@@ -55,6 +55,7 @@ class AddUserPage extends StatelessWidget
                             padding: EdgeInsets.symmetric(vertical: 16),
                             child: PasswordConfirmationInput(),
                           ),
+                          CPFInput(),
                           Center(
                             child: AddUserButton(),
                           )

@@ -77,7 +77,8 @@ void main() {
         'name': null,
         'email': email,
         'password': null,
-        'passwordConfirmation': null
+        'passwordConfirmation': null,
+        'cpf': null,
       };
       sut.validateEmail(email);
 
@@ -125,7 +126,8 @@ void main() {
         'name': name,
         'email': null,
         'password': null,
-        'passwordConfirmation': null
+        'passwordConfirmation': null,
+        'cpf': null,
       };
       sut.validateName(name);
 
@@ -172,7 +174,8 @@ void main() {
         'name': null,
         'email': null,
         'password': password,
-        'passwordConfirmation': null
+        'passwordConfirmation': null,
+        'cpf': null,
       };
       sut.validatePassword(password);
 
@@ -220,7 +223,8 @@ void main() {
         'name': null,
         'email': null,
         'password': null,
-        'passwordConfirmation': passwordConfirmation
+        'passwordConfirmation': passwordConfirmation,
+        'cpf': null,
       };
 
       sut.validatePasswordConfirmation(passwordConfirmation);
@@ -286,6 +290,7 @@ void main() {
     sut.validateEmail(email);
     sut.validatePassword(password);
     sut.validatePasswordConfirmation(passwordConfirmation);
+    sut.validateCpf(cpf);
 
     await sut.add();
     final accountParams = AddAccountParams(
@@ -305,10 +310,12 @@ void main() {
     sut.validateEmail(email);
     sut.validatePassword(password);
     sut.validatePasswordConfirmation(passwordConfirmation);
+    sut.validateCpf(cpf);
 
     expectLater(sut.mainErrorStream, emits(null));
     expectLater(sut.isLoadingStream, emits(true));
-
+    expectLater(
+        sut.successMessageStream, emits('Usuário cadastrado com sucesso!'));
     await sut.add();
   });
 

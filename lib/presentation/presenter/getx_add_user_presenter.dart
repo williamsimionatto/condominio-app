@@ -25,14 +25,15 @@ class GetxAddUserPresenter extends GetxController
   final _emailError = Rx<UIError?>(null);
   final _passwordError = Rx<UIError?>(null);
   final _passwordConfirmationError = Rx<UIError?>(null);
+  final _cpfError = Rx<UIError?>(null);
 
   String? _name;
   String? _email;
   String? _password;
   String? _passwordConfirmation;
-  int roleId = 1;
-  String cpf = '129.500.550-60';
+  String? _cpf;
   String active = 'S';
+  int roleId = 1;
 
   @override
   Stream<UIError?> get nameErrorStream => _nameError.stream;
@@ -46,6 +47,9 @@ class GetxAddUserPresenter extends GetxController
   @override
   Stream<UIError?> get passwordConfirmationErrorStream =>
       _passwordConfirmationError.stream;
+
+  @override
+  Stream<UIError?> get cpfErrorStream => _cpfError.stream;
 
   GetxAddUserPresenter({required this.validation, required this.addAccount});
 
@@ -78,6 +82,13 @@ class GetxAddUserPresenter extends GetxController
   }
 
   @override
+  void validateCpf(String cpf) {
+    _cpf = cpf;
+    _cpfError.value = _validateField('cpf');
+    _validateForm();
+  }
+
+  @override
   Future<void> add() async {
     try {
       mainError = null;
@@ -89,7 +100,7 @@ class GetxAddUserPresenter extends GetxController
         password: _password!,
         passwordConfirmation: _passwordConfirmation!,
         roleId: roleId,
-        cpf: cpf,
+        cpf: _cpf!,
         active: active,
       );
       await addAccount.add(accountParams);
@@ -115,6 +126,7 @@ class GetxAddUserPresenter extends GetxController
       'email': _email,
       'password': _password,
       'passwordConfirmation': _passwordConfirmation,
+      'cpf': _cpf,
     };
 
     final error = validation.validate(field: field, input: formData);
@@ -132,8 +144,10 @@ class GetxAddUserPresenter extends GetxController
       _emailError.value == null &&
       _passwordError.value == null &&
       _passwordConfirmationError.value == null &&
+      _cpfError.value == null &&
       _name != null &&
       _email != null &&
       _password != null &&
-      _passwordConfirmation != null;
+      _passwordConfirmation != null &&
+      _cpf != null;
 }
