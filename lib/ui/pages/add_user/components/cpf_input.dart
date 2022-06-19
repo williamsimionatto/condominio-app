@@ -23,7 +23,7 @@ class CPFInput extends StatelessWidget {
               color: AppColorsDark.withColor,
               fontWeight: FontWeight.bold,
             ),
-            icon: const Icon(Icons.email, color: AppColorsDark.withColor),
+            icon: const Icon(Icons.pin, color: AppColorsDark.withColor),
             errorText: snapshot.data?.description,
           ),
           style: const TextStyle(color: Colors.white),
