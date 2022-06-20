@@ -51,9 +51,12 @@ class _UsersPageState extends State<UsersPage>
               }
 
               if (snapshot.hasData) {
-                return ListenableProvider<UsersPresenter>(
-                  create: (_) => widget.presenter,
-                  child: UserListView(users: snapshot.data!),
+                return RefreshIndicator(
+                  onRefresh: () => widget.presenter.loadData(),
+                  child: ListenableProvider<UsersPresenter>(
+                    create: (_) => widget.presenter,
+                    child: UserListView(users: snapshot.data!),
+                  ),
                 );
               }
 
