@@ -19,12 +19,13 @@ void main() {
   late AddUserPresenter sut;
   late ValidationSpy validation;
   late AddAccountSpy addAccount;
-  late SaveCurrentAccountSpy saveCurrentAccount;
   late String email;
   late String name;
   late String password;
   late String passwordConfirmation;
-  late String token;
+  late String cpf;
+  late int roleId;
+  late String active;
 
   PostExpectation mockValidationCall(String field) =>
       when(validation.validate(field: field, input: anyNamed('input') as Map));
@@ -37,35 +38,34 @@ void main() {
       when(addAccount.add(any as AddAccountParams));
 
   void mockAddAccount() {
-    mockAddAccountCall().thenAnswer((_) async => AccountEntity(token: token));
+    mockAddAccountCall().thenAnswer(
+      (_) async => UserEntity(
+        id: 1,
+        name: name,
+        email: email,
+        cpf: cpf,
+        roleId: roleId,
+        active: active,
+      ),
+    );
   }
 
   void mockAddAccountError(DomainError error) {
     mockAddAccountCall().thenThrow(error);
   }
 
-  PostExpectation mockSaveCurrentAccountCall() =>
-      when(saveCurrentAccount.save(any as AccountEntity));
-
-  void mockSaveCurrentAccountError() {
-    mockSaveCurrentAccountCall().thenThrow(DomainError.unexpected);
-  }
-
   setUp(() {
     validation = ValidationSpy();
     addAccount = AddAccountSpy();
-    saveCurrentAccount = SaveCurrentAccountSpy();
-    sut = GetxAddUserPresenter(
-      validation: validation,
-      addAccount: addAccount,
-      saveCurrentAccount: saveCurrentAccount,
-    );
+    sut = GetxAddUserPresenter(validation: validation, addAccount: addAccount);
 
     email = faker.internet.email();
     name = faker.person.name();
     password = faker.internet.password();
     passwordConfirmation = faker.internet.password();
-    token = faker.guid.guid();
+    cpf = '129.500.550-60';
+    roleId = 1;
+    active = 'S';
 
     mockValidaton();
     mockAddAccount();
@@ -77,7 +77,8 @@ void main() {
         'name': null,
         'email': email,
         'password': null,
-        'passwordConfirmation': null
+        'passwordConfirmation': null,
+        'cpf': null,
       };
       sut.validateEmail(email);
 
@@ -125,7 +126,8 @@ void main() {
         'name': name,
         'email': null,
         'password': null,
-        'passwordConfirmation': null
+        'passwordConfirmation': null,
+        'cpf': null,
       };
       sut.validateName(name);
 
@@ -172,7 +174,8 @@ void main() {
         'name': null,
         'email': null,
         'password': password,
-        'passwordConfirmation': null
+        'passwordConfirmation': null,
+        'cpf': null,
       };
       sut.validatePassword(password);
 
@@ -220,7 +223,8 @@ void main() {
         'name': null,
         'email': null,
         'password': null,
-        'passwordConfirmation': passwordConfirmation
+        'passwordConfirmation': passwordConfirmation,
+        'cpf': null,
       };
 
       sut.validatePasswordConfirmation(passwordConfirmation);
@@ -286,42 +290,19 @@ void main() {
     sut.validateEmail(email);
     sut.validatePassword(password);
     sut.validatePasswordConfirmation(passwordConfirmation);
+    sut.validateCpf(cpf);
 
     await sut.add();
-
-    verify(addAccount.add(AddAccountParams(
+    final accountParams = AddAccountParams(
       name: name,
       email: email,
       password: password,
       passwordConfirmation: passwordConfirmation,
-    ))).called(1);
-  });
-
-  test('Should call SaveCurrentAccount with correct values', () async {
-    sut.validateName(name);
-    sut.validateEmail(email);
-    sut.validatePassword(password);
-    sut.validatePasswordConfirmation(passwordConfirmation);
-
-    await sut.add();
-
-    verify(saveCurrentAccount.save(AccountEntity(token: token))).called(1);
-  });
-
-  test('Should emit UnexpectedError if SaveCurrentAccount fails', () async* {
-    mockSaveCurrentAccountError();
-    sut.validateName(name);
-    sut.validateEmail(email);
-    sut.validatePassword(password);
-    sut.validatePasswordConfirmation(passwordConfirmation);
-
-    expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
-    sut.mainErrorStream?.listen(expectAsync1((error) => expect(
-          error,
-          'Algo errado aconteceu. Tente novamente em breve.',
-        )));
-
-    await sut.add();
+      roleId: roleId,
+      cpf: cpf,
+      active: active,
+    );
+    verify(addAccount.add(accountParams)).called(1);
   });
 
   test('Should emit correct events on AddAccount success', () async {
@@ -329,10 +310,12 @@ void main() {
     sut.validateEmail(email);
     sut.validatePassword(password);
     sut.validatePasswordConfirmation(passwordConfirmation);
+    sut.validateCpf(cpf);
 
     expectLater(sut.mainErrorStream, emits(null));
     expectLater(sut.isLoadingStream, emits(true));
-
+    expectLater(
+        sut.successMessageStream, emits('Usuário cadastrado com sucesso!'));
     await sut.add();
   });
 
@@ -345,21 +328,6 @@ void main() {
 
     expectLater(
         sut.mainErrorStream, emitsInOrder([null, 'Email já está em uso']));
-    expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
-
-    await sut.add();
-  });
-
-  test('Should emit UnexpectedError if SaveCurrentAccount fails', () async* {
-    mockSaveCurrentAccountError();
-
-    sut.validateEmail(email);
-    sut.validatePassword(password);
-
-    expectLater(
-        sut.mainErrorStream,
-        emitsInOrder(
-            [null, 'Algo errado aconteceu. Tente novamente em breve.']));
     expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
 
     await sut.add();

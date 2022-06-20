@@ -13,5 +13,6 @@ List<FieldValidation> makeAddUserValidations() => [
       ...ValidationBuilder.field('passwordConfirmation')
           .required()
           .sameAs('password')
-          .build()
+          .build(),
+      ...ValidationBuilder.field('cpf').required().cpf().build(),
     ];

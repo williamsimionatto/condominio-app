@@ -11,21 +11,29 @@ import 'package:condominioapp/ui/pages/pages.dart';
 import '../protocols/protocols.dart';
 
 class GetxAddUserPresenter extends GetxController
-    with LoadingManager, NavigationManager, FormManager, ErrorManager
+    with
+        LoadingManager,
+        NavigationManager,
+        FormManager,
+        ErrorManager,
+        SuccessManager
     implements AddUserPresenter {
   final Validation validation;
   final AddAccount addAccount;
-  final SaveCurrentAccount saveCurrentAccount;
 
   final _nameError = Rx<UIError?>(null);
   final _emailError = Rx<UIError?>(null);
   final _passwordError = Rx<UIError?>(null);
   final _passwordConfirmationError = Rx<UIError?>(null);
+  final _cpfError = Rx<UIError?>(null);
 
   String? _name;
   String? _email;
   String? _password;
   String? _passwordConfirmation;
+  String? _cpf;
+  String active = 'S';
+  int roleId = 1;
 
   @override
   Stream<UIError?> get nameErrorStream => _nameError.stream;
@@ -40,11 +48,10 @@ class GetxAddUserPresenter extends GetxController
   Stream<UIError?> get passwordConfirmationErrorStream =>
       _passwordConfirmationError.stream;
 
-  GetxAddUserPresenter({
-    required this.validation,
-    required this.addAccount,
-    required this.saveCurrentAccount,
-  });
+  @override
+  Stream<UIError?> get cpfErrorStream => _cpfError.stream;
+
+  GetxAddUserPresenter({required this.validation, required this.addAccount});
 
   @override
   void validateEmail(String email) {
@@ -75,20 +82,31 @@ class GetxAddUserPresenter extends GetxController
   }
 
   @override
+  void validateCpf(String cpf) {
+    _cpf = cpf;
+    _cpfError.value = _validateField('cpf');
+    _validateForm();
+  }
+
+  @override
   Future<void> add() async {
     try {
       mainError = null;
       isLoading = true;
 
-      final account = await addAccount.add(AddAccountParams(
+      final accountParams = AddAccountParams(
         name: _name!,
         email: _email!,
         password: _password!,
         passwordConfirmation: _passwordConfirmation!,
-      ));
+        roleId: roleId,
+        cpf: _cpf!,
+        active: active,
+      );
+      await addAccount.add(accountParams);
 
-      await saveCurrentAccount.save(account);
       navigateTo = '/users';
+      success = 'Usuário cadastrado com sucesso!';
     } on DomainError catch (error) {
       switch (error) {
         case DomainError.emailInUse:
@@ -108,6 +126,7 @@ class GetxAddUserPresenter extends GetxController
       'email': _email,
       'password': _password,
       'passwordConfirmation': _passwordConfirmation,
+      'cpf': _cpf,
     };
 
     final error = validation.validate(field: field, input: formData);
@@ -125,8 +144,10 @@ class GetxAddUserPresenter extends GetxController
       _emailError.value == null &&
       _passwordError.value == null &&
       _passwordConfirmationError.value == null &&
+      _cpfError.value == null &&
       _name != null &&
       _email != null &&
       _password != null &&
-      _passwordConfirmation != null;
+      _passwordConfirmation != null &&
+      _cpf != null;
 }

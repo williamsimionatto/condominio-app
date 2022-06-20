@@ -16,8 +16,16 @@ void main() {
   late HttpClientSpy httpClient;
   late AddAccountParams params;
 
-  Map mockValidData() =>
-      {'access_token': faker.guid.guid(), 'name': faker.person.name()};
+  Map mockValidData() => {
+        'id': 1,
+        'name': params.name,
+        'email': params.email,
+        'password': params.password,
+        'password_confirmation': params.passwordConfirmation,
+        'active': params.active,
+        'perfil_id': params.roleId,
+        'cpf': params.cpf,
+      };
 
   PostExpectation mockRequest() => when(
       httpClient.request(url: url, method: 'post', body: anyNamed("body")));
@@ -40,6 +48,9 @@ void main() {
       email: faker.internet.email(),
       password: password,
       passwordConfirmation: password,
+      roleId: 1,
+      cpf: '129.500.550-60',
+      active: 'S',
     );
     mockHttpData(mockValidData());
   });
@@ -53,7 +64,10 @@ void main() {
         'name': params.name,
         'email': params.email,
         'password': params.password,
-        'passwordConfirmation': params.passwordConfirmation,
+        'password_confirmation': params.passwordConfirmation,
+        'active': params.active,
+        'perfil_id': params.roleId,
+        'cpf': params.cpf,
       },
     ));
   });
@@ -80,14 +94,6 @@ void main() {
     mockHttpError(HttpError.forbidden);
     final future = sut.add(params);
     expect(future, throwsA(DomainError.emailInUse));
-  });
-
-  test('Should return an Account if HttpClient returns 200', () async {
-    final validData = mockValidData();
-    mockHttpData(validData);
-
-    final account = await sut.add(params);
-    expect(account.token, validData['access_token']);
   });
 
   test(

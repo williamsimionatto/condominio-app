@@ -6,7 +6,12 @@ import 'package:condominioapp/ui/pages/pages.dart';
 import 'package:condominioapp/ui/mixins/mixins.dart';
 
 class AddUserPage extends StatelessWidget
-    with KeyboardManager, LoadingManager, UIErrorManager, NavigationManager {
+    with
+        KeyboardManager,
+        LoadingManager,
+        UIErrorManager,
+        NavigationManager,
+        SuccessManager {
   final AddUserPresenter presenter;
 
   AddUserPage(this.presenter, {Key? key}) : super(key: key);
@@ -25,6 +30,7 @@ class AddUserPage extends StatelessWidget
         handleLoading(context, presenter.isLoadingStream);
         handleMainError(context, presenter.mainErrorStream);
         handleNavigation(presenter.navigateToStream, clear: false);
+        handleSuccessMessage(context, presenter.successMessageStream);
 
         return GestureDetector(
           onTap: () => hideKeyboard(context),
@@ -49,6 +55,7 @@ class AddUserPage extends StatelessWidget
                             padding: EdgeInsets.symmetric(vertical: 16),
                             child: PasswordConfirmationInput(),
                           ),
+                          CPFInput(),
                           Center(
                             child: AddUserButton(),
                           )

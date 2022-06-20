@@ -38,5 +38,10 @@ class ValidationBuilder {
     return this;
   }
 
+  ValidationBuilder cpf() {
+    validations.add(CPFValidation(fieldName));
+    return this;
+  }
+
   List<FieldValidation> build() => validations;
 }
