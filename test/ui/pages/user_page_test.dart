@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:condominioapp/ui/helpers/helpers.dart';
+import 'package:condominioapp/ui/pages/pages.dart';
+import '../helpers/helpers.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:get/get.dart';
 
-import 'package:condominioapp/ui/pages/pages.dart';
 import 'package:mockito/mockito.dart';
 
 class UserPresenterSpy extends Mock implements UserPresenter {}
@@ -47,15 +48,10 @@ void main() {
     initStreams();
     mockStreams();
 
-    final userPage = GetMaterialApp(
-      initialRoute: '/user/any_user_id',
-      getPages: [
-        GetPage(name: '/user/:user_id', page: () => UserPage(presenter)),
-        GetPage(
-            name: '/users', page: () => const Scaffold(body: Text('Users'))),
-      ],
-    );
-    await tester.pumpWidget(userPage);
+    await tester.pumpWidget(makePage(
+      path: '/user/any_user_id',
+      page: () => UserPage(presenter),
+    ));
   }
 
   tearDown(() {
