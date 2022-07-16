@@ -35,7 +35,7 @@ void main() {
     url = faker.internet.httpUrl();
     sut = RemoteAuthentication(httpClient: httpClient, url: url);
     params = FakeParamsFactory.makeAuthentication();
-    mockHttpData(FakeAccountFactory.mockApiJson());
+    mockHttpData(FakeAccountFactory.mockApiAuthJson());
   });
 
   test('Should call HttpClient with correct values', () async {

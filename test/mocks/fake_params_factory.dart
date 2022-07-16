@@ -9,7 +9,7 @@ class FakeParamsFactory {
         passwordConfirmation: faker.internet.password(),
         roleId: 1,
         cpf: '129.500.550-60',
-        active: 'S',
+        active: faker.randomGenerator.element(['S', 'N']),
       );
 
   static AuthenticationParams makeAuthentication() => AuthenticationParams(
