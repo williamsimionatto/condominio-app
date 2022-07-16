@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:condominioapp/ui/helpers/helpers.dart';
 import 'package:condominioapp/ui/pages/pages.dart';
+import '../../mocks/mocks.dart';
 import '../helpers/helpers.dart';
 
 import 'package:flutter/material.dart';
@@ -16,15 +17,6 @@ void main() {
 
   late StreamController<bool> isLoadingController;
   late StreamController<UserViewModel> loadUserController;
-
-  UserViewModel makeUserResult() => const UserViewModel(
-        id: 1,
-        name: 'Teste',
-        email: 'teste@mail.com',
-        active: 'S',
-        cpf: "123456789",
-        roleId: 1,
-      );
 
   void initStreams() {
     isLoadingController = StreamController<bool>();
@@ -108,7 +100,7 @@ void main() {
       (WidgetTester tester) async {
     await loadPage(tester);
 
-    loadUserController.add(makeUserResult());
+    loadUserController.add(FakeUserFactory.makeViewModel());
     await tester.pump();
 
     expect(find.text('Algo errado aconteceu. Tente novamente em breve.'),

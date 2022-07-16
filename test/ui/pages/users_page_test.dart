@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:condominioapp/ui/pages/pages.dart';
 import 'package:mockito/mockito.dart';
 
+import '../../mocks/mocks.dart';
 import '../helpers/helpers.dart';
 
 class UsersPresenterSpy extends Mock implements UsersPresenter {}
@@ -54,25 +55,6 @@ void main() {
     ));
   }
 
-  List<UserViewModel> makeUsers() => [
-        const UserViewModel(
-          id: 1,
-          name: 'Usuário 1',
-          email: 'usuario1@mail.com',
-          active: 'S',
-          cpf: "123456789",
-          roleId: 1,
-        ),
-        const UserViewModel(
-          id: 2,
-          name: 'Usuário 2',
-          email: 'usuario@2mail.com',
-          active: 'N',
-          cpf: "123456789",
-          roleId: 1,
-        ),
-      ];
-
   tearDown(() {
     closeStreams();
   });
@@ -117,7 +99,7 @@ void main() {
       (WidgetTester tester) async {
     await loadPage(tester);
 
-    loadUsersController.add(makeUsers());
+    loadUsersController.add(FakeUsersFactory.makeViewModel());
     await tester.pump();
 
     expect(find.text('Algo errado aconteceu. Tente novamente em breve.'),
@@ -144,7 +126,7 @@ void main() {
       (WidgetTester tester) async {
     await loadPage(tester);
 
-    loadUsersController.add(makeUsers());
+    loadUsersController.add(FakeUsersFactory.makeViewModel());
     await tester.pump();
 
     await tester.tap(find.text('Usuário 1'));

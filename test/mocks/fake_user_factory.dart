@@ -1,4 +1,5 @@
 import 'package:condominioapp/domain/entities/user_entity.dart';
+import 'package:condominioapp/ui/pages/pages.dart';
 import 'package:faker/faker.dart';
 
 class FakeUserFactory {
@@ -20,5 +21,14 @@ class FakeUserFactory {
         active: faker.randomGenerator.element(['S', 'N']),
         cpf: faker.randomGenerator.string(11, min: 11),
         roleId: faker.randomGenerator.integer(10, min: 1),
-  );
+      );
+
+  static UserViewModel makeViewModel() => const UserViewModel(
+        id: 1,
+        name: 'Teste',
+        email: 'teste@mail.com',
+        active: 'S',
+        cpf: "123456789",
+        roleId: 1,
+      );
 }
