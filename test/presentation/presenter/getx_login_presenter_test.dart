@@ -10,6 +10,8 @@ import 'package:condominioapp/domain/usecases/usecases.dart';
 import 'package:condominioapp/presentation/presenter/presenter.dart';
 import 'package:condominioapp/presentation/protocols/protocols.dart';
 
+import '../../mocks/mocks.dart';
+
 class ValidationSpy extends Mock implements Validation {}
 
 class AuthenticationSpy extends Mock implements Authentication {}
@@ -23,7 +25,7 @@ void main() {
   late SaveCurrentAccountSpy saveCurrentAccount;
   late String email;
   late String password;
-  late String token;
+  late AccountEntity account;
 
   PostExpectation mockValidationCall(String field) =>
       when(validation.validate(field: field, input: anyNamed('input') as Map));
@@ -35,9 +37,9 @@ void main() {
   PostExpectation mockAuthenticationCall() => when(authentication
       .auth(AuthenticationParams(email: email, secret: password)));
 
-  void mockAuthetication() {
-    mockAuthenticationCall()
-        .thenAnswer((_) async => AccountEntity(token: token));
+  void mockAuthetication(AccountEntity data) {
+    account = data;
+    mockAuthenticationCall().thenAnswer((_) async => data);
   }
 
   void mockAutheticationError(DomainError error) {
@@ -63,10 +65,9 @@ void main() {
 
     email = faker.internet.email();
     password = faker.internet.password();
-    token = faker.guid.guid();
 
     mockValidaton();
-    mockAuthetication();
+    mockAuthetication(FakeAccountFactory.makeEntity());
   });
 
   test('Shoul call Validation with correct email', () {
@@ -168,7 +169,7 @@ void main() {
 
     await sut.auth();
 
-    verify(saveCurrentAccount.save(AccountEntity(token: token))).called(1);
+    verify(saveCurrentAccount.save(account)).called(1);
   });
 
   test('Should emit UnexpectedError if SaveCurrentAccount fails', () async* {

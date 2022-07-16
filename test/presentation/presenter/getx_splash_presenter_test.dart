@@ -1,4 +1,3 @@
-import 'package:faker/faker.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
@@ -6,6 +5,8 @@ import 'package:condominioapp/domain/entities/entities.dart';
 import 'package:condominioapp/domain/usecases/usecases.dart';
 
 import 'package:condominioapp/presentation/presenter/presenter.dart';
+
+import '../../mocks/mocks.dart';
 
 class LoadCurrentAccountSpy extends Mock implements LoadCurrentAccount {}
 
@@ -34,7 +35,7 @@ void main() {
       loadCurrentAccount: loadCurrentAccount,
       jwtValidator: jwtValidator,
     );
-    mockLoadCurrentAccount(account: AccountEntity(token: faker.guid.guid()));
+    mockLoadCurrentAccount(account: FakeAccountFactory.makeEntity());
   });
 
   test('Should call LoadCurrentAccount', () async {

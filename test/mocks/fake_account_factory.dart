@@ -1,3 +1,4 @@
+import 'package:condominioapp/domain/entities/entities.dart';
 import 'package:faker/faker.dart';
 
 class FakeAccountFactory {
@@ -16,4 +17,6 @@ class FakeAccountFactory {
         'access_token': faker.guid.guid(),
         'name': faker.person.name(),
       };
+
+  static AccountEntity makeEntity() => AccountEntity(token: faker.guid.guid());
 }

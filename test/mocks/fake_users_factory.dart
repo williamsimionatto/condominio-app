@@ -1,3 +1,4 @@
+import 'package:condominioapp/domain/entities/user_entity.dart';
 import 'package:faker/faker.dart';
 
 class FakeUsersFactory {
@@ -22,5 +23,24 @@ class FakeUsersFactory {
 
   static List<Map> makeInvalidApiJson() => [
         {'invalid_key': 'invalid_value'}
+      ];
+
+  static List<UserEntity> makeEntities() => [
+        const UserEntity(
+          id: 1,
+          name: 'Usuário 1',
+          email: 'usuario1@mail.com',
+          active: 'S',
+          cpf: "123456789",
+          roleId: 1,
+        ),
+        const UserEntity(
+          id: 1,
+          name: 'Usuário 1',
+          email: 'usuario1@mail.com',
+          active: 'S',
+          cpf: "123456789",
+          roleId: 1,
+        ),
       ];
 }
