@@ -7,6 +7,7 @@ import 'package:condominioapp/domain/usecases/usecases.dart';
 
 import 'package:condominioapp/data/http/http.dart';
 import 'package:condominioapp/data/usecases/usecases.dart';
+import '../../../mocks/mocks.dart';
 
 class HttpClientSpy extends Mock implements HttpClient {}
 
@@ -15,22 +16,13 @@ void main() {
   late String url;
   late HttpClientSpy httpClient;
   late AddAccountParams params;
-
-  Map mockValidData() => {
-        'id': 1,
-        'name': params.name,
-        'email': params.email,
-        'password': params.password,
-        'password_confirmation': params.passwordConfirmation,
-        'active': params.active,
-        'perfil_id': params.roleId,
-        'cpf': params.cpf,
-      };
+  late Map apiResult;
 
   PostExpectation mockRequest() => when(
       httpClient.request(url: url, method: 'post', body: anyNamed("body")));
 
   void mockHttpData(Map data) {
+    apiResult = data;
     mockRequest().thenAnswer((_) async => data);
   }
 
@@ -42,17 +34,9 @@ void main() {
     httpClient = HttpClientSpy();
     url = faker.internet.httpUrl();
     sut = RemoteAddAccount(httpClient: httpClient, url: url);
-    final password = faker.internet.password();
-    params = AddAccountParams(
-      name: faker.person.name(),
-      email: faker.internet.email(),
-      password: password,
-      passwordConfirmation: password,
-      roleId: 1,
-      cpf: '129.500.550-60',
-      active: 'S',
-    );
-    mockHttpData(mockValidData());
+    params = FakeParamsFactory.makeAddAccount();
+
+    mockHttpData(FakeAccountFactory.mockApiJson());
   });
 
   test('Should call HttpClient with correct values', () async {
@@ -103,5 +87,10 @@ void main() {
 
     final future = sut.add(params);
     expect(future, throwsA(DomainError.unexpected));
+  });
+
+  test('Should return an Account if HttpClient returns 200', () async {
+    final account = await sut.add(params);
+    expect(account.email, apiResult['email']);
   });
 }

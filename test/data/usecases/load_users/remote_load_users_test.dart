@@ -8,6 +8,8 @@ import 'package:condominioapp/domain/entities/entities.dart';
 import 'package:condominioapp/data/http/http.dart';
 import 'package:condominioapp/data/usecases/usecases.dart';
 
+import '../../../mocks/mocks.dart';
+
 class HttpClientSpy extends Mock implements HttpClient {}
 
 void main() {
@@ -15,23 +17,6 @@ void main() {
   late HttpClient httpClient;
   late RemoteLoadUsers sut;
   late List<Map> list;
-
-  List<Map> mockValidData() => [
-        {
-          'id': faker.randomGenerator.integer(10, min: 1),
-          'name': faker.person.name(),
-          'email': faker.internet.email(),
-          'active': faker.randomGenerator.element(['S', 'N']),
-          'cpf': faker.randomGenerator.string(11, min: 11)
-        },
-        {
-          'id': faker.randomGenerator.integer(10, min: 1),
-          'name': faker.person.name(),
-          'email': faker.internet.email(),
-          'active': faker.randomGenerator.element(['S', 'N']),
-          'cpf': faker.randomGenerator.string(11, min: 11)
-        }
-      ];
 
   PostExpectation mockRequest() =>
       when(httpClient.request(url: anyNamed('url') as String, method: 'get'));
@@ -50,7 +35,7 @@ void main() {
     httpClient = HttpClientSpy();
     sut = RemoteLoadUsers(url: url, httpClient: httpClient);
 
-    mockHttpData(mockValidData());
+    mockHttpData(FakeUsersFactory.makeApiJson());
   });
 
   test('Should call HttpClient with correct values', () async {
@@ -84,9 +69,7 @@ void main() {
   test(
       'Should return UnexpectError if HttpClient returns 200 with invalid data',
       () async {
-    mockHttpData([
-      {'invalid_key': 'invalid_value'}
-    ]);
+    mockHttpData(FakeUsersFactory.makeInvalidApiJson());
 
     final future = sut.load();
 

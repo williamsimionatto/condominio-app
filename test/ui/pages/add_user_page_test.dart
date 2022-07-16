@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:condominioapp/ui/helpers/helpers.dart';
+import 'package:condominioapp/ui/pages/pages.dart';
+import '../helpers/helpers.dart';
+
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:get/get.dart';
-
-import 'package:condominioapp/ui/pages/pages.dart';
 import 'package:mockito/mockito.dart';
 
 class AddUserPresenterSpy extends Mock implements AddUserPresenter {}
@@ -69,17 +69,9 @@ void main() {
     initStreams();
     mockStreams();
 
-    final addUserPage = GetMaterialApp(
-      initialRoute: '/users/add',
-      getPages: [
-        GetPage(name: '/users/add', page: () => AddUserPage(presenter)),
-        GetPage(
-          name: '/any_route',
-          page: () => const Scaffold(body: Text('fake page')),
-        ),
-      ],
+    await tester.pumpWidget(
+      makePage(path: '/users/add', page: () => AddUserPage(presenter)),
     );
-    await tester.pumpWidget(addUserPage);
   }
 
   tearDown(() {
@@ -305,7 +297,7 @@ void main() {
     await loadPage(tester);
     navigateToController.add('/any_route');
     await tester.pumpAndSettle();
-    expect(Get.currentRoute, '/any_route');
+    expect(currentRoute, '/any_route');
     expect(find.text('fake page'), findsOneWidget);
   });
 
@@ -314,10 +306,10 @@ void main() {
 
     navigateToController.add('');
     await tester.pump();
-    expect(Get.currentRoute, '/users/add');
+    expect(currentRoute, '/users/add');
 
     navigateToController.add(null as String);
     await tester.pump();
-    expect(Get.currentRoute, '/users/add');
+    expect(currentRoute, '/users/add');
   });
 }

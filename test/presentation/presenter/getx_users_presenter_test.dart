@@ -8,31 +8,14 @@ import 'package:condominioapp/domain/usecases/usecases.dart';
 
 import 'package:condominioapp/presentation/presenter/presenter.dart';
 
+import '../../mocks/mocks.dart';
+
 class LoadUsersSpy extends Mock implements LoadUsers {}
 
 void main() {
   late LoadUsers loadUsers;
   late GetxUsersPresenter sut;
   late List<UserEntity> users;
-
-  List<UserEntity> mockValidData() => [
-        const UserEntity(
-          id: 1,
-          name: 'Usuário 1',
-          email: 'usuario1@mail.com',
-          active: 'S',
-          cpf: "123456789",
-          roleId: 1,
-        ),
-        const UserEntity(
-          id: 1,
-          name: 'Usuário 1',
-          email: 'usuario1@mail.com',
-          active: 'S',
-          cpf: "123456789",
-          roleId: 1,
-        ),
-      ];
 
   void mockLoadUsers(List<UserEntity> data) {
     users = data;
@@ -50,7 +33,7 @@ void main() {
   setUp(() {
     loadUsers = LoadUsersSpy();
     sut = GetxUsersPresenter(loadUsers: loadUsers);
-    mockLoadUsers(mockValidData());
+    mockLoadUsers(FakeUsersFactory.makeEntities());
   });
 
   test('Should call LoadUsers on loadData', () async {

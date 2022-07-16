@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:condominioapp/ui/helpers/helpers.dart';
+import 'package:condominioapp/ui/pages/pages.dart';
+import '../../mocks/mocks.dart';
+import '../helpers/helpers.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:get/get.dart';
 
-import 'package:condominioapp/ui/pages/pages.dart';
 import 'package:mockito/mockito.dart';
 
 class UserPresenterSpy extends Mock implements UserPresenter {}
@@ -15,15 +17,6 @@ void main() {
 
   late StreamController<bool> isLoadingController;
   late StreamController<UserViewModel> loadUserController;
-
-  UserViewModel makeUserResult() => const UserViewModel(
-        id: 1,
-        name: 'Teste',
-        email: 'teste@mail.com',
-        active: 'S',
-        cpf: "123456789",
-        roleId: 1,
-      );
 
   void initStreams() {
     isLoadingController = StreamController<bool>();
@@ -47,15 +40,10 @@ void main() {
     initStreams();
     mockStreams();
 
-    final userPage = GetMaterialApp(
-      initialRoute: '/user/any_user_id',
-      getPages: [
-        GetPage(name: '/user/:user_id', page: () => UserPage(presenter)),
-        GetPage(
-            name: '/users', page: () => const Scaffold(body: Text('Users'))),
-      ],
-    );
-    await tester.pumpWidget(userPage);
+    await tester.pumpWidget(makePage(
+      path: '/user/any_user_id',
+      page: () => UserPage(presenter),
+    ));
   }
 
   tearDown(() {
@@ -112,7 +100,7 @@ void main() {
       (WidgetTester tester) async {
     await loadPage(tester);
 
-    loadUserController.add(makeUserResult());
+    loadUserController.add(FakeUserFactory.makeViewModel());
     await tester.pump();
 
     expect(find.text('Algo errado aconteceu. Tente novamente em breve.'),

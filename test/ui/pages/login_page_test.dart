@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:condominioapp/ui/helpers/helpers.dart';
+import 'package:condominioapp/ui/pages/pages.dart';
+import '../helpers/helpers.dart';
+
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:condominioapp/ui/pages/pages.dart';
-import 'package:get/route_manager.dart';
 import 'package:mockito/mockito.dart';
 
 class LoginPresenterSpy extends Mock implements LoginPresenter {}
@@ -75,17 +75,9 @@ void main() {
     initStreams();
     mockStreams();
 
-    final loginPage = GetMaterialApp(
-      initialRoute: '/login',
-      getPages: [
-        GetPage(name: '/login', page: () => LoginPage(presenter)),
-        GetPage(
-          name: '/any_route',
-          page: () => const Scaffold(body: Text('fake page')),
-        ),
-      ],
+    await tester.pumpWidget(
+      makePage(path: '/login', page: () => LoginPage(presenter)),
     );
-    await tester.pumpWidget(loginPage);
   }
 
   tearDown(() {
@@ -243,7 +235,7 @@ void main() {
     await loadPage(tester);
     navigateToController.add('/any_route');
     await tester.pumpAndSettle();
-    expect(Get.currentRoute, '/any_route');
+    expect(currentRoute, '/any_route');
     expect(find.text('fake page'), findsOneWidget);
   });
 
@@ -252,10 +244,10 @@ void main() {
 
     navigateToController.add('');
     await tester.pump();
-    expect(Get.currentRoute, '/login');
+    expect(currentRoute, '/login');
 
     navigateToController.add(null as String);
     await tester.pump();
-    expect(Get.currentRoute, '/login');
+    expect(currentRoute, '/login');
   });
 }

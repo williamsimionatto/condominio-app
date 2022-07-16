@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:condominioapp/domain/helpers/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:get/get.dart';
 
 import 'package:condominioapp/ui/pages/pages.dart';
 import 'package:mockito/mockito.dart';
+
+import '../../mocks/mocks.dart';
+import '../helpers/helpers.dart';
 
 class UsersPresenterSpy extends Mock implements UsersPresenter {}
 
@@ -45,42 +47,13 @@ void main() {
 
   Future<void> loadPage(WidgetTester tester) async {
     presenter = UsersPresenterSpy();
-    final routeObserserver = Get.put<RouteObserver>(RouteObserver<PageRoute>());
     initStreams();
     mockStreams();
-    final userPage = GetMaterialApp(
-      initialRoute: '/users',
-      navigatorObservers: [routeObserserver],
-      getPages: [
-        GetPage(name: '/users', page: () => UsersPage(presenter)),
-        GetPage(
-            name: '/login', page: () => const Scaffold(body: Text('Login'))),
-        GetPage(
-            name: '/any_route',
-            page: () => const Scaffold(body: Text('fake page'))),
-      ],
-    );
-    await tester.pumpWidget(userPage);
+    await tester.pumpWidget(makePage(
+      path: '/users',
+      page: () => UsersPage(presenter),
+    ));
   }
-
-  List<UserViewModel> makeUsers() => [
-        const UserViewModel(
-          id: 1,
-          name: 'Usuário 1',
-          email: 'usuario1@mail.com',
-          active: 'S',
-          cpf: "123456789",
-          roleId: 1,
-        ),
-        const UserViewModel(
-          id: 2,
-          name: 'Usuário 2',
-          email: 'usuario@2mail.com',
-          active: 'N',
-          cpf: "123456789",
-          roleId: 1,
-        ),
-      ];
 
   tearDown(() {
     closeStreams();
@@ -126,7 +99,7 @@ void main() {
       (WidgetTester tester) async {
     await loadPage(tester);
 
-    loadUsersController.add(makeUsers());
+    loadUsersController.add(FakeUsersFactory.makeViewModel());
     await tester.pump();
 
     expect(find.text('Algo errado aconteceu. Tente novamente em breve.'),
@@ -153,7 +126,7 @@ void main() {
       (WidgetTester tester) async {
     await loadPage(tester);
 
-    loadUsersController.add(makeUsers());
+    loadUsersController.add(FakeUsersFactory.makeViewModel());
     await tester.pump();
 
     await tester.tap(find.text('Usuário 1'));
@@ -168,7 +141,7 @@ void main() {
     navigateToController.add('/any_route');
     await tester.pumpAndSettle();
 
-    expect(Get.currentRoute, '/any_route');
+    expect(currentRoute, '/any_route');
     expect(find.text('fake page'), findsOneWidget);
   });
 
@@ -177,7 +150,7 @@ void main() {
 
     isSessionExpiredController.add(true);
     await tester.pumpAndSettle();
-    expect(Get.currentRoute, '/login');
+    expect(currentRoute, '/login');
   });
 
   testWidgets('Should not logout', (WidgetTester tester) async {
@@ -185,7 +158,7 @@ void main() {
 
     isSessionExpiredController.add(false);
     await tester.pumpAndSettle();
-    expect(Get.currentRoute, '/users');
+    expect(currentRoute, '/users');
     await loadPage(tester);
   });
 }
