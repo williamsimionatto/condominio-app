@@ -6,7 +6,7 @@ import 'package:faker/faker.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-import '../mocks/mocks.dart';
+import '../../mocks/mocks.dart';
 
 void main() {
   late LocalLoadCurrentAccount sut;
