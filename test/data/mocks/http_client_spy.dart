@@ -6,6 +6,7 @@ class HttpClientSpy extends Mock implements HttpClient {
         url: any(named: 'url'),
         method: any(named: 'method'),
         body: any(named: "body"),
+        headers: any(named: "headers"),
       ));
   void mockRequest(dynamic data) =>
       mockRequestCall().thenAnswer((_) async => data);
