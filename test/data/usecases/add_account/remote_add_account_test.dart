@@ -7,8 +7,8 @@ import 'package:condominioapp/domain/usecases/usecases.dart';
 
 import 'package:condominioapp/data/http/http.dart';
 import 'package:condominioapp/data/usecases/usecases.dart';
+import '../../../domain/mocks/mocks.dart';
 import '../../../infra/mocks/mocks.dart';
-import '../../../mocks/mocks.dart';
 
 class HttpClientSpy extends Mock implements HttpClient {}
 
@@ -35,7 +35,7 @@ void main() {
     httpClient = HttpClientSpy();
     url = faker.internet.httpUrl();
     sut = RemoteAddAccount(httpClient: httpClient, url: url);
-    params = FakeParamsFactory.makeAddAccount();
+    params = ParamsFactory.makeAddAccount();
 
     mockHttpData(ApiFactory.makeAccountJson());
   });
