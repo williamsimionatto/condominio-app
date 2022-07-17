@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:condominioapp/ui/pages/users/users.dart';
-import 'package:condominioapp/ui/pages/users/users_presenter.dart';
 import 'package:mocktail/mocktail.dart';
 
 class UsersPresenterSpy extends Mock implements UsersPresenter {
