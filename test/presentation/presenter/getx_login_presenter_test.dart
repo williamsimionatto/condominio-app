@@ -10,7 +10,7 @@ import 'package:condominioapp/domain/usecases/usecases.dart';
 import 'package:condominioapp/presentation/presenter/presenter.dart';
 import 'package:condominioapp/presentation/protocols/protocols.dart';
 
-import '../../mocks/mocks.dart';
+import '../../domain/mocks/mocks.dart';
 
 class ValidationSpy extends Mock implements Validation {}
 
@@ -67,7 +67,7 @@ void main() {
     password = faker.internet.password();
 
     mockValidaton();
-    mockAuthetication(FakeAccountFactory.makeEntity());
+    mockAuthetication(EntityFactory.makeAccount());
   });
 
   test('Shoul call Validation with correct email', () {

@@ -6,7 +6,7 @@ import 'package:condominioapp/domain/usecases/usecases.dart';
 
 import 'package:condominioapp/presentation/presenter/presenter.dart';
 
-import '../../mocks/mocks.dart';
+import '../../domain/mocks/mocks.dart';
 
 class LoadCurrentAccountSpy extends Mock implements LoadCurrentAccount {}
 
@@ -35,7 +35,7 @@ void main() {
       loadCurrentAccount: loadCurrentAccount,
       jwtValidator: jwtValidator,
     );
-    mockLoadCurrentAccount(account: FakeAccountFactory.makeEntity());
+    mockLoadCurrentAccount(account: EntityFactory.makeAccount());
   });
 
   test('Should call LoadCurrentAccount', () async {
