@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:condominioapp/ui/helpers/helpers.dart';
 import 'package:condominioapp/ui/pages/pages.dart';
 import '../helpers/helpers.dart';
@@ -9,38 +7,13 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mocktail/mocktail.dart';
 
-import '../mocks/viewmodel.factory.dart';
-
-class UserPresenterSpy extends Mock implements UserPresenter {}
+import '../mocks/mocks.dart';
 
 void main() {
   late UserPresenterSpy presenter;
 
-  late StreamController<bool> isLoadingController;
-  late StreamController<UserViewModel> loadUserController;
-
-  void initStreams() {
-    isLoadingController = StreamController<bool>();
-    loadUserController = StreamController<UserViewModel>();
-  }
-
-  void mockStreams() {
-    when(() => presenter.isLoadingStream)
-        .thenAnswer((_) => isLoadingController.stream);
-
-    when(() => presenter.userStream)
-        .thenAnswer((_) => loadUserController.stream);
-  }
-
-  void closeStreams() {
-    isLoadingController.close();
-    loadUserController.close();
-  }
-
   Future<void> loadPage(WidgetTester tester) async {
     presenter = UserPresenterSpy();
-    initStreams();
-    mockStreams();
 
     await tester.pumpWidget(makePage(
       path: '/user/any_user_id',
@@ -49,7 +22,7 @@ void main() {
   }
 
   tearDown(() {
-    closeStreams();
+    presenter.dispose();
   });
 
   testWidgets('Should call LoadUser on page load', (WidgetTester tester) async {
@@ -61,15 +34,15 @@ void main() {
   testWidgets('Should handle loading correctly', (WidgetTester tester) async {
     await loadPage(tester);
 
-    isLoadingController.add(true);
+    presenter.emitLoading(true);
     await tester.pump();
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
-    isLoadingController.add(false);
+    presenter.emitLoading(false);
     await tester.pump();
     expect(find.byType(CircularProgressIndicator), findsNothing);
 
-    isLoadingController.add(true);
+    presenter.emitLoading(true);
     await tester.pump();
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
@@ -78,7 +51,7 @@ void main() {
       (WidgetTester tester) async {
     await loadPage(tester);
 
-    loadUserController.addError(UIError.unexpected.description);
+    presenter.emitUserError(UIError.unexpected.description);
     await tester.pump();
 
     expect(find.text('Algo errado aconteceu. Tente novamente em breve.'),
@@ -90,7 +63,7 @@ void main() {
       (WidgetTester tester) async {
     await loadPage(tester);
 
-    loadUserController.addError(UIError.unexpected.description);
+    presenter.emitUserError(UIError.unexpected.description);
     await tester.pump();
 
     await tester.tap(find.text('Recarregar'));
@@ -102,7 +75,7 @@ void main() {
       (WidgetTester tester) async {
     await loadPage(tester);
 
-    loadUserController.add(ViewModelFactory.makeUser());
+    presenter.emitUser(ViewModelFactory.makeUser());
     await tester.pump();
 
     expect(find.text('Algo errado aconteceu. Tente novamente em breve.'),
