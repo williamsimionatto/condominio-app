@@ -1,7 +1,7 @@
 import 'package:condominioapp/domain/helpers/helpers.dart';
 import 'package:condominioapp/ui/pages/pages.dart';
 import 'package:faker/faker.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 import 'package:condominioapp/domain/entities/entities.dart';
@@ -27,15 +27,15 @@ void main() {
   late int roleId;
   late String active;
 
-  PostExpectation mockValidationCall(String field) =>
-      when(validation.validate(field: field, input: anyNamed('input') as Map));
+  When mockValidationCall(String field) =>
+      when(() => validation.validate(field: field, input: any(named: 'input')));
 
   void mockValidaton({String? field, String? value}) {
     mockValidationCall(field ?? 'field').thenReturn(value);
   }
 
-  PostExpectation mockAddAccountCall() =>
-      when(addAccount.add(any as AddAccountParams));
+  When mockAddAccountCall() =>
+      when(() => addAccount.add(any() as AddAccountParams));
 
   void mockAddAccount() {
     mockAddAccountCall().thenAnswer(
@@ -82,7 +82,8 @@ void main() {
       };
       sut.validateEmail(email);
 
-      verify(validation.validate(field: 'email', input: formData)).called(1);
+      verify(() => validation.validate(field: 'email', input: formData))
+          .called(1);
     });
 
     test('Should emit invalidFieldError if email is invalid', () async* {
@@ -131,7 +132,8 @@ void main() {
       };
       sut.validateName(name);
 
-      verify(validation.validate(field: 'name', input: formData)).called(1);
+      verify(() => validation.validate(field: 'name', input: formData))
+          .called(1);
     });
 
     test('Should emit invalidFieldError if name is invalid', () async* {
@@ -179,7 +181,8 @@ void main() {
       };
       sut.validatePassword(password);
 
-      verify(validation.validate(field: 'password', input: formData)).called(1);
+      verify(() => validation.validate(field: 'password', input: formData))
+          .called(1);
     });
 
     test('Should emit invalidFieldError if password is invalid', () async* {
@@ -229,9 +232,8 @@ void main() {
 
       sut.validatePasswordConfirmation(passwordConfirmation);
 
-      verify(validation.validate(
-              field: 'passwordConfirmation', input: formData))
-          .called(1);
+      verify(() => validation.validate(
+          field: 'passwordConfirmation', input: formData)).called(1);
     });
 
     test(
@@ -302,7 +304,7 @@ void main() {
       cpf: cpf,
       active: active,
     );
-    verify(addAccount.add(accountParams)).called(1);
+    verify(() => addAccount.add(accountParams)).called(1);
   });
 
   test('Should emit correct events on AddAccount success', () async {

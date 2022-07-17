@@ -7,7 +7,7 @@ import '../helpers/helpers.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
 class LoginPresenterSpy extends Mock implements LoginPresenter {}
 
@@ -31,33 +31,33 @@ void main() {
   }
 
   void mockStreams() {
-    when(presenter.emailErrorStream)
+    when(() => presenter.emailErrorStream)
         .thenAnswer((_) => emailErrorController.stream);
-    when(presenter.passwordErrorStream)
+    when(() => presenter.passwordErrorStream)
         .thenAnswer((_) => passwordErrorController.stream);
-    when(presenter.isFormValidStream)
+    when(() => presenter.isFormValidStream)
         .thenAnswer((_) => isFormValidController.stream);
-    when(presenter.isLoadingStream)
+    when(() => presenter.isLoadingStream)
         .thenAnswer((_) => isLoadingController.stream);
-    when(presenter.mainErrorStream)
+    when(() => presenter.mainErrorStream)
         .thenAnswer((_) => mainErrorController.stream);
 
-    when(presenter.emailErrorStream)
+    when(() => presenter.emailErrorStream)
         .thenAnswer((_) => emailErrorController.stream);
 
-    when(presenter.passwordErrorStream)
+    when(() => presenter.passwordErrorStream)
         .thenAnswer((_) => passwordErrorController.stream);
 
-    when(presenter.isFormValidStream)
+    when(() => presenter.isFormValidStream)
         .thenAnswer((_) => isFormValidController.stream);
 
-    when(presenter.isLoadingStream)
+    when(() => presenter.isLoadingStream)
         .thenAnswer((_) => isLoadingController.stream);
 
-    when(presenter.mainErrorStream)
+    when(() => presenter.mainErrorStream)
         .thenAnswer((_) => mainErrorController.stream);
 
-    when(presenter.navigateToStream)
+    when(() => presenter.navigateToStream)
         .thenAnswer((_) => navigateToController.stream);
   }
 
@@ -90,11 +90,11 @@ void main() {
 
     final email = faker.internet.email();
     await tester.enterText(find.bySemanticsLabel('E-mail'), email);
-    verify(presenter.validateEmail(email));
+    verify(() => presenter.validateEmail(email));
 
     final password = faker.internet.password();
     await tester.enterText(find.bySemanticsLabel('Senha'), password);
-    verify(presenter.validatePassword(password));
+    verify(() => presenter.validatePassword(password));
   });
 
   group('E-mail', () {
@@ -202,7 +202,7 @@ void main() {
     await tester.tap(button);
     await tester.pump();
 
-    verify(presenter.auth()).called(1);
+    verify(() => presenter.auth()).called(1);
   });
 
   testWidgets('Should handle loading correctly', (WidgetTester tester) async {

@@ -1,7 +1,7 @@
 import 'package:condominioapp/data/http/http_client.dart';
 import 'package:condominioapp/data/http/http_error.dart';
 import 'package:faker/faker.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 import 'package:condominioapp/data/cache/cache.dart';
@@ -28,30 +28,31 @@ void main() {
 
   void mockToken() {
     token = faker.jwt.valid();
-    when(fetchSecureCacheStorage.fetch('token')).thenAnswer((_) async => token);
+    when(() => fetchSecureCacheStorage.fetch('token'))
+        .thenAnswer((_) async => token);
   }
 
   void mockTokenError() {
-    when(fetchSecureCacheStorage.fetch('token')).thenThrow(Exception());
+    when(() => fetchSecureCacheStorage.fetch('token')).thenThrow(Exception());
   }
 
   void mockHttpResponse() {
     httpResponse = faker.randomGenerator.string(50);
-    when(httpClient.request(
-      url: anyNamed('url') as String,
-      method: anyNamed('method') as String,
-      body: anyNamed('body'),
-      headers: anyNamed('headers'),
-    )).thenAnswer((_) async => httpResponse);
+    when(() => httpClient.request(
+          url: any(named: 'url') as String,
+          method: any(named: 'method') as String,
+          body: any(named: 'body'),
+          headers: any(named: 'headers'),
+        )).thenAnswer((_) async => httpResponse);
   }
 
   void mockHttpResponseError(HttpError error) {
-    when(httpClient.request(
-      url: anyNamed('url') as String,
-      method: anyNamed('method') as String,
-      body: anyNamed('body'),
-      headers: anyNamed('headers'),
-    )).thenThrow(error);
+    when(() => httpClient.request(
+          url: any(named: 'url') as String,
+          method: any(named: 'method') as String,
+          body: any(named: 'body'),
+          headers: any(named: 'headers'),
+        )).thenThrow(error);
   }
 
   setUp(() {
@@ -74,22 +75,24 @@ void main() {
   test('Should call FetchSecureCacheStorage with correct key', () async {
     await sut.request(url: url, method: method, body: body);
 
-    verify(fetchSecureCacheStorage.fetch('token')).called(1);
+    verify(() => fetchSecureCacheStorage.fetch('token')).called(1);
   });
 
   test('Should call decoratee with access token on header', () async {
     await sut.request(url: url, method: method, body: body);
-    verify(httpClient.request(url: url, method: method, body: body, headers: {
-      'Authorization': 'Bearer $token',
-    })).called(1);
+    verify(() =>
+        httpClient.request(url: url, method: method, body: body, headers: {
+          'Authorization': 'Bearer $token',
+        })).called(1);
 
     await sut.request(url: url, method: method, body: body, headers: {
       'any_header': 'any_value',
     });
-    verify(httpClient.request(url: url, method: method, body: body, headers: {
-      'Authorization': 'Bearer $token',
-      'any_header': 'any_value',
-    })).called(1);
+    verify(() =>
+        httpClient.request(url: url, method: method, body: body, headers: {
+          'Authorization': 'Bearer $token',
+          'any_header': 'any_value',
+        })).called(1);
   });
 
   test('Should return same result as decoratee', () async {
@@ -104,7 +107,7 @@ void main() {
     final future = sut.request(url: url, method: method, body: body);
 
     expect(future, throwsA(HttpError.forbidden));
-    verify(deleteSecureCacheStorage.delete('token')).called(1);
+    verify(() => deleteSecureCacheStorage.delete('token')).called(1);
   });
 
   test('Should rethorw if decoratee throws', () async {
@@ -117,9 +120,9 @@ void main() {
   test('Should delete cache if Request throws ForbiddenError', () async {
     mockHttpResponseError(HttpError.forbidden);
     final future = sut.request(url: url, method: method, body: body);
-    await untilCalled(deleteSecureCacheStorage.delete('token'));
+    await untilCalled(() => deleteSecureCacheStorage.delete('token'));
 
     expect(future, throwsA(HttpError.forbidden));
-    verify(deleteSecureCacheStorage.delete('token')).called(1);
+    verify(() => deleteSecureCacheStorage.delete('token')).called(1);
   });
 }

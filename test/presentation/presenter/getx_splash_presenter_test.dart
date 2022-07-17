@@ -1,4 +1,4 @@
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 import 'package:condominioapp/domain/entities/entities.dart';
@@ -17,8 +17,7 @@ void main() {
   late LoadCurrentAccount loadCurrentAccount;
   late JWTValidator jwtValidator;
 
-  PostExpectation mockLoadCurrentAccountCall() =>
-      when(loadCurrentAccount.load());
+  When mockLoadCurrentAccountCall() => when(() => loadCurrentAccount.load());
 
   void mockLoadCurrentAccount({required AccountEntity account}) {
     mockLoadCurrentAccountCall().thenAnswer((_) async => account);
@@ -41,7 +40,7 @@ void main() {
   test('Should call LoadCurrentAccount', () async {
     await sut.checkAccount(durationInSeconds: 0);
 
-    verify(loadCurrentAccount.load()).called(1);
+    verify(() => loadCurrentAccount.load()).called(1);
   });
 
   test('Should go to home page on success', () async* {

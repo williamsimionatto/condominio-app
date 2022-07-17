@@ -1,6 +1,6 @@
 import 'package:condominioapp/ui/helpers/helpers.dart';
 import 'package:condominioapp/ui/pages/pages.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 import 'package:condominioapp/domain/helpers/helpers.dart';
@@ -21,12 +21,12 @@ void main() {
 
   void mockLoadUser(UserEntity data) {
     user = data;
-    when(loadUser.loadByUser(userId: anyNamed('userId') as String))
+    when(() => loadUser.loadByUser(userId: any(named: 'userId') as String))
         .thenAnswer((_) async => data);
   }
 
   void mockLoadUserError() {
-    when(loadUser.loadByUser(userId: anyNamed('userId') as String))
+    when(() => loadUser.loadByUser(userId: any(named: 'userId') as String))
         .thenThrow(DomainError.unexpected);
   }
 
@@ -39,7 +39,7 @@ void main() {
 
   test('Should call LoadUsers on loadData', () async {
     await sut.loadData();
-    verify(loadUser.loadByUser(userId: userId)).called(1);
+    verify(() => loadUser.loadByUser(userId: userId)).called(1);
   });
 
   test('Should emit correct events on success', () async {

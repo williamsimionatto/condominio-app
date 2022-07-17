@@ -1,5 +1,5 @@
 import 'package:faker/faker.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 import 'package:condominioapp/domain/helpers/helpers.dart';
@@ -19,8 +19,8 @@ void main() {
   late AuthenticationParams params;
   late Map apiResult;
 
-  PostExpectation mockRequest() => when(
-      httpClient.request(url: url, method: 'post', body: anyNamed("body")));
+  When mockRequest() => when(() =>
+      httpClient.request(url: url, method: 'post', body: any(named: "body")));
 
   void mockHttpData(Map data) {
     apiResult = data;
@@ -41,11 +41,11 @@ void main() {
 
   test('Should call HttpClient with correct values', () async {
     await sut.auth(params);
-    verify(httpClient.request(
-      url: url,
-      method: 'post',
-      body: {'email': params.email, 'password': params.secret},
-    ));
+    verify(() => httpClient.request(
+          url: url,
+          method: 'post',
+          body: {'email': params.email, 'password': params.secret},
+        ));
   });
 
   test('Should throw UnexpectedError if HttpClient returns 400', () async {

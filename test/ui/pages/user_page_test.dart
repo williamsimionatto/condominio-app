@@ -7,7 +7,7 @@ import '../helpers/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
 import '../mocks/viewmodel.factory.dart';
 
@@ -25,10 +25,11 @@ void main() {
   }
 
   void mockStreams() {
-    when(presenter.isLoadingStream)
+    when(() => presenter.isLoadingStream)
         .thenAnswer((_) => isLoadingController.stream);
 
-    when(presenter.userStream).thenAnswer((_) => loadUserController.stream);
+    when(() => presenter.userStream)
+        .thenAnswer((_) => loadUserController.stream);
   }
 
   void closeStreams() {
@@ -54,7 +55,7 @@ void main() {
   testWidgets('Should call LoadUser on page load', (WidgetTester tester) async {
     await loadPage(tester);
 
-    verify(presenter.loadData()).called(1);
+    verify(() => presenter.loadData()).called(1);
   });
 
   testWidgets('Should handle loading correctly', (WidgetTester tester) async {
@@ -94,7 +95,7 @@ void main() {
 
     await tester.tap(find.text('Recarregar'));
 
-    verify(presenter.loadData()).called(2);
+    verify(() => presenter.loadData()).called(2);
   });
 
   testWidgets('Should presenter valid data if loadUserStream succeds',

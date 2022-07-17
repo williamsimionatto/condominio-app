@@ -1,5 +1,5 @@
 import 'package:faker/faker.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 import 'package:condominioapp/domain/entities/entities.dart';
@@ -16,7 +16,7 @@ void main() {
   late LocalSaveCurrentAccount sut;
 
   void mockError() {
-    when(saveSecureCacheStorage.save(key: 'token', value: account.token))
+    when(() => saveSecureCacheStorage.save(key: 'token', value: account.token))
         .thenThrow(Exception());
   }
 
@@ -30,7 +30,7 @@ void main() {
   test('Should call SaveSecureCacheStorage with correct values', () async {
     await sut.save(account);
     verify(
-        saveSecureCacheStorage.save(key: 'token', value: account.token));
+        () => saveSecureCacheStorage.save(key: 'token', value: account.token));
   });
 
   test('Should throw UnexpectedError if SaveSecureCacheStorage throws',

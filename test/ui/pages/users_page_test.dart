@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:condominioapp/ui/pages/pages.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
 import '../helpers/helpers.dart';
 import '../mocks/viewmodel.factory.dart';
@@ -27,14 +27,15 @@ void main() {
   }
 
   void mockStreams() {
-    when(presenter.isLoadingStream)
+    when(() => presenter.isLoadingStream)
         .thenAnswer((_) => isLoadingController.stream);
-    when(presenter.usersStream).thenAnswer((_) => loadUsersController.stream);
+    when(() => presenter.usersStream)
+        .thenAnswer((_) => loadUsersController.stream);
 
-    when(presenter.isSessionExpiredStream)
+    when(() => presenter.isSessionExpiredStream)
         .thenAnswer((_) => isSessionExpiredController.stream);
 
-    when(presenter.navigateToStream)
+    when(() => presenter.navigateToStream)
         .thenAnswer((_) => navigateToController.stream);
   }
 
@@ -63,7 +64,7 @@ void main() {
       (WidgetTester tester) async {
     await loadPage(tester);
 
-    verify(presenter.loadData()).called(1);
+    verify(() => presenter.loadData()).called(1);
   });
 
   testWidgets('Should handle loading correctly', (WidgetTester tester) async {
@@ -119,7 +120,7 @@ void main() {
 
     await tester.tap(find.text('Recarregar'));
 
-    verify(presenter.loadData()).called(2);
+    verify(() => presenter.loadData()).called(2);
   });
 
   testWidgets('Should call gotoUser on user click',
@@ -132,7 +133,7 @@ void main() {
     await tester.tap(find.text('Usuário 1'));
     await tester.pump();
 
-    verify(presenter.goToUser(1)).called(1);
+    verify(() => presenter.goToUser(1)).called(1);
   });
 
   testWidgets('Should change page', (WidgetTester tester) async {

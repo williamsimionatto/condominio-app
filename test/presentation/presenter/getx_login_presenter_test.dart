@@ -1,6 +1,6 @@
 import 'package:condominioapp/ui/helpers/helpers.dart';
 import 'package:faker/faker.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 import 'package:condominioapp/domain/entities/entities.dart';
@@ -27,14 +27,14 @@ void main() {
   late String password;
   late AccountEntity account;
 
-  PostExpectation mockValidationCall(String field) =>
-      when(validation.validate(field: field, input: anyNamed('input') as Map));
+  When mockValidationCall(String field) => when(() =>
+      validation.validate(field: field, input: any(named: 'input') as Map));
 
   void mockValidaton({String? field, String? value}) {
     mockValidationCall(field ?? 'field').thenReturn(value);
   }
 
-  PostExpectation mockAuthenticationCall() => when(authentication
+  When mockAuthenticationCall() => when(() => authentication
       .auth(AuthenticationParams(email: email, secret: password)));
 
   void mockAuthetication(AccountEntity data) {
@@ -46,8 +46,8 @@ void main() {
     mockAuthenticationCall().thenThrow(error);
   }
 
-  PostExpectation mockSaveCurrentAccountCall() =>
-      when(saveCurrentAccount.save(any as AccountEntity));
+  When mockSaveCurrentAccountCall() =>
+      when(() => saveCurrentAccount.save(any as AccountEntity));
 
   void mockSaveCurrentAccountError() {
     mockSaveCurrentAccountCall().thenThrow(DomainError.unexpected);
@@ -74,7 +74,8 @@ void main() {
     sut.validateEmail(email);
     final formData = {'email': email, 'password': null};
 
-    verify(validation.validate(field: 'email', input: formData)).called(1);
+    verify(() => validation.validate(field: 'email', input: formData))
+        .called(1);
   });
 
   test('Should emit email error if validation fails', () async* {
@@ -102,7 +103,8 @@ void main() {
     sut.validatePassword(password);
     final formData = {'email': null, 'password': password};
 
-    verify(validation.validate(field: 'password', input: formData)).called(1);
+    verify(() => validation.validate(field: 'password', input: formData))
+        .called(1);
   });
 
   test('Should emit password error if validation fails', () async* {
@@ -158,9 +160,8 @@ void main() {
 
     await sut.auth();
 
-    verify(authentication
-            .auth(AuthenticationParams(email: email, secret: password)))
-        .called(1);
+    verify(() => authentication
+        .auth(AuthenticationParams(email: email, secret: password))).called(1);
   });
 
   test('Should call SaveCurrentAccount with correct value', () async {
@@ -169,7 +170,7 @@ void main() {
 
     await sut.auth();
 
-    verify(saveCurrentAccount.save(account)).called(1);
+    verify(() => saveCurrentAccount.save(account)).called(1);
   });
 
   test('Should emit UnexpectedError if SaveCurrentAccount fails', () async* {

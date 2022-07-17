@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
 import 'package:condominioapp/ui/pages/splash/splash.dart';
 import '../helpers/helpers.dart';
@@ -17,7 +17,7 @@ void main() {
     presenter = SplashPresenterSpy();
     navigateToController = StreamController<String>();
 
-    when(presenter.navigateToStream)
+    when(() => presenter.navigateToStream)
         .thenAnswer((_) => navigateToController.stream);
 
     await tester.pumpWidget(
@@ -40,7 +40,7 @@ void main() {
       (WidgetTester tester) async {
     await loadPage(tester);
 
-    verify(presenter.checkAccount()).called(1);
+    verify(() => presenter.checkAccount()).called(1);
   });
 
   testWidgets('Should change page', (WidgetTester tester) async {

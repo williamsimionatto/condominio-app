@@ -1,5 +1,5 @@
 import 'package:faker/faker.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 import 'package:condominioapp/domain/helpers/helpers.dart';
@@ -18,8 +18,8 @@ void main() {
   late RemoteLoadUsers sut;
   late List<Map> list;
 
-  PostExpectation mockRequest() =>
-      when(httpClient.request(url: anyNamed('url') as String, method: 'get'));
+  When mockRequest() => when(() =>
+      httpClient.request(url: any(named: 'url') as String, method: 'get'));
 
   void mockHttpData(List<Map> data) {
     list = data;
@@ -40,7 +40,7 @@ void main() {
 
   test('Should call HttpClient with correct values', () async {
     await sut.load();
-    verify(httpClient.request(url: url, method: 'get'));
+    verify(() => httpClient.request(url: url, method: 'get'));
   });
 
   test('Should return users on 200', () async {
