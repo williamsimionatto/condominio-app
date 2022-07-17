@@ -1,5 +1,5 @@
 import 'package:faker/faker.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 import 'package:condominioapp/data/jwt/jwt.dart';
@@ -12,8 +12,7 @@ void main() {
   late JWTClientSpy jwtClient;
   late String token;
 
-  PostExpectation mockValidationCall(String token) =>
-      when(sut.hasExpired(token));
+  When mockValidationCall(String token) => when(() => sut.hasExpired(token));
 
   void mockTokenValidation(bool hasExpired) {
     mockValidationCall(token).thenReturn(!hasExpired);
@@ -28,7 +27,7 @@ void main() {
 
   test('Should call JWTClient whit correct value', () {
     sut.hasExpired(token);
-    verify(jwtClient.hasExpired(token));
+    verify(() => jwtClient.hasExpired(token));
   });
 
   test('Should return true when not expired token is passed', () {

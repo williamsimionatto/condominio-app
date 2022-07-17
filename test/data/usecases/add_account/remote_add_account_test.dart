@@ -1,5 +1,5 @@
 import 'package:faker/faker.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 import 'package:condominioapp/domain/helpers/helpers.dart';
@@ -7,9 +7,9 @@ import 'package:condominioapp/domain/usecases/usecases.dart';
 
 import 'package:condominioapp/data/http/http.dart';
 import 'package:condominioapp/data/usecases/usecases.dart';
-import '../../../mocks/mocks.dart';
-
-class HttpClientSpy extends Mock implements HttpClient {}
+import '../../../domain/mocks/mocks.dart';
+import '../../../infra/mocks/mocks.dart';
+import '../../mocks/mocks.dart';
 
 void main() {
   late RemoteAddAccount sut;
@@ -18,64 +18,52 @@ void main() {
   late AddAccountParams params;
   late Map apiResult;
 
-  PostExpectation mockRequest() => when(
-      httpClient.request(url: url, method: 'post', body: anyNamed("body")));
-
-  void mockHttpData(Map data) {
-    apiResult = data;
-    mockRequest().thenAnswer((_) async => data);
-  }
-
-  void mockHttpError(HttpError error) {
-    mockRequest().thenThrow(error);
-  }
-
   setUp(() {
     httpClient = HttpClientSpy();
     url = faker.internet.httpUrl();
     sut = RemoteAddAccount(httpClient: httpClient, url: url);
-    params = FakeParamsFactory.makeAddAccount();
-
-    mockHttpData(FakeAccountFactory.mockApiJson());
+    params = ParamsFactory.makeAddAccount();
+    apiResult = ApiFactory.makeAccountJson();
+    httpClient.mockRequest(apiResult);
   });
 
   test('Should call HttpClient with correct values', () async {
     await sut.add(params);
-    verify(httpClient.request(
-      url: url,
-      method: 'post',
-      body: {
-        'name': params.name,
-        'email': params.email,
-        'password': params.password,
-        'password_confirmation': params.passwordConfirmation,
-        'active': params.active,
-        'perfil_id': params.roleId,
-        'cpf': params.cpf,
-      },
-    ));
+    verify(() => httpClient.request(
+          url: url,
+          method: 'post',
+          body: {
+            'name': params.name,
+            'email': params.email,
+            'password': params.password,
+            'password_confirmation': params.passwordConfirmation,
+            'active': params.active,
+            'perfil_id': params.roleId,
+            'cpf': params.cpf,
+          },
+        ));
   });
 
   test('Should throw UnexpectedError if HttpClient returns 400', () async {
-    mockHttpError(HttpError.badRequest);
+    httpClient.mockRequestError(HttpError.badRequest);
     final future = sut.add(params);
     expect(future, throwsA(DomainError.unexpected));
   });
 
   test('Should throw UnexpectedError if HttpClient returns 404', () async {
-    mockHttpError(HttpError.notFound);
+    httpClient.mockRequestError(HttpError.notFound);
     final future = sut.add(params);
     expect(future, throwsA(DomainError.unexpected));
   });
 
   test('Should throw UnexpectedError if HttpClient returns 500', () async {
-    mockHttpError(HttpError.serverError);
+    httpClient.mockRequestError(HttpError.serverError);
     final future = sut.add(params);
     expect(future, throwsA(DomainError.unexpected));
   });
 
   test('Should throw UnexpectedError if HttpClient returns 403', () async {
-    mockHttpError(HttpError.forbidden);
+    httpClient.mockRequestError(HttpError.forbidden);
     final future = sut.add(params);
     expect(future, throwsA(DomainError.emailInUse));
   });
@@ -83,7 +71,7 @@ void main() {
   test(
       'Should throw UnexpectedError if HttpClient returns 200 wiht invalid data',
       () async {
-    mockHttpData({'invalid_key': 'invalid_value'});
+    httpClient.mockRequest({'invalid_key': 'invalid_value'});
 
     final future = sut.add(params);
     expect(future, throwsA(DomainError.unexpected));

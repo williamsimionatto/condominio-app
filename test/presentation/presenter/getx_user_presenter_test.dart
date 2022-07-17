@@ -1,45 +1,32 @@
 import 'package:condominioapp/ui/helpers/helpers.dart';
 import 'package:condominioapp/ui/pages/pages.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-import 'package:condominioapp/domain/helpers/helpers.dart';
 import 'package:condominioapp/domain/entities/entities.dart';
-import 'package:condominioapp/domain/usecases/usecases.dart';
 
 import 'package:condominioapp/presentation/presenter/presenter.dart';
 
-import '../../mocks/mocks.dart';
-
-class LoadUserSpy extends Mock implements LoadUser {}
+import '../../data/mocks/mocks.dart';
+import '../../domain/mocks/mocks.dart';
 
 void main() {
-  late LoadUser loadUser;
+  late LoadUserSpy loadUser;
   late GetxUserPresenter sut;
   late UserEntity user;
   late String userId;
 
-  void mockLoadUser(UserEntity data) {
-    user = data;
-    when(loadUser.loadByUser(userId: anyNamed('userId') as String))
-        .thenAnswer((_) async => data);
-  }
-
-  void mockLoadUserError() {
-    when(loadUser.loadByUser(userId: anyNamed('userId') as String))
-        .thenThrow(DomainError.unexpected);
-  }
-
   setUp(() {
+    user = EntityFactory.makeUser();
     userId = '1';
     loadUser = LoadUserSpy();
+    loadUser.mockLoad(user);
     sut = GetxUserPresenter(loadUser: loadUser, userId: userId);
-    mockLoadUser(FakeUserFactory.makeEntity());
   });
 
   test('Should call LoadUsers on loadData', () async {
     await sut.loadData();
-    verify(loadUser.loadByUser(userId: userId)).called(1);
+    verify(() => loadUser.loadByUser(userId: userId)).called(1);
   });
 
   test('Should emit correct events on success', () async {
@@ -58,7 +45,7 @@ void main() {
   });
 
   test('Should emit correct events on failure', () async {
-    mockLoadUserError();
+    loadUser.mockLoadError();
 
     expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
     sut.userStream?.listen(

@@ -1,5 +1,5 @@
 import 'package:faker/faker.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 import 'package:condominioapp/domain/helpers/helpers.dart';
@@ -8,39 +8,26 @@ import 'package:condominioapp/domain/entities/entities.dart';
 import 'package:condominioapp/data/http/http.dart';
 import 'package:condominioapp/data/usecases/usecases.dart';
 
-import '../../../mocks/mocks.dart';
-
-class HttpClientSpy extends Mock implements HttpClient {}
+import '../../../infra/mocks/mocks.dart';
+import '../../mocks/mocks.dart';
 
 void main() {
   late String url;
-  late HttpClient httpClient;
+  late HttpClientSpy httpClient;
   late RemoteLoadUsers sut;
   late List<Map> list;
-
-  PostExpectation mockRequest() =>
-      when(httpClient.request(url: anyNamed('url') as String, method: 'get'));
-
-  void mockHttpData(List<Map> data) {
-    list = data;
-    mockRequest().thenAnswer((_) async => data);
-  }
-
-  void mockHttpError(HttpError error) {
-    mockRequest().thenThrow(error);
-  }
 
   setUp(() {
     url = faker.internet.httpUrl();
     httpClient = HttpClientSpy();
     sut = RemoteLoadUsers(url: url, httpClient: httpClient);
-
-    mockHttpData(FakeUsersFactory.makeApiJson());
+    list = ApiFactory.makeUsersList();
+    httpClient.mockRequest(list);
   });
 
   test('Should call HttpClient with correct values', () async {
     await sut.load();
-    verify(httpClient.request(url: url, method: 'get'));
+    verify(() => httpClient.request(url: url, method: 'get'));
   });
 
   test('Should return users on 200', () async {
@@ -69,34 +56,26 @@ void main() {
   test(
       'Should return UnexpectError if HttpClient returns 200 with invalid data',
       () async {
-    mockHttpData(FakeUsersFactory.makeInvalidApiJson());
-
+    httpClient.mockRequest(ApiFactory.makeInvalidList());
     final future = sut.load();
-
     expect(future, throwsA(DomainError.unexpected));
   });
 
   test('Should throw UnexpectedError if HttpClient returns 404', () async {
-    mockHttpError(HttpError.notFound);
-
+    httpClient.mockRequestError(HttpError.notFound);
     final future = sut.load();
-
     expect(future, throwsA(DomainError.unexpected));
   });
 
   test('Should throw UnexpectedError if HttpClient returns 500', () async {
-    mockHttpError(HttpError.serverError);
-
+    httpClient.mockRequestError(HttpError.serverError);
     final future = sut.load();
-
     expect(future, throwsA(DomainError.unexpected));
   });
 
   test('Should throw AccessDeniedError if HttpClient returns 403', () async {
-    mockHttpError(HttpError.forbidden);
-
+    httpClient.mockRequestError(HttpError.forbidden);
     final future = sut.load();
-
     expect(future, throwsA(DomainError.accessDenied));
   });
 }

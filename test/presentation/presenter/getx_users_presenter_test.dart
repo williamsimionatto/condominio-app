@@ -1,44 +1,30 @@
 import 'package:condominioapp/ui/pages/pages.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 import 'package:condominioapp/domain/helpers/helpers.dart';
 import 'package:condominioapp/domain/entities/entities.dart';
-import 'package:condominioapp/domain/usecases/usecases.dart';
 
 import 'package:condominioapp/presentation/presenter/presenter.dart';
 
-import '../../mocks/mocks.dart';
-
-class LoadUsersSpy extends Mock implements LoadUsers {}
+import '../../data/mocks/mocks.dart';
+import '../../domain/mocks/mocks.dart';
 
 void main() {
-  late LoadUsers loadUsers;
+  late LoadUsersSpy loadUsers;
   late GetxUsersPresenter sut;
   late List<UserEntity> users;
 
-  void mockLoadUsers(List<UserEntity> data) {
-    users = data;
-    when(loadUsers.load()).thenAnswer((_) async => data);
-  }
-
-  void mockLoadUsersError() {
-    when(loadUsers.load()).thenThrow(DomainError.unexpected);
-  }
-
-  void mockAccessDeniedError() {
-    when(loadUsers.load()).thenThrow(DomainError.accessDenied);
-  }
-
   setUp(() {
+    users = EntityFactory.makeUsers();
     loadUsers = LoadUsersSpy();
+    loadUsers.mockLoad(users);
     sut = GetxUsersPresenter(loadUsers: loadUsers);
-    mockLoadUsers(FakeUsersFactory.makeEntities());
   });
 
   test('Should call LoadUsers on loadData', () async {
     await sut.loadData();
-    verify(loadUsers.load()).called(1);
+    verify(() => loadUsers.load()).called(1);
   });
 
   test('Should emit correct events on success', () async {
@@ -65,7 +51,7 @@ void main() {
   });
 
   test('Should emit correct events on failure', () async {
-    mockLoadUsersError();
+    loadUsers.mockLoadError(DomainError.unexpected);
 
     expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
     sut.usersStream.listen(
@@ -79,7 +65,7 @@ void main() {
   });
 
   test('Should emit correct events on access denied', () async {
-    mockAccessDeniedError();
+    loadUsers.mockLoadError(DomainError.accessDenied);
 
     expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
     expectLater(sut.isSessionExpiredStream, emits(true));
