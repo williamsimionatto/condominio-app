@@ -8,7 +8,7 @@ import 'package:condominioapp/domain/usecases/usecases.dart';
 
 import 'package:condominioapp/presentation/presenter/presenter.dart';
 
-import '../../mocks/mocks.dart';
+import '../../domain/mocks/entity_factory.dart';
 
 class LoadUsersSpy extends Mock implements LoadUsers {}
 
@@ -33,7 +33,7 @@ void main() {
   setUp(() {
     loadUsers = LoadUsersSpy();
     sut = GetxUsersPresenter(loadUsers: loadUsers);
-    mockLoadUsers(FakeUsersFactory.makeEntities());
+    mockLoadUsers(EntityFactory.makeUsers());
   });
 
   test('Should call LoadUsers on loadData', () async {

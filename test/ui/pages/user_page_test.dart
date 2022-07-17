@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:condominioapp/ui/helpers/helpers.dart';
 import 'package:condominioapp/ui/pages/pages.dart';
-import '../../mocks/mocks.dart';
 import '../helpers/helpers.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mockito/mockito.dart';
+
+import '../mocks/viewmodel.factory.dart';
 
 class UserPresenterSpy extends Mock implements UserPresenter {}
 
@@ -100,7 +101,7 @@ void main() {
       (WidgetTester tester) async {
     await loadPage(tester);
 
-    loadUserController.add(FakeUserFactory.makeViewModel());
+    loadUserController.add(ViewModelFactory.makeUser());
     await tester.pump();
 
     expect(find.text('Algo errado aconteceu. Tente novamente em breve.'),

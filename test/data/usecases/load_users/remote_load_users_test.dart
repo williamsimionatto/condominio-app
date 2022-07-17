@@ -8,7 +8,7 @@ import 'package:condominioapp/domain/entities/entities.dart';
 import 'package:condominioapp/data/http/http.dart';
 import 'package:condominioapp/data/usecases/usecases.dart';
 
-import '../../../mocks/mocks.dart';
+import '../../../infra/mocks/mocks.dart';
 
 class HttpClientSpy extends Mock implements HttpClient {}
 
@@ -35,7 +35,7 @@ void main() {
     httpClient = HttpClientSpy();
     sut = RemoteLoadUsers(url: url, httpClient: httpClient);
 
-    mockHttpData(FakeUsersFactory.makeApiJson());
+    mockHttpData(ApiFactory.makeUsersList());
   });
 
   test('Should call HttpClient with correct values', () async {
@@ -69,7 +69,7 @@ void main() {
   test(
       'Should return UnexpectError if HttpClient returns 200 with invalid data',
       () async {
-    mockHttpData(FakeUsersFactory.makeInvalidApiJson());
+    mockHttpData(ApiFactory.makeInvalidList());
 
     final future = sut.load();
 

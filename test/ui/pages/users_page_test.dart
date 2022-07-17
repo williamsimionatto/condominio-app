@@ -7,8 +7,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:condominioapp/ui/pages/pages.dart';
 import 'package:mockito/mockito.dart';
 
-import '../../mocks/mocks.dart';
 import '../helpers/helpers.dart';
+import '../mocks/viewmodel.factory.dart';
 
 class UsersPresenterSpy extends Mock implements UsersPresenter {}
 
@@ -99,7 +99,7 @@ void main() {
       (WidgetTester tester) async {
     await loadPage(tester);
 
-    loadUsersController.add(FakeUsersFactory.makeViewModel());
+    loadUsersController.add(ViewModelFactory.makeUserList());
     await tester.pump();
 
     expect(find.text('Algo errado aconteceu. Tente novamente em breve.'),
@@ -126,7 +126,7 @@ void main() {
       (WidgetTester tester) async {
     await loadPage(tester);
 
-    loadUsersController.add(FakeUsersFactory.makeViewModel());
+    loadUsersController.add(ViewModelFactory.makeUserList());
     await tester.pump();
 
     await tester.tap(find.text('Usuário 1'));
