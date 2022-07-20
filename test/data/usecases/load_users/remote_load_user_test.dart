@@ -41,7 +41,7 @@ void main() {
           email: user['email'],
           active: user['active'],
           cpf: user['cpf'],
-          roleId: user['roleId'],
+          roleId: user['perfil_id'],
         ));
   });
 

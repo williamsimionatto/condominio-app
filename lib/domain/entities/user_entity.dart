@@ -9,7 +9,7 @@ class UserEntity extends Equatable {
   final int roleId;
 
   @override
-  List get props => [id, name, email, active, cpf];
+  List get props => [id, name, email, active, cpf, roleId];
 
   const UserEntity({
     required this.id,

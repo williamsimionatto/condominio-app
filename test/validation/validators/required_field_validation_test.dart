@@ -22,7 +22,7 @@ void main() {
   });
 
   test('Should return error if value is null', () {
-    final formData = {'any_field': null as String};
+    final formData = {'any_field': null};
     expect(sut.validate(formData), ValidationError.requiredField);
   });
 }
